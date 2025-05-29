@@ -1,0 +1,59 @@
+/* Piano container */
+.piano {
+  width: 100%;
+  height: 200px;
+  position: relative;
+}
+
+/* White keys row */
+.white-keys {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.white-key {
+  flex: 1;
+  background: white;
+  border: 1px solid #000;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+  border-radius: 0 0 6px 6px;
+}
+
+/* Black keys row (overlay) */
+.black-keys {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60%;
+  pointer-events: none;
+}
+
+.black-key {
+  position: absolute;
+  background: black;
+  width: 6%;
+  height: 100%;
+  z-index: 2;
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  transform: translateX(-50%); /* Centra la tecla negra respecto a su left */
+}
+
+/* Position each black key above the gap between white keys (adjust as needed) */
+.black-key[data-note="C#4"] { left: 12.5%; }
+.black-key[data-note="D#4"] { left: 25%; }
+/* No black key between E and F */
+.black-key[data-note="F#4"] { left: 50%; }
+.black-key[data-note="G#4"] { left: 62.5%; }
+.black-key[data-note="A#4"] { left: 75%; }
+
+/* Responsive: shrink piano on small screens */
+@media (max-width: 600px) {
+  .piano {
+    height: 120px;
+  }
+}
