@@ -8,8 +8,11 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
+import { Theme } from '@radix-ui/themes';
+
 import "./app.css";
 import '@radix-ui/themes/styles.css';
+
 
 
 export const links: Route.LinksFunction = () => [
@@ -35,7 +38,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+        <Theme accentColor='purple'>
+          {children}
+        </Theme>
         <ScrollRestoration />
         <Scripts />
       </body>
