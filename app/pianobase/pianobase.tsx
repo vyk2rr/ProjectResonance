@@ -36,7 +36,7 @@ export function PianoBase({ createSynth }: PianoBaseProps) {
     Emin: ["E4", "B4", "G5", "B5", "E6"],
     Abmin: ["F#4", "C#5", "A5", "C#6", "F#6"],
     Gmaj: ["G4", "D5", "B5", "D6", "G6"],
-    Amaj: ["A4", "E5", "C6", "E6", "A6"],
+    Amaj: ["A4", "E5", "C#6", "E6", "A6"],
     Bmin: ["B4", "F#5", "D6", "F#6", "B6"],
     Cdim: ["C#5", "G5", "E6", "G6", "C#7"],
   };
