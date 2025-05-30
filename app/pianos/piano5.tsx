@@ -4,7 +4,6 @@ import { PianoBase } from "../pianobase/pianobase";
 export function PianoOption5() {
   return (
     <>
-      <h3>Piano cuenco de cristal: etéreo y resonante</h3>
       <PianoBase
         createSynth={() => {
           const synth = new Tone.FMSynth({

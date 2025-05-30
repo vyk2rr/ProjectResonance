@@ -4,7 +4,6 @@ import { PianoBase } from "../pianobase/pianobase";
 export function PianoOption6() {
   return (
     <>
-      <h3>Piano6: crujiente como pisando hojas secas en otoño</h3>
       <PianoBase
         createSynth={() => {
           // Synth melódico tipo campanilla de madera

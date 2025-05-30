@@ -4,7 +4,6 @@ import { PianoBase } from "../pianobase/pianobase";
 export function PianoOption1() {
   return (
     <>
-      <h3>Piano1: etéreo con timbre de cuerdas suaves y ambiente envolvente</h3>
       <PianoBase
         createSynth={() => {
           const synth = new Tone.DuoSynth({

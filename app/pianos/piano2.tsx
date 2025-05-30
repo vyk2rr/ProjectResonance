@@ -4,7 +4,6 @@ import { PianoBase } from "../pianobase/pianobase";
 export function PianoOption2() {
   return (
     <>
-      <h3>Piano2: espacial con eco y profundidad envolvente</h3>
       <PianoBase
         createSynth={() => {
           const synth = new Tone.DuoSynth({

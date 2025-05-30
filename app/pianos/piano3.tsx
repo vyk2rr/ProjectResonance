@@ -4,7 +4,6 @@ import { PianoBase } from "../pianobase/pianobase";
 export function PianoOption3() {
   return (
     <>
-      <h3>Piano3 digital brillante y espacial, con carácter retro y profundidad.</h3>
       <PianoBase
         createSynth={() => {
           const synth = new Tone.DuoSynth({
