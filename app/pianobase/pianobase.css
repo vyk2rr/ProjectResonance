@@ -35,7 +35,7 @@
 .black-key {
   position: absolute;
   background: black;
-  width: 6%;
+  width: 4%;
   height: 100%;
   z-index: 2;
   border-radius: 0 0 4px 4px;
@@ -43,19 +43,22 @@
   transform: translateX(-50%); /* Centra la tecla negra respecto a su left */
 }
 
-.black-key[data-note="C#4"]  { left: 6.66%; }
-.black-key[data-note="D#4"]  { left: 13.33%; }
+.black-key[data-note="C#4"]  { left: 6.25%; }
+.black-key[data-note="D#4"]  { left: 12.5%; }
 /* No black key between E and F */
-.black-key[data-note="F#4"]  { left: 26.66%; }
-.black-key[data-note="G#4"]  { left: 33.33%; }
-.black-key[data-note="A#4"]  { left: 40%; }
+.black-key[data-note="F#4"]  { left: 25%; }
+.black-key[data-note="G#4"]  { left: 31.25%; }
+.black-key[data-note="A#4"]  { left: 37.5%; }
 
-.black-key[data-note="C#5"]  { left: 53.33%; }
-.black-key[data-note="D#5"]  { left: 60%; }
+.black-key[data-note="C#5"]  { left: 50%; }
+.black-key[data-note="D#5"]  { left: 56.25%; }
 /* No black key between E and F */
-.black-key[data-note="F#5"]  { left: 73.33%; }
-.black-key[data-note="G#5"]  { left: 80%; }
-.black-key[data-note="A#5"]  { left: 86.66%; }
+.black-key[data-note="F#5"]  { left: 68.75%; }
+.black-key[data-note="G#5"]  { left: 75%; }
+.black-key[data-note="A#5"]  { left: 81.25%; }
+
+.black-key[data-note="C#6"]  { left: 93.75%; }
+
 
 .active-key {
   background: #ffe082 !important;
