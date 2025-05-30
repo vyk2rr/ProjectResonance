@@ -51,9 +51,15 @@
 .black-key[data-note="G#4"] { left: 62.5%; }
 .black-key[data-note="A#4"] { left: 75%; }
 
+.active-key {
+  background: #ffe082 !important;
+  box-shadow: 0 0 10px #ffd54f;
+}
+
 /* Responsive: shrink piano on small screens */
 @media (max-width: 600px) {
   .piano {
     height: 120px;
   }
 }
+
