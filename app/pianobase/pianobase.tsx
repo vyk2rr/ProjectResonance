@@ -1,7 +1,8 @@
 import './pianobase.css';
 import * as Tone from "tone";
 import React, { useState, useEffect, useRef } from "react";
-import { Button } from "@radix-ui/themes";
+import { Button, DropdownMenu } from "@radix-ui/themes";
+
 
 type PianoBaseProps = {
   createSynth?: () => Tone.Synth | Tone.DuoSynth;
@@ -10,6 +11,7 @@ type PianoBaseProps = {
 export function PianoBase({ createSynth }: PianoBaseProps) {
   const synthRef = useRef<Tone.Synth | Tone.DuoSynth | Tone.PolySynth | null>(null);
   const [activeNotes, setActiveNotes] = useState<string[]>([]);
+  const [showChords, setShowChords] = useState(false);
 
   useEffect(() => {
     const synth = createSynth
@@ -65,18 +67,46 @@ export function PianoBase({ createSynth }: PianoBaseProps) {
     setTimeout(() => setActiveNotes([]), notes.length * delay + 180);
   };
 
-
   return (
     <div>
-      <Button onClick={() => playSequence("Dmaj_4")} variant='classic' color='orange'>Play D major</Button>
-      <Button onClick={() => playSequence("Emin_4")} variant='classic' color='yellow'>Play E minor</Button>
-      <Button onClick={() => playSequence("Abmin_4")} variant='classic' color='green'>Play F# minor</Button>
-      <Button onClick={() => playSequence("Gmaj_4")} variant='classic' color='blue'>Play G major</Button>
-      <Button onClick={() => playSequence("Amaj_4")} variant='classic' color='indigo'>Play A major</Button>
-      <Button onClick={() => playSequence("Bmin_4")} variant='classic' color='purple'>Play B minor</Button>
-      <Button onClick={() => playSequence("Cdim_4")} variant='classic' color='red'>Play C diminished</Button>
-      <Button onClick={() => playSequence("Dmaj_5")} variant='classic' color='orange'>Play D maj</Button>
+      <DropdownMenu.Root>
+        <DropdownMenu.Trigger>
+          <Button variant="classic" size="2">
+            Piano Options
+            <DropdownMenu.TriggerIcon />
+          </Button>
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Content>
+          <DropdownMenu.Item color='orange' onClick={() => setShowChords(!showChords)}>show D Major buttons</DropdownMenu.Item>
+          <DropdownMenu.Sub>
+            <DropdownMenu.SubTrigger>Play a D major Chord</DropdownMenu.SubTrigger>
+            <DropdownMenu.SubContent>
+              <DropdownMenu.Item onClick={() => playSequence("Dmaj_4")} color='orange'>Play D major</DropdownMenu.Item>
+              <DropdownMenu.Item onClick={() => playSequence("Emin_4")} color='yellow'>Play E minor</DropdownMenu.Item>
+              <DropdownMenu.Item onClick={() => playSequence("Abmin_4")} color='green'>Play F# minor</DropdownMenu.Item>
+              <DropdownMenu.Item onClick={() => playSequence("Gmaj_4")} color='blue'>Play G major</DropdownMenu.Item>
+              <DropdownMenu.Item onClick={() => playSequence("Amaj_4")} color='indigo'>Play A major</DropdownMenu.Item>
+              <DropdownMenu.Item onClick={() => playSequence("Bmin_4")} color='purple'>Play B minor</DropdownMenu.Item>
+              <DropdownMenu.Item onClick={() => playSequence("Cdim_4")} color='red'>Play C diminished</DropdownMenu.Item>
+              <DropdownMenu.Item onClick={() => playSequence("Dmaj_5")} color='orange'>Play D maj</DropdownMenu.Item>
+            </DropdownMenu.SubContent>
+          </DropdownMenu.Sub>
 
+        </DropdownMenu.Content>
+      </DropdownMenu.Root>
+
+      {showChords && (
+        <>
+          <Button onClick={() => playSequence("Dmaj_4")} variant='classic' color='orange'>Play D major</Button>
+          <Button onClick={() => playSequence("Emin_4")} variant='classic' color='yellow'>Play E minor</Button>
+          <Button onClick={() => playSequence("Abmin_4")} variant='classic' color='green'>Play F# minor</Button>
+          <Button onClick={() => playSequence("Gmaj_4")} variant='classic' color='blue'>Play G major</Button>
+          <Button onClick={() => playSequence("Amaj_4")} variant='classic' color='indigo'>Play A major</Button>
+          <Button onClick={() => playSequence("Bmin_4")} variant='classic' color='purple'>Play B minor</Button>
+          <Button onClick={() => playSequence("Cdim_4")} variant='classic' color='red'>Play C diminished</Button>
+          <Button onClick={() => playSequence("Dmaj_5")} variant='classic' color='orange'>Play D maj</Button>
+        </>
+      )}
 
       <div className="piano">
         <div className="white-keys">
