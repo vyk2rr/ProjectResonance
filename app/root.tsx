@@ -38,7 +38,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <Theme accentColor='purple'>
+        <Theme accentColor="purple" radius="large" scaling="110%">
           {children}
         </Theme>
         <ScrollRestoration />
