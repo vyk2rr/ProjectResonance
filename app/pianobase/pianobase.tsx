@@ -1,6 +1,6 @@
 import './pianobase.css';
 import * as Tone from "tone";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@radix-ui/themes";
 
 type PianoBaseProps = {
@@ -8,26 +8,30 @@ type PianoBaseProps = {
 };
 
 export function PianoBase({ createSynth }: PianoBaseProps) {
-  const synthRef = React.useRef<Tone.Synth | Tone.DuoSynth | null>(null);
+  const synthRef = useRef<Tone.Synth | Tone.DuoSynth | Tone.PolySynth | null>(null);
   const [activeNotes, setActiveNotes] = useState<string[]>([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const synth = createSynth
       ? createSynth()
-      : new Tone.PolySynth(Tone.Synth).toDestination(); // synth polifónico por defecto
+      : new Tone.PolySynth(Tone.Synth).toDestination();
     synthRef.current = synth;
-    return () => synth.dispose();
+
+    return () => {
+      synth.dispose();
+      synthRef.current = null;
+    };
   }, [createSynth]);
 
   const playNote = (note: string) => {
     setActiveNotes([note]);
-    synthRef.current?.triggerAttackRelease(note, "8n");
+    synthRef.current?.triggerAttackRelease(note, "4n");
     setTimeout(() => setActiveNotes([]), 180);
   };
 
   const playChord = (notes: string[]) => {
     setActiveNotes(notes);
-    notes.forEach(note => synthRef.current?.triggerAttackRelease(note, "8n"));
+    notes.forEach(note => synthRef.current?.triggerAttackRelease(note, "2n"));
     setTimeout(() => setActiveNotes([]), 180);
   };
 
@@ -51,7 +55,6 @@ export function PianoBase({ createSynth }: PianoBaseProps) {
     if (notes.length === 0) return;
 
     setActiveNotes(notes);
-    playChord(notes);
 
     notes.forEach((note, i) => {
       setTimeout(() => {
