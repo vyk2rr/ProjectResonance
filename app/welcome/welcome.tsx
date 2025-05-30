@@ -5,6 +5,7 @@ import { PianoOption3 } from '../pianos/piano3';
 import { PianoOption5 } from '../pianos/piano5';
 import { PianoOption6 } from '../pianos/piano6';
 import { PianoOption7 } from '../pianos/piano7';
+import { PianoOption8 } from '../pianos/piano8';
 
 
 export function Welcome() {
@@ -30,6 +31,9 @@ export function Welcome() {
 
       <span>Piano7: tipo "hu"</span>
       <PianoOption7 />
+
+      <span>Piano8: metálico tipo laser</span>
+      <PianoOption8 />
     </main>
   );
 }
