@@ -32,13 +32,15 @@ export function PianoBase({ createSynth }: PianoBaseProps) {
   };
 
   const chordMap: Record<string, string[]> = {
-    Dmaj: ["D4", "A4", "F#5", "A5", "D6"],
-    Emin: ["E4", "B4", "G5", "B5", "E6"],
-    Abmin: ["F#4", "C#5", "A5", "C#6", "F#6"],
-    Gmaj: ["G4", "D5", "B5", "D6", "G6"],
-    Amaj: ["A4", "E5", "C#6", "E6", "A6"],
-    Bmin: ["B4", "F#5", "D6", "F#6", "B6"],
-    Cdim: ["C#5", "G5", "E6", "G6", "C#7"],
+    Dmaj_4: ["D4", "A4", "F#5", "A5", "D6"],
+    Emin_4: ["E4", "B4", "G5", "B5", "E6"],
+    Abmin_4: ["F#4", "C#5", "A5", "C#6", "F#6"],
+    Gmaj_4: ["G4", "D5", "B5", "D6", "G6"],
+    Amaj_4: ["A4", "E5", "C#6", "E6", "A6"],
+    Bmin_4: ["B4", "F#5", "D6", "F#6", "B6"],
+    Cdim_4: ["C#5", "G5", "E6", "G6", "C#7"],
+
+    Dmaj_5: ["D5", "A5", "F#6", "A6", "D7"],
   };
 
   const playSequence = (notesOrName: string[] | string, delay = 200) => {
@@ -63,13 +65,14 @@ export function PianoBase({ createSynth }: PianoBaseProps) {
 
   return (
     <div>
-      <Button onClick={() => playSequence("Dmaj")} variant='classic' color='orange'>Play D major</Button>
-      <Button onClick={() => playSequence("Emin")} variant='classic' color='yellow'>Play E minor</Button>
-      <Button onClick={() => playSequence("Abmin")} variant='classic' color='green'>Play F# minor</Button>
-      <Button onClick={() => playSequence("Gmaj")} variant='classic' color='blue'>Play G major</Button>
-      <Button onClick={() => playSequence("Amaj")} variant='classic' color='indigo'>Play A major</Button>
-      <Button onClick={() => playSequence("Bmin")} variant='classic' color='purple'>Play B minor</Button>
-      <Button onClick={() => playSequence("Cdim")} variant='classic' color='red'>Play C diminished</Button>
+      <Button onClick={() => playSequence("Dmaj_4")} variant='classic' color='orange'>Play D major</Button>
+      <Button onClick={() => playSequence("Emin_4")} variant='classic' color='yellow'>Play E minor</Button>
+      <Button onClick={() => playSequence("Abmin_4")} variant='classic' color='green'>Play F# minor</Button>
+      <Button onClick={() => playSequence("Gmaj_4")} variant='classic' color='blue'>Play G major</Button>
+      <Button onClick={() => playSequence("Amaj_4")} variant='classic' color='indigo'>Play A major</Button>
+      <Button onClick={() => playSequence("Bmin_4")} variant='classic' color='purple'>Play B minor</Button>
+      <Button onClick={() => playSequence("Cdim_4")} variant='classic' color='red'>Play C diminished</Button>
+      <Button onClick={() => playSequence("Dmaj_5")} variant='classic' color='orange'>Play D maj</Button>
 
 
       <div className="piano">
