@@ -43,13 +43,19 @@
   transform: translateX(-50%); /* Centra la tecla negra respecto a su left */
 }
 
-/* Position each black key above the gap between white keys (adjust as needed) */
-.black-key[data-note="C#4"] { left: 12.5%; }
-.black-key[data-note="D#4"] { left: 25%; }
+.black-key[data-note="C#4"]  { left: 6.66%; }
+.black-key[data-note="D#4"]  { left: 13.33%; }
 /* No black key between E and F */
-.black-key[data-note="F#4"] { left: 50%; }
-.black-key[data-note="G#4"] { left: 62.5%; }
-.black-key[data-note="A#4"] { left: 75%; }
+.black-key[data-note="F#4"]  { left: 26.66%; }
+.black-key[data-note="G#4"]  { left: 33.33%; }
+.black-key[data-note="A#4"]  { left: 40%; }
+
+.black-key[data-note="C#5"]  { left: 53.33%; }
+.black-key[data-note="D#5"]  { left: 60%; }
+/* No black key between E and F */
+.black-key[data-note="F#5"]  { left: 73.33%; }
+.black-key[data-note="G#5"]  { left: 80%; }
+.black-key[data-note="A#5"]  { left: 86.66%; }
 
 .active-key {
   background: #ffe082 !important;
