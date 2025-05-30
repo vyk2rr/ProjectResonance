@@ -6,11 +6,14 @@ import { PianoOption5 } from '../pianos/piano5';
 import { PianoOption6 } from '../pianos/piano6';
 import { PianoOption7 } from '../pianos/piano7';
 import { PianoOption8 } from '../pianos/piano8';
+import { PianoUkulele } from '../pianos/piano_ukulele';
 
 
 export function Welcome() {
   return (
     <main>
+      <PianoUkulele />
+
       <span>Piano base</span>
       <PianoBase />
 
