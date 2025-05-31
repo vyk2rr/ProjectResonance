@@ -1,6 +1,6 @@
 import type { Route } from "./+types/home";
 import UkuleleFretboard from "../ukulele-fretboard/ukulele-fretboard";
-import './ukulele_fretboard.css'
+import './ukulele_chords.css'
 
 export function meta({ }: Route.MetaArgs) {
   return [
@@ -19,15 +19,15 @@ const chords = [
   { name: "Bdim", markers: [[4, 4], [3, 2], [2, 2], [1, 2]] },
 ];
 
-export default function UkuleleFretboardPage() {
+export default function UkuleleChordsHomePage() {
   return (
-    <div className="fretboard-list">
+    <div className="ukulele-chords-list">
       {chords.map(({ name, markers }) => (
-        <div className="fretboard-item">
-         <span className="fretboard-label">{name}</span>
+        <div className="ukulele-chord">
+         <span className="ukulele-fret-number">{name}</span>
           <UkuleleFretboard markers={markers} />
         </div>
       ))}
     </div>
-  );
+  );g
 }

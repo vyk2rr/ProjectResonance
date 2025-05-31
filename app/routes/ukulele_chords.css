@@ -1,11 +1,11 @@
-.fretboard-list {
+.ukulele-chords-list {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   padding: 10px;
 }
 
-.fretboard-item {
+.ukulele-chord {
   width: 100px;
   padding: 10px;
   border: 1px solid #ddd;
@@ -15,7 +15,7 @@
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-.fretboard-label {
+.ukulele-fret-number {
   font-weight: bold;
   margin-bottom: 4px;
 }
