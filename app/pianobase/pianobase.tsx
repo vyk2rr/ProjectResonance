@@ -6,9 +6,23 @@ import { Button, DropdownMenu } from "@radix-ui/themes";
 
 type PianoBaseProps = {
   createSynth?: () => Tone.Synth | Tone.DuoSynth;
+  chordMap?: Record<string, string[]>;
+  playChord: (notes: string[]) => void;
 };
 
-export function PianoBase({ createSynth }: PianoBaseProps) {
+const defaultChordMap: Record<string, string[]> = {
+  Dmaj_4: ["D4", "A4", "F#5", "A5", "D6"],
+  Emin_4: ["E4", "B4", "G5", "B5", "E6"],
+  Gbmin_4: ["F#4", "C#5", "A5", "C#6", "F#6"],
+  Gmaj_4: ["G4", "D5", "B5", "D6", "G6"],
+  Amaj_4: ["A4", "E5", "C#6", "E6", "A6"],
+  Bmin_4: ["B4", "F#5", "D6", "F#6", "B6"],
+  Cdim_4: ["C#5", "G5", "E6", "G6", "C#7"],
+
+  Dmaj_5: ["D5", "A5", "F#6", "A6", "D7"],
+};
+
+export function PianoBase({ createSynth, chordMap = defaultChordMap }: PianoBaseProps) {
   const synthRef = useRef<Tone.Synth | Tone.DuoSynth | Tone.PolySynth | null>(null);
   const [activeNotes, setActiveNotes] = useState<string[]>([]);
   const [showChords, setShowChords] = useState(false);
@@ -35,18 +49,6 @@ export function PianoBase({ createSynth }: PianoBaseProps) {
     setActiveNotes(notes);
     notes.forEach(note => synthRef.current?.triggerAttackRelease(note, "2n"));
     setTimeout(() => setActiveNotes([]), 180);
-  };
-
-  const chordMap: Record<string, string[]> = {
-    Dmaj_4: ["D4", "A4", "F#5", "A5", "D6"],
-    Emin_4: ["E4", "B4", "G5", "B5", "E6"],
-    Abmin_4: ["F#4", "C#5", "A5", "C#6", "F#6"],
-    Gmaj_4: ["G4", "D5", "B5", "D6", "G6"],
-    Amaj_4: ["A4", "E5", "C#6", "E6", "A6"],
-    Bmin_4: ["B4", "F#5", "D6", "F#6", "B6"],
-    Cdim_4: ["C#5", "G5", "E6", "G6", "C#7"],
-
-    Dmaj_5: ["D5", "A5", "F#6", "A6", "D7"],
   };
 
   const playSequence = (notesOrName: string[] | string, delay = 200) => {
@@ -81,32 +83,31 @@ export function PianoBase({ createSynth }: PianoBaseProps) {
           <DropdownMenu.Sub>
             <DropdownMenu.SubTrigger>Play a D major Chord</DropdownMenu.SubTrigger>
             <DropdownMenu.SubContent>
-              <DropdownMenu.Item onClick={() => playSequence("Dmaj_4")} color='orange'>Play D major</DropdownMenu.Item>
-              <DropdownMenu.Item onClick={() => playSequence("Emin_4")} color='yellow'>Play E minor</DropdownMenu.Item>
-              <DropdownMenu.Item onClick={() => playSequence("Abmin_4")} color='green'>Play F# minor</DropdownMenu.Item>
-              <DropdownMenu.Item onClick={() => playSequence("Gmaj_4")} color='blue'>Play G major</DropdownMenu.Item>
-              <DropdownMenu.Item onClick={() => playSequence("Amaj_4")} color='indigo'>Play A major</DropdownMenu.Item>
-              <DropdownMenu.Item onClick={() => playSequence("Bmin_4")} color='purple'>Play B minor</DropdownMenu.Item>
-              <DropdownMenu.Item onClick={() => playSequence("Cdim_4")} color='red'>Play C diminished</DropdownMenu.Item>
-              <DropdownMenu.Item onClick={() => playSequence("Dmaj_5")} color='orange'>Play D maj</DropdownMenu.Item>
+              {Object.entries(chordMap).map(([chordName], i) => (
+                <DropdownMenu.Item
+                  key={chordName}
+                  onClick={() => playSequence(chordName)}
+                  color={["orange", "yellow", "green", "blue", "indigo", "purple", "red"][i % 7]}
+                >
+                  Play {chordName}
+                </DropdownMenu.Item>
+              ))}
             </DropdownMenu.SubContent>
           </DropdownMenu.Sub>
 
         </DropdownMenu.Content>
       </DropdownMenu.Root>
 
-      {showChords && (
-        <>
-          <Button onClick={() => playSequence("Dmaj_4")} variant='classic' color='orange'>Play D major</Button>
-          <Button onClick={() => playSequence("Emin_4")} variant='classic' color='yellow'>Play E minor</Button>
-          <Button onClick={() => playSequence("Abmin_4")} variant='classic' color='green'>Play F# minor</Button>
-          <Button onClick={() => playSequence("Gmaj_4")} variant='classic' color='blue'>Play G major</Button>
-          <Button onClick={() => playSequence("Amaj_4")} variant='classic' color='indigo'>Play A major</Button>
-          <Button onClick={() => playSequence("Bmin_4")} variant='classic' color='purple'>Play B minor</Button>
-          <Button onClick={() => playSequence("Cdim_4")} variant='classic' color='red'>Play C diminished</Button>
-          <Button onClick={() => playSequence("Dmaj_5")} variant='classic' color='orange'>Play D maj</Button>
-        </>
-      )}
+      {showChords && Object.entries(chordMap).map(([chordName], i) => (
+        <Button
+          key={chordName}
+          onClick={() => playSequence(chordName)}
+          variant="classic"
+          color={["orange", "yellow", "green", "blue", "indigo", "purple", "red"][i % 7]}
+        >
+          {chordName}
+        </Button>
+      ))}
 
       <div className="piano">
         <div className="white-keys">
