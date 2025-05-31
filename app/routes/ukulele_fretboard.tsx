@@ -1,31 +1,33 @@
 import type { Route } from "./+types/home";
-import UkuleleFretboard from "../ukulele-fretboard/ukulele-fretboard"
+import UkuleleFretboard from "../ukulele-fretboard/ukulele-fretboard";
+import './ukulele_fretboard.css'
 
 export function meta({ }: Route.MetaArgs) {
   return [
     { title: "Ukulele Fretboard" },
-    { name: "description", content: "" },
+    { name: "description", content: "Chord diagrams for ukulele" },
   ];
 }
 
+const chords = [
+  { name: "C", markers: [[4, 0], [3, 0], [2, 0], [1, 3]] },
+  { name: "Dm", markers: [[4, 2], [3, 2], [2, 1], [1, 0]] },
+  { name: "Em", markers: [[4, 0], [3, 4], [2, 3], [1, 2]] },
+  { name: "F", markers: [[4, 2], [3, 0], [2, 1], [1, 0]] },
+  { name: "G", markers: [[4, 0], [3, 2], [2, 3], [1, 2]] },
+  { name: "Am", markers: [[4, 2], [3, 0], [2, 0], [1, 0]] },
+  { name: "Bdim", markers: [[4, 4], [3, 2], [2, 2], [1, 2]] },
+];
+
 export default function UkuleleFretboardPage() {
-  return <>
-    <div style={{ width: '150px' }}>
-      cejilla traste 1
-      <UkuleleFretboard markers={[[4, 1], [3, 1], [2, 1], [1, 1]]} />
+  return (
+    <div>
+      {chords.map(({ name, markers }) => (
+        <div style={{width: '100px', display:'inline-block', padding: '10px'}}>
+          {name}
+          <UkuleleFretboard markers={markers} />
+        </div>
+      ))}
     </div>
-    
-    <div style={{ width: '250px' }}>
-      cuerdas sueltas: 
-      <UkuleleFretboard markers={[[4, 0], [3, 0], [2, 0], [1, 0]]} />
-    </div>
-
-    <div style={{ width: '550px' }}>
-      2da cuerda (E) en traste tres
-      <UkuleleFretboard markers={[[4, 0], [3, 0], [2, 3], [1, 0]]} />
-    </div>
-
-    4ta suelta, 3era 1er traste, 2da 2do traste, 1era en 3er traste.
-    <UkuleleFretboard markers={[[4, 0], [3, 1], [2, 2], [1, 3]]} />
-  </>;
+  );
 }
