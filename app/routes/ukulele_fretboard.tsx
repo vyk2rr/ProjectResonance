@@ -21,10 +21,10 @@ const chords = [
 
 export default function UkuleleFretboardPage() {
   return (
-    <div>
+    <div className="fretboard-list">
       {chords.map(({ name, markers }) => (
-        <div style={{width: '100px', display:'inline-block', padding: '10px'}}>
-          {name}
+        <div className="fretboard-item">
+         <span className="fretboard-label">{name}</span>
           <UkuleleFretboard markers={markers} />
         </div>
       ))}
