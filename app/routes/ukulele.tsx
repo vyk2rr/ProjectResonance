@@ -1,5 +1,5 @@
 import type { Route } from "./+types/home";
-import Ukulele from "../ukulele/ukulele";
+import Ukulele from "./../ukulele/ukulele";
 
 export function meta({}: Route.MetaArgs) {
   return [

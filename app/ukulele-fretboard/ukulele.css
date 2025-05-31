@@ -1,0 +1,78 @@
+.ukulele {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  
+  background: #f9f9f9;
+  border: 1px solid #ccc;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.fret-labels {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 10%; /* proporcional al contenedor */
+  padding-right: 5px;
+}
+
+.fret-label {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  font-size: 12px;
+  color: #333;
+}
+
+.fret-line {
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background-color: #aaa;
+  left: 0;
+  z-index: 2;
+}
+
+.strings {
+  position: relative;
+  flex: 1;
+}
+
+.string {
+  position: absolute;
+  height: 100%;
+  background-color: #333;
+  top: 0;
+}
+
+.string-4 {
+  width: 4px;
+  left: 20%;
+}
+
+.string-3 {
+  width: 3px;
+  left: 40%;
+}
+
+.string-2 {
+  width: 2px;
+  left: 60%;
+}
+
+.string-1 {
+  width: 1px;
+  left: 80%;
+}
+
+.marker {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background-color: red;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+}
