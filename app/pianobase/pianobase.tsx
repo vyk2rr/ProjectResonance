@@ -2,6 +2,7 @@ import './pianobase.css';
 import * as Tone from "tone";
 import React, { useState, useEffect, useRef } from "react";
 import { Button, DropdownMenu } from "@radix-ui/themes";
+import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 
 
 type PianoBaseProps = {
@@ -70,12 +71,11 @@ export function PianoBase({ createSynth, chordMap = defaultChordMap }: PianoBase
   };
 
   return (
-    <div>
-      <DropdownMenu.Root>
+    <div className="piano-base">
+      <DropdownMenu.Root >
         <DropdownMenu.Trigger>
-          <Button variant="classic" size="2">
-            Piano Options
-            <DropdownMenu.TriggerIcon />
+          <Button className="IconButton" aria-label="Customise options" variant='classic' color='jade' size='1' radius='full'>
+            <HamburgerMenuIcon />
           </Button>
         </DropdownMenu.Trigger>
         <DropdownMenu.Content>
