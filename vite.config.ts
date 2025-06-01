@@ -1,8 +1,15 @@
 import { reactRouter } from "@react-router/dev/vite";
-import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-export default defineConfig({
-  plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
+export default defineConfig(({ mode = 'development' } = {}) => {
+  const isStorybook = process.env.STORYBOOK === 'true';
+  
+  return {
+    plugins: [
+      // Only include reactRouter when not in Storybook
+      ...(!isStorybook ? [reactRouter()] : []),
+      tsconfigPaths(),
+    ],
+  };
 });
