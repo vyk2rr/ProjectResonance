@@ -19,11 +19,12 @@ export default function UkuleleFretboard({ markers = [] }) {
         ))}
 
         {Array.from({ length: fretCount }, (_, i) => (
-          <div
-            key={i}
-            className="fret-line"
-            style={{ top: `${(i + 0.5) * (100 / fretCount)}%` }}
-          />
+          <>
+            <div
+              className="fret-line"
+              style={{ top: `${(i) * (100 / fretCount)}%` }}
+            />
+          </>
         ))}
 
         {markers.map(([humanString, fret], i) => {
