@@ -5,6 +5,7 @@ export function PianoOption5() {
   return (
     <>
       <PianoBase
+        octaves={1}
         createSynth={() => {
           const synth = new Tone.FMSynth({
             harmonicity: 8,

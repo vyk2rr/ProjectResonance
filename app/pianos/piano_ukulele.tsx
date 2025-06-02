@@ -5,6 +5,7 @@ export function PianoUkulele() {
   return (
     <>
       <PianoBase
+        octaves={1}
         createSynth={() => {
           return new Tone.PluckSynth({
             attackNoise: 1.2, // más percusivo
