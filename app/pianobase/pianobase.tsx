@@ -4,11 +4,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { Button, DropdownMenu } from "@radix-ui/themes";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 
-
 type PianoBaseProps = {
   createSynth?: () => Tone.Synth | Tone.DuoSynth;
   chordMap?: Record<string, string[]>;
-  playChord: (notes: string[]) => void;
+  octaves?: 1 | 2 | 3 | 4 | 5;
 };
 
 const defaultChordMap: Record<string, string[]> = {
@@ -23,10 +22,42 @@ const defaultChordMap: Record<string, string[]> = {
   Dmaj_5: ["D5", "A5", "F#6", "A6", "D7"],
 };
 
-export function PianoBase({ createSynth, chordMap = defaultChordMap }: PianoBaseProps) {
+const generateNotes = function (octaves = 3, startOctave = 4) {
+  const whiteNotes = ["C", "D", "E", "F", "G", "A", "B"];
+  const blackNotes = ["C#", "D#", "", "F#", "G#", "A#", "", "C#", "D#", "", "F#", "G#", "A#"];
+
+  const white = [];
+  const black = [];
+
+  for (let i = 0; i < octaves; i++) {
+    const currentOctave = startOctave + i;
+    white.push(...whiteNotes.map(n => `${n}${currentOctave}`));
+    black.push(...["C#", "D#", "F#", "G#", "A#"].map(n => `${n}${currentOctave}`));
+  }
+
+  // Agrega la nota final del último do (ej. C6)
+  white.push(`C${startOctave + octaves}`);
+
+  return { white, black };
+}
+
+function getBlackKeyWidth(octaves: number): string {
+  if (octaves <= 1) return "7%";
+  if (octaves === 2) return "4%";
+  if (octaves === 3) return "3%";
+  if (octaves === 4) return "2%";
+  return "1.4%";
+}
+
+export function PianoBase({
+  createSynth,
+  chordMap = defaultChordMap,
+  octaves = 3
+}: PianoBaseProps) {
   const synthRef = useRef<Tone.Synth | Tone.DuoSynth | Tone.PolySynth | null>(null);
   const [activeNotes, setActiveNotes] = useState<string[]>([]);
   const [showChords, setShowChords] = useState(false);
+  const { white, black } = generateNotes(octaves);
 
   useEffect(() => {
     const synth = createSynth
@@ -70,6 +101,30 @@ export function PianoBase({ createSynth, chordMap = defaultChordMap }: PianoBase
     setTimeout(() => setActiveNotes([]), notes.length * delay + 180);
   };
 
+  const getBlackKeyLeft = (note: string, whiteNotes: string[]) => {
+    const blackToWhiteBefore: Record<string, string> = {
+      "C#": "C",
+      "D#": "D",
+      "F#": "F",
+      "G#": "G",
+      "A#": "A",
+    };
+
+    const match = note.match(/^([A-G]#)(\d)$/);
+    if (!match) return "0%";
+
+    const [_, pitchClass, octave] = match;
+    const whiteBefore = `${blackToWhiteBefore[pitchClass]}${octave}`;
+    const whiteIndex = whiteNotes.indexOf(whiteBefore);
+
+    if (whiteIndex === -1) return "0%";
+
+    const whiteKeyWidth = 100 / whiteNotes.length;
+    const left = (whiteIndex + 1) * whiteKeyWidth;
+
+    return `${left}%`; // ya está centrado por transform: translateX(-50%)
+  };
+
   return (
     <div className="piano-base">
       {Object.keys(chordMap).length > 0 && (<DropdownMenu.Root >
@@ -111,10 +166,7 @@ export function PianoBase({ createSynth, chordMap = defaultChordMap }: PianoBase
 
       <div className="piano">
         <div className="white-keys">
-          {[
-            "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5",
-            "D5", "E5", "F5", "G5", "A5", "B5", "C6", "D6"
-          ].map(note => (
+          {white.map(note => (
             <div
               key={note}
               className={`white-key${activeNotes.includes(note) ? " active-key" : ""}`}
@@ -124,17 +176,17 @@ export function PianoBase({ createSynth, chordMap = defaultChordMap }: PianoBase
           ))}
         </div>
         <div className="black-keys">
-          {[
-            "C#4", "D#4", "F#4", "G#4", "A#4",
-            "C#5", "D#5", "F#5", "G#5", "A#5",
-            "C#6"
-          ].map(note => (
+          {black.map(note => (
             <div
               key={note}
               className={`black-key${activeNotes.includes(note) ? " active-key" : ""}`}
+              style={{
+                pointerEvents: "auto",
+                left: getBlackKeyLeft(note, white),
+                width: getBlackKeyWidth(octaves)
+              }}
               data-note={note}
               onClick={() => playNote(note)}
-              style={{ pointerEvents: "auto" }}
             />
           ))}
         </div>

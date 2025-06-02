@@ -5,6 +5,7 @@ export function PianoOption8() {
   return (
     <>
       <PianoBase
+        octaves={1}
         createSynth={() => {
           //  metálico pulsante
 

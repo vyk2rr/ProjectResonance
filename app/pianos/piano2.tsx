@@ -5,6 +5,7 @@ export function PianoOption2() {
   return (
     <>
       <PianoBase
+        octaves={1}
         createSynth={() => {
           const synth = new Tone.DuoSynth({
             vibratoAmount: 0.7,

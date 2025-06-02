@@ -4,7 +4,7 @@ import { PianoBase } from "../pianobase/pianobase";
 export function PianoOption6() {
   return (
     <>
-      <PianoBase
+      <PianoBase 
         createSynth={() => {
           // Synth melódico tipo campanilla de madera
           const synth = new Tone.Synth({
