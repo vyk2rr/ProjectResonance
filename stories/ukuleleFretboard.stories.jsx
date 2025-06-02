@@ -35,3 +35,9 @@ export const with4MarkersBmajChord = Template.bind({});
 with4MarkersBmajChord.args = {
   markers: ["B4", "D4", "F#4", "B4"]
 };
+
+export const withActiveTrue = Template.bind({});
+withActiveTrue.args = {
+  markers: ["B4", "D4", "F#4", "B4"],
+  active: true
+};

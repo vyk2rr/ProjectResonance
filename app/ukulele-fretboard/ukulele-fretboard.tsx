@@ -20,7 +20,7 @@ function findNotePosition(note) {
   return null;
 }
 
-export default function UkuleleFretboard({ markers = [] }) {
+export default function UkuleleFretboard({ markers = [], active = false }) {
   const fretCount = 5;
   const stringCount = 4;
 
@@ -62,7 +62,7 @@ export default function UkuleleFretboard({ markers = [] }) {
           return (
             <div
               key={i}
-              className="marker"
+              className={`marker ${active ? "marker-active" : ""}`}
               style={{
                 left: `${20 * string}%`,
                 top: `${(fret - 0.5) * (100 / fretCount)}%`,
