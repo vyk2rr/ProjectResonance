@@ -72,7 +72,7 @@ export function PianoBase({ createSynth, chordMap = defaultChordMap }: PianoBase
 
   return (
     <div className="piano-base">
-      <DropdownMenu.Root >
+      {Object.keys(chordMap).length > 0 && (<DropdownMenu.Root >
         <DropdownMenu.Trigger>
           <Button className="IconButton" aria-label="Customise options" variant='classic' color='jade' size='1' radius='full'>
             <HamburgerMenuIcon />
@@ -96,7 +96,7 @@ export function PianoBase({ createSynth, chordMap = defaultChordMap }: PianoBase
           </DropdownMenu.Sub>
 
         </DropdownMenu.Content>
-      </DropdownMenu.Root>
+      </DropdownMenu.Root>)}
 
       {showChords && Object.entries(chordMap).map(([chordName], i) => (
         <Button
