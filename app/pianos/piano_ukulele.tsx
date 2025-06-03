@@ -1,7 +1,8 @@
 import * as Tone from "tone";
-import { PianoBase } from "../pianobase/pianobase";
+import PianoBase from "../pianobase/pianobase";
+import type { PianoBaseProps, chordMapType } from "../pianobase/pianobase.types";
 
-export function PianoUkulele() {
+export function PianoUkulele({ chordMap, octaves = 1 }: PianoBaseProps) {
   return (
     <>
       <PianoBase

@@ -3,14 +3,9 @@ import * as Tone from "tone";
 import React, { useState, useEffect, useRef } from "react";
 import { Button, DropdownMenu } from "@radix-ui/themes";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
+import type { PianoBaseProps, chordMapType, OctaveRangeType } from "./pianobase.types";
 
-type PianoBaseProps = {
-  createSynth?: () => Tone.Synth | Tone.DuoSynth;
-  chordMap?: Record<string, string[]>;
-  octaves?: 1 | 2 | 3 | 4 | 5;
-};
-
-const defaultChordMap: Record<string, string[]> = {
+const defaultChordMap: chordMapType = {
   Dmaj_4: ["D4", "A4", "F#5", "A5", "D6"],
   Emin_4: ["E4", "B4", "G5", "B5", "E6"],
   Gbmin_4: ["F#4", "C#5", "A5", "C#6", "F#6"],
@@ -22,16 +17,13 @@ const defaultChordMap: Record<string, string[]> = {
   Dmaj_5: ["D5", "A5", "F#6", "A6", "D7"],
 };
 
-const generateNotes = function (octaves = 3, startOctave = 4) {
-  const whiteNotes = ["C", "D", "E", "F", "G", "A", "B"];
-  const blackNotes = ["C#", "D#", "", "F#", "G#", "A#", "", "C#", "D#", "", "F#", "G#", "A#"];
-
+const generateNotes = function (octaves: OctaveRangeType = 3, startOctave: OctaveRangeType = 4) {
   const white = [];
   const black = [];
 
   for (let i = 0; i < octaves; i++) {
     const currentOctave = startOctave + i;
-    white.push(...whiteNotes.map(n => `${n}${currentOctave}`));
+    white.push(...["C", "D", "E", "F", "G", "A", "B"].map(n => `${n}${currentOctave}`));
     black.push(...["C#", "D#", "F#", "G#", "A#"].map(n => `${n}${currentOctave}`));
   }
 
@@ -41,7 +33,7 @@ const generateNotes = function (octaves = 3, startOctave = 4) {
   return { white, black };
 }
 
-function getBlackKeyWidth(octaves: number): string {
+function getBlackKeyWidth(octaves: OctaveRangeType): string {
   if (octaves <= 1) return "7%";
   if (octaves === 2) return "4%";
   if (octaves === 3) return "3%";
@@ -49,7 +41,7 @@ function getBlackKeyWidth(octaves: number): string {
   return "1.4%";
 }
 
-export function PianoBase({
+export default function PianoBase({
   createSynth,
   chordMap = defaultChordMap,
   octaves = 3

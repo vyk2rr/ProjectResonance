@@ -1,6 +1,6 @@
 import React from 'react'
 import { Theme } from '@radix-ui/themes';
-import {PianoBase} from "../app/pianobase/PianoBase";
+import PianoBase from "../app/pianobase/PianoBase";
 import '@radix-ui/themes/styles.css';
 
 export default {
@@ -38,4 +38,26 @@ with3Chords.args = {
     Dmin: ["D4", "F4", "A4"],
     G7: ["G3", "B3", "D4", "F4"],
   },
+};
+
+export const with1Octave = Template.bind({});
+with1Octave.args = {
+  octaves: 1,
+};
+
+export const with2Octave = Template.bind({});
+with2Octave.args = {
+  octaves: 2,
+};
+export const with3Octave = Template.bind({});
+with3Octave.args = {
+  octaves: 3,
+};
+export const with4Octave = Template.bind({});
+with4Octave.args = {
+  octaves: 4,
+};
+export const with5Octave = Template.bind({});
+with5Octave.args = {
+  octaves: 5,
 };
