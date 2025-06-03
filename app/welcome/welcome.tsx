@@ -12,10 +12,11 @@ import { PianoUkulele } from '../pianos/PianoUkulele';
 export function Welcome() {
   return (
     <main>
-      <PianoUkulele />
-
       <span>Piano base</span>
       <PianoBase />
+
+      <span>Piano ukulele</span>
+      <PianoUkulele />
 
       {/* <span>Piano1: etéreo con timbre de cuerdas suaves y ambiente envolvente</span>
       <PianoOption1 /> */}
@@ -27,7 +28,7 @@ export function Welcome() {
       <PianoOption3 /> */}
 
       <span>Piano tipo cuenco de cristal: etéreo y resonante</span>
-      <PianoOption5 />
+      <PianoOption5 octaves={5} />
 
       <span>Piano6: crujiente como pisando hojas secas en otoño</span>
       <PianoOption6 />
