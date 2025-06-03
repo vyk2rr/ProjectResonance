@@ -2,6 +2,9 @@ import React from 'react'
 import { Theme } from '@radix-ui/themes';
 import PianoBase from "../app/pianobase/PianoBase";
 import '@radix-ui/themes/styles.css';
+// import type { StoryObj } from '@storybook/react'
+
+// type Story = StoryObj<typeof PianoBase>;
 
 export default {
   title: "Components/PianoBase",
@@ -49,15 +52,44 @@ export const with2Octave = Template.bind({});
 with2Octave.args = {
   octaves: 2,
 };
+
 export const with3Octave = Template.bind({});
 with3Octave.args = {
   octaves: 3,
 };
+
 export const with4Octave = Template.bind({});
 with4Octave.args = {
   octaves: 4,
 };
+
 export const with5Octave = Template.bind({});
 with5Octave.args = {
   octaves: 5,
 };
+
+
+
+
+// export const FilledForm: Story = {
+//   play: async ({ canvas, userEvent }) => {
+//     // const emailInput = canvas.getByLabelText('email', {
+//     //   selector: 'input',
+//     // });
+
+//     // await userEvent.type(emailInput, 'example-email@email.com', {
+//     //   delay: 100,
+//     // });
+
+//     // const passwordInput = canvas.getByLabelText('password', {
+//     //   selector: 'input',
+//     // });
+
+//     // await userEvent.type(passwordInput, 'ExamplePassword', {
+//     //   delay: 100,
+//     // });
+
+//     // const submitButton = canvas.getByRole('button');
+//     // await userEvent.click(submitButton);
+//   },
+// };

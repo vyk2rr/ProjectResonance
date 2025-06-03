@@ -1,9 +1,10 @@
-import './pianobase.css';
 import * as Tone from "tone";
 import React, { useState, useEffect, useRef } from "react";
 import { Button, DropdownMenu } from "@radix-ui/themes";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
-import type { PianoBaseProps, chordMapType, OctaveRangeType } from "./pianobase.types";
+import type { PianoBaseProps, chordMapType, OctaveRangeType } from "./PianoBase.types";
+
+import './PianoBase.css';
 
 const defaultChordMap: chordMapType = {
   Dmaj_4: ["D4", "A4", "F#5", "A5", "D6"],

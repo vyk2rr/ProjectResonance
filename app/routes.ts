@@ -1,8 +1,8 @@
 import { type RouteConfig, index, route } from "@react-router/dev/routes";
 
 export default [
-  index("routes/home.tsx"),
-  route("ukulele", "routes/ukulele.tsx"),
-  route("ukulele_chords", "routes/ukulele_chords.tsx"),
+  index("routes/Home.tsx"),
+  route("ukulele", "routes/UkulelePage.tsx"),
+  route("ukulele_chords", "routes/UkuleleChordsHomePage.tsx"),
 ] satisfies RouteConfig;
 
