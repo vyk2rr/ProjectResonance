@@ -1,6 +1,6 @@
 import React from 'react'
 import { Theme } from '@radix-ui/themes';
-import {PianoOption1} from "../app/pianos/piano1";
+import {PianoOption1} from "../app/pianos/PianoOption1";
 
 export default {
   title: "Components/PianoOption1",
@@ -16,7 +16,7 @@ export default {
 
 const Template = (args) => <PianoOption1 {...args} />;
 
-export const SinAcordes = Template.bind({});
-SinAcordes.args = {
+export const withoutChords = Template.bind({});
+withoutChords.args = {
   chordMap: {}, // sin acordes
 };

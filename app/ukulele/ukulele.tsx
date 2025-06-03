@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import * as Tone from "tone";
 import { Button, Slider, Heading, Box, Card } from "@radix-ui/themes";
 import { PianoUkulele } from "../pianos/PianoUkulele";
-import UkuleleFretboard from "../ukulele-fretboard/UkuleleFretboard"
+import UkuleleFretboard from "../UkuleleFretboard/UkuleleFretboard"
 
 export default function Ukulele() {
   const synthRef = useRef<Tone.PluckSynth | null>(null);
