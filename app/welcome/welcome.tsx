@@ -1,12 +1,12 @@
-import { PianoBase } from '../pianobase/pianobase';
-import { PianoOption1 } from '../pianos/piano1';
-import { PianoOption2 } from '../pianos/piano2';
-import { PianoOption3 } from '../pianos/piano3';
-import { PianoOption5 } from '../pianos/piano5';
-import { PianoOption6 } from '../pianos/piano6';
-import { PianoOption7 } from '../pianos/piano7';
-import { PianoOption8 } from '../pianos/piano8';
-import { PianoUkulele } from '../pianos/piano_ukulele';
+import PianoBase from '../pianobase/PianoBase';
+import { PianoOption1 } from '../pianos/PianoOption1';
+import { PianoOption2 } from '../pianos/PianoOption2';
+import { PianoOption3 } from '../pianos/PianoOption3';
+import { PianoOption5 } from '../pianos/PianoOption5';
+import { PianoOption6 } from '../pianos/PianoOption6';
+import { PianoOption7 } from '../pianos/PianoOption7';
+import { PianoOption8 } from '../pianos/PianoOption8';
+import { PianoUkulele } from '../pianos/PianoUkulele';
 
 
 export function Welcome() {

@@ -1,5 +1,5 @@
 import React from 'react';
-import './ukulele.css';
+import './UkuleleFretboard.css';
 
 // Notas por cuerda desde el traste 0 hasta el 4
 const fretboardNotes = {

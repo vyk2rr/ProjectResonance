@@ -1,6 +1,6 @@
 import type { Route } from "./+types/home";
-import UkuleleFretboard from "../ukulele-fretboard/ukulele-fretboard";
-import './ukulele_chords.css'
+import UkuleleFretboard from "../ukulele-fretboard/UkuleleFretboard";
+import './UkuleleChordsHomePage.css'
 
 export function meta({ }: Route.MetaArgs) {
   return [

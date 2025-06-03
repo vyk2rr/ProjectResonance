@@ -8,7 +8,7 @@ export default {
   decorators: [
     (Story) => (
       <div style={{ width: "150px" }}>
-        <Story />
+        <Story></Story>
       </div>
     ),
   ]

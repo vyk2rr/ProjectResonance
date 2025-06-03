@@ -1,6 +1,6 @@
 import * as Tone from "tone";
-import PianoBase from "../pianobase/pianobase";
-import type { PianoBaseProps } from "../pianobase/pianobase.types";
+import PianoBase from "../pianobase/PianoBase";
+import type { PianoBaseProps } from "../pianobase/PianoBase.types";
 
 export function PianoOption7({ chordMap, octaves = 1 }: PianoBaseProps) {
   return (
