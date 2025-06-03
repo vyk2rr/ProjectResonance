@@ -1,10 +1,13 @@
 import * as Tone from "tone";
-import { PianoBase } from "../pianobase/pianobase";
+import PianoBase from "../pianobase/pianobase";
+import type { PianoBaseProps } from "../pianobase/pianobase.types";
 
-export function PianoOption8() {
+export function PianoOption8({ chordMap, octaves = 1 }: PianoBaseProps) {
   return (
     <>
       <PianoBase
+        chordMap={chordMap}
+        octaves={octaves}
         octaves={1}
         createSynth={() => {
           //  metálico pulsante

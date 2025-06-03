@@ -1,10 +1,13 @@
 import * as Tone from "tone";
-import { PianoBase } from "../pianobase/pianobase";
+import PianoBase from "../pianobase/pianobase";
+import type { PianoBaseProps } from "../pianobase/pianobase.types";
 
-export function PianoOption7() {
+export function PianoOption7({ chordMap, octaves = 1 }: PianoBaseProps) {
   return (
     <>
       <PianoBase
+        chordMap={chordMap}
+        octaves={octaves}
         createSynth={() => {
           // PolySynth para varias voces
           const synth = new Tone.PolySynth(Tone.Synth, {

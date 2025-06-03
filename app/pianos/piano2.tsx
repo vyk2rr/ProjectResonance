@@ -1,11 +1,13 @@
 import * as Tone from "tone";
-import { PianoBase } from "../pianobase/pianobase";
+import PianoBase from "../pianobase/pianobase";
+import type { PianoBaseProps } from "../pianobase/pianobase.types";
 
-export function PianoOption2() {
+export function PianoOption2({ chordMap, octaves = 1 }: PianoBaseProps) {
   return (
     <>
       <PianoBase
-        octaves={1}
+        chordMap={chordMap}
+        octaves={octaves}
         createSynth={() => {
           const synth = new Tone.DuoSynth({
             vibratoAmount: 0.7,
