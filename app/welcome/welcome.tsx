@@ -1,4 +1,4 @@
-import PianoBase from '../pianobase/PianoBase';
+import PianoBase from '../PianoBase/pianobase';
 import { PianoOption1 } from '../pianos/PianoOption1';
 import { PianoOption2 } from '../pianos/PianoOption2';
 import { PianoOption3 } from '../pianos/PianoOption3';

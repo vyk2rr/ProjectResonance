@@ -1,6 +1,6 @@
 import React from 'react'
 import { Theme } from '@radix-ui/themes';
-import PianoBase from "../app/pianobase/PianoBase";
+import PianoBase from "../app/PianoBase/pianobase";
 import '@radix-ui/themes/styles.css';
 // import type { StoryObj } from '@storybook/react'
 
@@ -48,23 +48,23 @@ with1Octave.args = {
   octaves: 1,
 };
 
-export const with2Octave = Template.bind({});
-with2Octave.args = {
+export const with2Octaves = Template.bind({});
+with2Octaves.args = {
   octaves: 2,
 };
 
-export const with3Octave = Template.bind({});
-with3Octave.args = {
+export const with3Octaves = Template.bind({});
+with3Octaves.args = {
   octaves: 3,
 };
 
-export const with4Octave = Template.bind({});
-with4Octave.args = {
+export const with4Octaves = Template.bind({});
+with4Octaves.args = {
   octaves: 4,
 };
 
-export const with5Octave = Template.bind({});
-with5Octave.args = {
+export const with5Octaves = Template.bind({});
+with5Octaves.args = {
   octaves: 5,
 };
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Theme } from '@radix-ui/themes';
-import UkuleleFretboard from "../app/ukulele-fretboard/ukulele-fretboard";
+import UkuleleFretboard from "../app/UkuleleFretboard/UkuleleFretboard";
 
 export default {
   title: "Components/UkuleleFretboard",
