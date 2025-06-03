@@ -6,7 +6,8 @@ export function PianoUkulele({ chordMap, octaves = 1 }: PianoBaseProps) {
   return (
     <>
       <PianoBase
-        octaves={1}
+        chordMap={chordMap}
+        octaves={octaves}
         createSynth={() => {
           return new Tone.PluckSynth({
             attackNoise: 1.2, // más percusivo

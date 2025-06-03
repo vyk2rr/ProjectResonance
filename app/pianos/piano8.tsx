@@ -8,7 +8,6 @@ export function PianoOption8({ chordMap, octaves = 1 }: PianoBaseProps) {
       <PianoBase
         chordMap={chordMap}
         octaves={octaves}
-        octaves={1}
         createSynth={() => {
           //  metálico pulsante
 

@@ -6,8 +6,8 @@ export function PianoOption1({ chordMap, octaves = 1 }: PianoBaseProps) {
   return (
     <>
       <PianoBase
-        octaves={octaves}
         chordMap={chordMap}
+        octaves={octaves}
         createSynth={() => {
           const synth = new Tone.DuoSynth({
             vibratoAmount: 0.1,
