@@ -1,0 +1,9 @@
+.chord-button.selected {
+  background: #ffe082 !important;
+  box-shadow: 0 0 10px #ffd54f;
+}
+
+.note-name {
+  display: flex;
+  flex-direction: column;
+} 

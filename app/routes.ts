@@ -4,5 +4,6 @@ export default [
   index("routes/Home.tsx"),
   route("ukulele", "routes/UkulelePage.tsx"),
   route("ukulele_chords", "routes/UkuleleChordsHomePage.tsx"),
+  route("chords-helper", "routes/ChordsHelperPage.tsx"),
 ] satisfies RouteConfig;
 
