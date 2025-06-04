@@ -98,12 +98,30 @@ function createDefaultSynth() {
 export default function PianoBase({
   createSynth,
   chordMap = defaultChordMap,
-  octaves = 3
+  octaves = 3,
+  showChordOnThePiano
 }: PianoBaseProps) {
   const synthRef = useRef<Tone.Synth | Tone.DuoSynth | Tone.PolySynth | null>(null);
   const [activeNotes, setActiveNotes] = useState<string[]>([]);
+  const [highlightedKeys, setHighlightedKeys] = useState<string[]>([]);
   const [showChords, setShowChords] = useState(false);
   const { white, black } = generateNotes(octaves);
+
+  const sharpToFlatMap: Record<string, string> = {
+    "C#": "Db",
+    "D#": "Eb",
+    "F#": "Gb",
+    "G#": "Ab",
+    "A#": "Bb"
+  };
+
+  const getAlternativeNotation = (note: string): string => {
+    const [, noteName, octave] = note.match(/([A-G]#)(\d)/) || [];
+    if (noteName && sharpToFlatMap[noteName]) {
+      return `${sharpToFlatMap[noteName]}${octave}`;
+    }
+    return "";
+  };
 
   useEffect(() => {
     const synth = createSynth
@@ -117,6 +135,13 @@ export default function PianoBase({
       synthRef.current = null;
     };
   }, [createSynth]);
+
+  useEffect(() => {
+    if (showChordOnThePiano && showChordOnThePiano.length > 0) {
+      setHighlightedKeys(showChordOnThePiano);
+      playChord(showChordOnThePiano);
+    }
+  }, [showChordOnThePiano]);
 
   const playNote = (note: string) => {
     setActiveNotes([note]);
@@ -216,17 +241,17 @@ export default function PianoBase({
           {white.map(note => (
             <div
               key={note}
-              className={`white-key${activeNotes.includes(note) ? " active-key" : ""}`}
+              className={`white-key${activeNotes.includes(note) || highlightedKeys.includes(note) ? " active-key" : ""}`}
               data-note={note}
               onClick={() => playNote(note)}
-            />
+            >{highlightedKeys.includes(note) && <span className="note-name">{note}</span>}</div>
           ))}
         </div>
         <div className="black-keys">
           {black.map(note => (
             <div
               key={note}
-              className={`black-key${activeNotes.includes(note) ? " active-key" : ""}`}
+              className={`black-key${activeNotes.includes(note) || highlightedKeys.includes(note) ? " active-key" : ""}`}
               style={{
                 pointerEvents: "auto",
                 left: getBlackKeyLeft(note, white),
@@ -234,7 +259,11 @@ export default function PianoBase({
               }}
               data-note={note}
               onClick={() => playNote(note)}
-            />
+            >{highlightedKeys.includes(note) && <span className="note-name">
+              <span className="flat-notation">{getAlternativeNotation(note)}</span>
+              <span className="sharp-notation">{note}</span>
+            </span>
+              }</div>
           ))}
         </div>
       </div>
