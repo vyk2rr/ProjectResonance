@@ -1,5 +1,4 @@
 import * as Tone from "tone";
-
 export type OctaveRangeType = 1 | 2 | 3 | 4 | 5;
 export type chordMapType = Record<string, string[]>;
 
