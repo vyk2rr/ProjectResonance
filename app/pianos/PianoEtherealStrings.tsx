@@ -2,9 +2,14 @@ import * as Tone from "tone";
 import PianoBase from "../PianoBase/pianobase";
 import type { PianoBaseProps } from "../PianoBase/PianoBase.types";
 
-export function PianoOption1({ chordMap, octaves = 1 }: PianoBaseProps) {
+type PianoEtherealStringsProps = PianoBaseProps & {
+  showDescription: boolean;
+};
+
+export function PianoEtherealStrings({ chordMap, octaves = 1, showDescription = false }: PianoEtherealStringsProps) {
   return (
     <>
+      {showDescription ? <span>Piano etéreo con timbre de cuerdas suaves y ambiente envolvente</span> : null}
       <PianoBase
         chordMap={chordMap}
         octaves={octaves}

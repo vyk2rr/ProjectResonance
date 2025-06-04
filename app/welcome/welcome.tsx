@@ -1,5 +1,5 @@
 import PianoBase from '../PianoBase/pianobase';
-import { PianoOption1 } from '../pianos/PianoOption1';
+import { PianoEtherealStrings } from '../pianos/PianoEtherealStrings';
 import { PianoOption2 } from '../pianos/PianoOption2';
 import { PianoOption3 } from '../pianos/PianoOption3';
 import { PianoOption5 } from '../pianos/PianoOption5';
@@ -18,8 +18,8 @@ export function Welcome() {
       <span>Piano ukulele</span>
       <PianoUkulele />
 
-      {/* <span>Piano1: etéreo con timbre de cuerdas suaves y ambiente envolvente</span>
-      <PianoOption1 /> */}
+      <span>Piano1: etéreo con timbre de cuerdas suaves y ambiente envolvente</span>
+      <PianoEtherealStrings /> 
 
       {/* <span>Piano2: espacial con eco y profundidad envolvente</span>
       <PianoOption2 /> */}
