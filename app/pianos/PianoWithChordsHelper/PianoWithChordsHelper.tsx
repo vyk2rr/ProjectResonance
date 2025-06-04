@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import PianoBase from "../../PianoBase/PianoBase";
-import type { PianoBaseProps } from "../../PianoBase/PianoBase.types";
+import type { PianoBaseProps, OctaveRangeType } from "../../PianoBase/PianoBase.types";
 import "./PianoWithChordsHelper.css";
 
 type PianoWithChordsHelperProps = PianoBaseProps & {
-  chord: string[];
+  chord: string[],
+  octaves: OctaveRangeType
 }
 
-export default function PianoWithChordsHelper({ chord }: PianoWithChordsHelperProps) {
+export default function PianoWithChordsHelper({ chord, octaves = 2}: PianoWithChordsHelperProps) {
   const [currentChord, setCurrentChord] = useState<string[]>([]);
   const [currentNote, setCurrentNote] = useState<string>("");
   const [selectedChordId, setSelectedChordId] = useState<string>("");
@@ -47,7 +48,7 @@ export default function PianoWithChordsHelper({ chord }: PianoWithChordsHelperPr
 
   return (
     <>
-      <PianoBase showChordOnThePiano={currentChord} />
+      <PianoBase octaves={octaves} showChordOnThePiano={currentChord} />
 
       <ul className="chord-list">
         {chords.map(chord => (

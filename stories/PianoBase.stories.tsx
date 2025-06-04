@@ -68,6 +68,12 @@ with5Octaves.args = {
   octaves: 5,
 };
 
+export const withDmajHighlightedOnThePiano = Template.bind({});
+withDmajHighlightedOnThePiano.args = {
+  octaves: 1,
+  showChordOnThePiano: ["D4", "F#4", "A4"],
+};
+
 
 
 
