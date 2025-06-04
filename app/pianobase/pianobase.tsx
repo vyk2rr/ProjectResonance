@@ -42,6 +42,59 @@ function getBlackKeyWidth(octaves: OctaveRangeType): string {
   return "1.4%";
 }
 
+function createDefaultSynth() {
+  // Sintetizador principal para el tono del piano
+  const synth = new Tone.PolySynth(Tone.Synth, {
+    volume: -8,
+    envelope: {
+      attack: 0.002,    // Ataque muy rápido para el golpe de martillo
+      decay: 0.5,       // Decay moderado
+      sustain: 0.15,    // Sustain bajo para simular las cuerdas del piano
+      release: 1.5      // Release largo para la resonancia natural
+    },
+    oscillator: {
+      type: "sine"      // Onda sinusoidal para un tono más puro
+    }
+  });
+
+  // Filtro para dar forma al sonido del piano
+  const filter = new Tone.Filter({
+    type: "lowpass",
+    frequency: 5000,    // Frecuencia de corte alta para mantener brillo
+    Q: 1               // Resonancia suave
+  });
+
+  // Compressor para controlar la dinámica
+  const compressor = new Tone.Compressor({
+    threshold: -20,
+    ratio: 3,
+    attack: 0.003,
+    release: 0.25
+  });
+
+  // Reverb sutil para simular la caja de resonancia del piano
+  const reverb = new Tone.Reverb({
+    decay: 1.5,        // Decay moderado
+    wet: 0.2          // Mezcla sutil
+  }).toDestination();
+
+  // Conectamos la cadena de efectos
+  synth.chain(filter, compressor, reverb);
+
+  // Retornamos un objeto compatible con la interfaz esperada
+  return {
+    triggerAttackRelease(note: string, duration: string | number) {
+      synth.triggerAttackRelease(note, duration);
+    },
+    dispose() {
+      synth.dispose();
+      filter.dispose();
+      compressor.dispose();
+      reverb.dispose();
+    }
+  } as unknown as Tone.PolySynth;
+}
+
 export default function PianoBase({
   createSynth,
   chordMap = defaultChordMap,
@@ -55,8 +108,9 @@ export default function PianoBase({
   useEffect(() => {
     const synth = createSynth
       ? createSynth()
-      : new Tone.PolySynth(Tone.Synth).toDestination();
-    synthRef.current = synth;
+      : createDefaultSynth();
+
+    synthRef.current = synth;  // Asignar el sintetizador al ref
 
     return () => {
       synth.dispose();
