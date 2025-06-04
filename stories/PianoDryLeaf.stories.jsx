@@ -1,10 +1,10 @@
 import React from 'react'
 import { Theme } from '@radix-ui/themes';
-import {PianoOption6} from "../app/pianos/PianoOption6";
+import {PianoDryLeaf} from "../app/pianos/PianoDryLeaf";
 
 export default {
-  title: "Components/PianoOption6",
-  component: PianoOption6,
+  title: "Components/PianoDryLeaf",
+  component: PianoDryLeaf,
   decorators: [
     (Story) => (
       <Theme>
@@ -14,7 +14,7 @@ export default {
   ]
 };
 
-const Template = (args) => <PianoOption6 {...args} />;
+const Template = (args) => <PianoDryLeaf {...args} />;
 
 export const withoutChords = Template.bind({});
 withoutChords.args = {

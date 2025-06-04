@@ -2,9 +2,14 @@ import * as Tone from "tone";
 import PianoBase from "../PianoBase/pianobase";
 import type { PianoBaseProps } from "../PianoBase/PianoBase.types";
 
-export function PianoOption8({ chordMap, octaves = 1 }: PianoBaseProps) {
+type PianoMetalicoLaserProps = PianoBaseProps & {
+  showDescription: boolean;
+};  
+
+export function PianoMetalicoLaser({ chordMap, octaves = 1, showDescription = false }: PianoMetalicoLaserProps) {
   return (
     <>
+      {showDescription?<span>Piano metálico tipo laser</span>:null}
       <PianoBase
         chordMap={chordMap}
         octaves={octaves}

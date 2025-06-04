@@ -2,9 +2,14 @@ import * as Tone from "tone";
 import PianoBase from "../PianoBase/pianobase";
 import type { PianoBaseProps } from "../PianoBase/PianoBase.types";
 
-export function PianoOption6({ chordMap, octaves = 1 }: PianoBaseProps) {
+type PianoDryLeafProps = PianoBaseProps & {
+  showDescription: boolean;
+};
+
+export function PianoDryLeaf({ chordMap, octaves = 1, showDescription = false }: PianoDryLeafProps) {
   return (
     <>
+      {showDescription?<span>Piano crujiente como pisando hojas secas en otoño</span>:null}
       <PianoBase 
         chordMap={chordMap}
         octaves={octaves}
