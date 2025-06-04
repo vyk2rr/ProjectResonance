@@ -1,7 +1,5 @@
 import PianoBase from '../PianoBase/pianobase';
 import { PianoEtherealStrings } from '../pianos/PianoEtherealStrings';
-import { PianoEchoSpatial } from '../pianos/PianoEchoSpatial';
-import { PianoOption3 } from '../pianos/PianoOption3';
 import { PianoOption5 } from '../pianos/PianoOption5';
 import { PianoOption6 } from '../pianos/PianoOption6';
 import { PianoOption7 } from '../pianos/PianoOption7';
@@ -18,14 +16,7 @@ export function Welcome() {
       <span>Piano ukulele</span>
       <PianoUkulele />
 
-
-      <PianoEtherealStrings />
-
-      {/* <span>Piano2: espacial con eco y profundidad envolvente</span>
-      <PianoOption2 /> */}
-
-      {/* <span>Piano3 digital brillante y espacial, con carácter retro y profundidad.</span>
-      <PianoOption3 /> */}
+      <PianoEtherealStrings showDescription />
 
       <span>Piano tipo cuenco de cristal: etéreo y resonante</span>
       <PianoOption5 octaves={5} />

@@ -2,7 +2,7 @@ import * as Tone from "tone";
 import PianoBase from "../PianoBase/pianobase";
 import type { PianoBaseProps } from "../PianoBase/PianoBase.types";
 
-export function PianoOption3({ chordMap, octaves = 1 }: PianoBaseProps) {
+export function PianoRetroPulse({ chordMap, octaves = 1 }: PianoBaseProps) {
   return (
     <>
       <PianoBase
