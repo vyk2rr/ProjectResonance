@@ -6,7 +6,7 @@ type PianoDryLeafProps = PianoBaseProps & {
   showDescription: boolean;
 };
 
-export function PianoDryLeaf({ chordMap, octaves = 1, showDescription = false }: PianoDryLeafProps) {
+export function PianoDryLeaf({ chordMap, octaves = 1, octave = 4, showDescription = false }: PianoDryLeafProps) {
   return (
     <>
       {showDescription?<span>Piano crujiente como pisando hojas secas en otoño</span>:null}

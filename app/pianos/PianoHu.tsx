@@ -6,13 +6,14 @@ type PianoHuProps = PianoBaseProps & {
   showDescription: boolean;
 };
 
-export function PianoHu({ chordMap, octaves = 1, showDescription = false }: PianoHuProps) {
+export function PianoHu({ chordMap, octaves = 1, octave = 4, showDescription = false }: PianoHuProps) {
   return (
     <>
       {showDescription?<span>Piano tipo "hu"</span>:null}
       <PianoBase
         chordMap={chordMap}
         octaves={octaves}
+        octave={octave}
         createSynth={() => {
           // PolySynth para varias voces
           const synth = new Tone.PolySynth(Tone.Synth, {

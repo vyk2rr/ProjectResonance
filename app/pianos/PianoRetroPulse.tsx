@@ -2,12 +2,13 @@ import * as Tone from "tone";
 import PianoBase from "../PianoBase/PianoBase";
 import type { PianoBaseProps } from "../PianoBase/PianoBase.types";
 
-export function PianoRetroPulse({ chordMap, octaves = 1 }: PianoBaseProps) {
+export function PianoRetroPulse({ chordMap, octaves = 1, octave = 4 }: PianoBaseProps) {
   return (
     <>
       <PianoBase
         chordMap={chordMap}
         octaves={octaves}
+        octave={octave}
         createSynth={() => {
           const synth = new Tone.DuoSynth({
             vibratoAmount: 0.7,
