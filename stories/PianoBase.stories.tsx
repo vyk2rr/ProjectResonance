@@ -1,6 +1,6 @@
 import React from 'react'
 import { Theme } from '@radix-ui/themes';
-import PianoBase from "../app/PianoBase/pianobase";
+import PianoBase from "../app/PianoBase/PianoBase";
 import '@radix-ui/themes/styles.css';
 // import type { StoryObj } from '@storybook/react'
 

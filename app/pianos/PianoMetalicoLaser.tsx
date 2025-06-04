@@ -1,5 +1,5 @@
 import * as Tone from "tone";
-import PianoBase from "../PianoBase/pianobase";
+import PianoBase from "../PianoBase/PianoBase";
 import type { PianoBaseProps } from "../PianoBase/PianoBase.types";
 
 type PianoMetalicoLaserProps = PianoBaseProps & {
