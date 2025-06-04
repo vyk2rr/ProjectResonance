@@ -3,7 +3,7 @@ import { PianoEtherealStrings } from '../pianos/PianoEtherealStrings';
 import { PianoQuartzEcho } from '../pianos/PianoQuartzEcho';
 import { PianoDryLeaf } from '../pianos/PianoDryLeaf';
 import { PianoHu } from '../pianos/PianoHu';
-import { PianoOption8 } from '../pianos/PianoOption8';
+import { PianoMetalicoLaser } from '../pianos/PianoMetalicoLaser';
 import { PianoUkulele } from '../pianos/PianoUkulele';
 
 
@@ -23,9 +23,8 @@ export function Welcome() {
       <PianoDryLeaf showDescription />
 
       <PianoHu showDescription/>
-
-      <span>Piano8: metálico tipo laser</span>
-      <PianoOption8 />
+      
+      <PianoMetalicoLaser showDescription />
     </main>
   );
 }
