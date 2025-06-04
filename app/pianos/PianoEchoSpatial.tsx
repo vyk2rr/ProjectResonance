@@ -2,9 +2,14 @@ import * as Tone from "tone";
 import PianoBase from "../PianoBase/pianobase";
 import type { PianoBaseProps } from "../PianoBase/PianoBase.types";
 
-export function PianoOption2({ chordMap, octaves = 1 }: PianoBaseProps) {
+type PianoEchoSpatialProps = PianoBaseProps & {
+  showDescription: boolean;
+};
+
+export function PianoEchoSpatial({ chordMap, octaves = 1, showDescription = false }: PianoEchoSpatialProps) {
   return (
     <>
+      {showDescription ? <span>Piano espacial con eco y profundidad envolvente</span> : null}
       <PianoBase
         chordMap={chordMap}
         octaves={octaves}

@@ -2,9 +2,14 @@ import * as Tone from "tone";
 import PianoBase from "../PianoBase/pianobase";
 import type { PianoBaseProps } from "../PianoBase/PianoBase.types";
 
-export function PianoOption7({ chordMap, octaves = 1 }: PianoBaseProps) {
+type PianoHuProps = PianoBaseProps & {
+  showDescription: boolean;
+};
+
+export function PianoHu({ chordMap, octaves = 1, showDescription = false }: PianoHuProps) {
   return (
     <>
+      {showDescription?<span>Piano tipo "hu"</span>:null}
       <PianoBase
         chordMap={chordMap}
         octaves={octaves}

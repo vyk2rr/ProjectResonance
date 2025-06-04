@@ -1,10 +1,10 @@
 import React from 'react'
 import { Theme } from '@radix-ui/themes';
-import { PianoUkulele } from "../app/pianos/PianoUkulele";
+import { PianoQuartzEcho } from "../app/pianos/PianoQuartzEcho";
 
 export default {
-  title: "Components/PianoUkulele",
-  component: PianoUkulele,
+  title: "Components/PianoQuartzEcho",
+  component: PianoQuartzEcho,
   decorators: [
     (Story) => (
       <Theme>
@@ -14,7 +14,7 @@ export default {
   ]
 };
 
-const Template = (args) => <PianoUkulele {...args} />;
+const Template = (args) => <PianoQuartzEcho {...args} />;
 
 export const withoutChords = Template.bind({});
 withoutChords.args = {

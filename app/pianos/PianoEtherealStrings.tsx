@@ -2,34 +2,35 @@ import * as Tone from "tone";
 import PianoBase from "../PianoBase/pianobase";
 import type { PianoBaseProps } from "../PianoBase/PianoBase.types";
 
-export function PianoOption3({ chordMap, octaves = 1 }: PianoBaseProps) {
+type PianoEtherealStringsProps = PianoBaseProps & {
+  showDescription: boolean;
+};
+
+export function PianoEtherealStrings({ chordMap, octaves = 1, showDescription = false }: PianoEtherealStringsProps) {
   return (
     <>
+      {showDescription ? <span>Piano etéreo con timbre de cuerdas suaves y ambiente envolvente</span> : null}
       <PianoBase
         chordMap={chordMap}
         octaves={octaves}
         createSynth={() => {
           const synth = new Tone.DuoSynth({
-            vibratoAmount: 0.7,
-            vibratoRate: 6,
-            harmonicity: 1.5,
+            vibratoAmount: 0.1,
+            vibratoRate: 5,
+            harmonicity: 1.2,
             voice0: {
-              oscillator: { type: "square" },
-              envelope: { attack: 0.01, decay: 0.1, sustain: 0.4, release: 0.8 }
+              oscillator: { type: "triangle" },
+              envelope: { attack: 0.005, decay: 0.08, sustain: 0.15, release: 0.25 }
             },
             voice1: {
-              oscillator: { type: "triangle" },
-              envelope: { attack: 0.01, decay: 0.1, sustain: 0.2, release: 0.8 }
+              oscillator: { type: "sine" },
+              envelope: { attack: 0.005, decay: 0.09, sustain: 0.1, release: 0.22 }
             }
           });
-          // Chorus para efecto espacial
           const chorus = new Tone.Chorus(4, 2.5, 0.5).start();
-          // Reverb para profundidad
           const reverb = new Tone.Reverb({ decay: 3, wet: 0.4 }).toDestination();
-
           synth.connect(chorus);
           chorus.connect(reverb);
-
           return synth;
         }}
       />
