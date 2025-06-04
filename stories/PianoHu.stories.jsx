@@ -1,6 +1,6 @@
 import React from 'react'
 import { Theme } from '@radix-ui/themes';
-import {PianoOption8} from "../app/pianos/PianoHu";
+import { PianoHu } from "../app/pianos/PianoHu";
 
 export default {
   title: "Components/PianoHu",

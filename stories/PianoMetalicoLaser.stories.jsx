@@ -1,6 +1,6 @@
 import React from 'react'
 import { Theme } from '@radix-ui/themes';
-import {PianoMetalicoLaser} from "../app/pianos/PianoMetalicoLaser";
+import { PianoMetalicoLaser } from "../app/pianos/PianoMetalicoLaser";
 
 export default {
   title: "Components/PianoMetalicoLaser",

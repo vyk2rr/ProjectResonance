@@ -1,6 +1,6 @@
 import React from 'react'
 import { Theme } from '@radix-ui/themes';
-import {PianoRetroPulse} from "../app/pianos/PianoRetroPulse";
+import { PianoRetroPulse } from "../app/pianos/PianoRetroPulse";
 
 export default {
   title: "Components/PianoRetroPulse",

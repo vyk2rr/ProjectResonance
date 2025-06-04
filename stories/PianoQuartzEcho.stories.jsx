@@ -1,6 +1,6 @@
 import React from 'react'
 import { Theme } from '@radix-ui/themes';
-import {PianoQuartzEcho} from "../app/pianos/PianoQuartzEcho";
+import { PianoQuartzEcho } from "../app/pianos/PianoQuartzEcho";
 
 export default {
   title: "Components/PianoQuartzEcho",

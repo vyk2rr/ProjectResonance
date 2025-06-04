@@ -1,6 +1,6 @@
 import React from 'react'
 import { Theme } from '@radix-ui/themes';
-import {PianoDryLeaf} from "../app/pianos/PianoDryLeaf";
+import { PianoDryLeaf } from "../app/pianos/PianoDryLeaf";
 
 export default {
   title: "Components/PianoDryLeaf",
