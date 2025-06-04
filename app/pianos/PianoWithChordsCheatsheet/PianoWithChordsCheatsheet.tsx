@@ -2,7 +2,7 @@ import * as Tone from "tone";
 import React, { useState } from "react";
 import PianoBase from "../../PianoBase/PianoBase";
 import type { PianoBaseProps, OctaveRangeType, ChordType } from "../../PianoBase/PianoBase.types";
-import "./PianoWithChordsHelper.css";
+import "./PianoWithChordsCheatsheet.css";
 
 type PianoWithChordsHelperProps = PianoBaseProps & {
   chord: string[],
