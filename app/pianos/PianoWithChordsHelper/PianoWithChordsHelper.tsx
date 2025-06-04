@@ -32,8 +32,8 @@ export default function PianoWithChordsHelper({ chord }: PianoWithChordsHelperPr
     { id: "cmin_second", name: "C minor (m) (2nd inversion): G C D", notes: ["G4", "C5", "D#5"] },
 
     { id: "cdim", name: "C diminished (dim): C D# F#", notes: ["C4", "D#4", "F#4"] },
-    { id: "cdim_first", name: "C diminished (dim): D# F# C", notes: ["D#4", "F#4", "C5"] },
-    { id: "cdim_second", name: "C diminished (dim): F# C D", notes: ["F#4", "C5", "D#5"] },
+    { id: "cdim_first", name: "C diminished (dim) (1st inversion): D# F# C", notes: ["D#4", "F#4", "C5"] },
+    { id: "cdim_second", name: "C diminished (dim) (2nd inversion): F# C D", notes: ["F#4", "C5", "D#5"] },
 
     { id: "caug", name: "C augmented (aug): C E G#", notes: ["C4", "E4", "G#4"] },
     { id: "caug_first", name: "C augmented (aug) (1st inversion): E G# C", notes: ["E4", "G#4", "C5"] },
