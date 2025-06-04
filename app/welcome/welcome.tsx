@@ -1,6 +1,6 @@
 import PianoBase from '../PianoBase/pianobase';
 import { PianoEtherealStrings } from '../pianos/PianoEtherealStrings';
-import { PianoOption5 } from '../pianos/PianoOption5';
+import { PianoQuartzEcho } from '../pianos/PianoQuartzEcho';
 import { PianoOption6 } from '../pianos/PianoOption6';
 import { PianoOption7 } from '../pianos/PianoOption7';
 import { PianoOption8 } from '../pianos/PianoOption8';
@@ -18,8 +18,7 @@ export function Welcome() {
 
       <PianoEtherealStrings showDescription />
 
-      <span>Piano tipo cuenco de cristal: etéreo y resonante</span>
-      <PianoOption5 octaves={5} />
+      <PianoQuartzEcho octaves={5} showDescription />
 
       <span>Piano6: crujiente como pisando hojas secas en otoño</span>
       <PianoOption6 />
