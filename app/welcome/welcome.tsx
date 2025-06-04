@@ -1,4 +1,4 @@
-import PianoBase from '../PianoBase/pianobase';
+import PianoBase from '../PianoBase/PianoBase';
 import { PianoEtherealStrings } from '../pianos/PianoEtherealStrings';
 import { PianoQuartzEcho } from '../pianos/PianoQuartzEcho';
 import { PianoDryLeaf } from '../pianos/PianoDryLeaf';
