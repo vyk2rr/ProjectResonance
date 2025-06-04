@@ -2,11 +2,12 @@ import * as Tone from "tone";
 import PianoBase from "../PianoBase/PianoBase";
 import type { PianoBaseProps } from "../PianoBase/PianoBase.types";
 
-export function PianoUkulele({ chordMap, octaves = 1 }: PianoBaseProps) {
+export function PianoUkulele({ chordMap, octaves = 1, octave = 4 }: PianoBaseProps) {
   return (
     <>
       <PianoBase
         octaves={octaves}
+        octave={octave}
         createSynth={() => {
           return new Tone.PluckSynth({
             attackNoise: 1.2, // más percusivo

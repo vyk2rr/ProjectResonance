@@ -20,6 +20,7 @@ export type ChordType =
 export type PianoBaseProps = {
   createSynth?: () => SupportedSynth;
   chordMap?: chordMapType;
+  octave?: OctaveRangeType;
   octaves?: OctaveRangeType;
   showChordOnThePiano?: string[];
 };

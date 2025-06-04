@@ -7,15 +7,15 @@ import type { PianoBaseProps, chordMapType, OctaveRangeType } from "./PianoBase.
 import './PianoBase.css';
 
 const defaultChordMap: chordMapType = {
-  Dmaj_4: ["D4", "A4", "F#5", "A5", "D6"],
-  Emin_4: ["E4", "B4", "G5", "B5", "E6"],
-  Gbmin_4: ["F#4", "C#5", "A5", "C#6", "F#6"],
-  Gmaj_4: ["G4", "D5", "B5", "D6", "G6"],
-  Amaj_4: ["A4", "E5", "C#6", "E6", "A6"],
-  Bmin_4: ["B4", "F#5", "D6", "F#6", "B6"],
-  Cdim_4: ["C#5", "G5", "E6", "G6", "C#7"],
+  D4maj: ["D4", "A4", "F#5", "A5", "D6"],
+  E4min: ["E4", "B4", "G5", "B5", "E6"],
+  G4bmin: ["F#4", "C#5", "A5", "C#6", "F#6"],
+  G4maj: ["G4", "D5", "B5", "D6", "G6"],
+  A4maj: ["A4", "E5", "C#6", "E6", "A6"],
+  B4min: ["B4", "F#5", "D6", "F#6", "B6"],
+  C4dim: ["C#5", "G5", "E6", "G6", "C#7"],
 
-  Dmaj_5: ["D5", "A5", "F#6", "A6", "D7"],
+  D5maj: ["D5", "A5", "F#6", "A6", "D7"],
 };
 
 const generateNotes = function (octaves: OctaveRangeType = 3, startOctave: OctaveRangeType = 4) {
@@ -32,14 +32,6 @@ const generateNotes = function (octaves: OctaveRangeType = 3, startOctave: Octav
   white.push(`C${startOctave + octaves}`);
 
   return { white, black };
-}
-
-function getBlackKeyWidth(octaves: OctaveRangeType): string {
-  if (octaves <= 1) return "7%";
-  if (octaves === 2) return "4%";
-  if (octaves === 3) return "3%";
-  if (octaves === 4) return "2%";
-  return "1.4%";
 }
 
 function createDefaultSynth() {
@@ -98,6 +90,7 @@ function createDefaultSynth() {
 export default function PianoBase({
   createSynth,
   chordMap = defaultChordMap,
+  octave = 4,
   octaves = 3,
   showChordOnThePiano
 }: PianoBaseProps) {
@@ -105,7 +98,7 @@ export default function PianoBase({
   const [activeNotes, setActiveNotes] = useState<string[]>([]);
   const [highlightedKeys, setHighlightedKeys] = useState<string[]>([]);
   const [showChords, setShowChords] = useState(false);
-  const { white, black } = generateNotes(octaves);
+  const { white, black } = generateNotes(octaves, octave);
 
   const sharpToFlatMap: Record<string, string> = {
     "C#": "Db",
@@ -196,6 +189,14 @@ export default function PianoBase({
 
     return `${left}%`; // ya está centrado por transform: translateX(-50%)
   };
+
+  function getBlackKeyWidth(octaves: OctaveRangeType): string {
+    if (octaves <= 1) return "7%";
+    if (octaves === 2) return "4%";
+    if (octaves === 3) return "3%";
+    if (octaves === 4) return "2%";
+    return "1.4%";
+  }
 
   return (
     <div className="piano-base">

@@ -6,13 +6,14 @@ type PianoEtherealStringsProps = PianoBaseProps & {
   showDescription: boolean;
 }
 
-export function PianoQuartzEcho({ chordMap, octaves = 1, showDescription = false }: PianoEtherealStringsProps) {
+export function PianoQuartzEcho({ chordMap, octaves = 1, octave = 4, showDescription = false }: PianoEtherealStringsProps) {
   return (
     <>
       {showDescription ? <span>Piano tipo cuenco de cristal: etéreo y resonante</span>: null}
       <PianoBase
         chordMap={chordMap}
         octaves={octaves}
+        octave={octave}
         createSynth={() => {
           const synth = new Tone.FMSynth({
             harmonicity: 8,

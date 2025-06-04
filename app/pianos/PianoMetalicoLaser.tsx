@@ -6,13 +6,14 @@ type PianoMetalicoLaserProps = PianoBaseProps & {
   showDescription: boolean;
 };  
 
-export function PianoMetalicoLaser({ chordMap, octaves = 1, showDescription = false }: PianoMetalicoLaserProps) {
+export function PianoMetalicoLaser({ chordMap, octaves = 1, octave = 4, showDescription = false }: PianoMetalicoLaserProps) {
   return (
     <>
       {showDescription?<span>Piano metálico tipo laser</span>:null}
       <PianoBase
         chordMap={chordMap}
         octaves={octaves}
+        octave={octave}
         createSynth={() => {
           //  metálico pulsante
 

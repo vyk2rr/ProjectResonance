@@ -9,7 +9,7 @@ type PianoWithChordsHelperProps = PianoBaseProps & {
   octaves: OctaveRangeType
 }
 
-export default function PianoWithChordsHelper({ chord, octaves = 2 }: PianoWithChordsHelperProps) {
+export default function PianoWithChordsHelper({ chord, octaves = 2, octave = 4 }: PianoWithChordsHelperProps) {
   const [currentChord, setCurrentChord] = useState<string[]>([]);
   const [selectedChordId, setSelectedChordId] = useState<string>("");
   const [selectedNote, setSelectedNote] = useState<string>("C");
@@ -115,7 +115,11 @@ export default function PianoWithChordsHelper({ chord, octaves = 2 }: PianoWithC
 
   return (
     <>
-      <PianoBase octaves={octaves} showChordOnThePiano={currentChord} />
+      <PianoBase 
+        octaves={octaves}
+        octave={octave}
+        showChordOnThePiano={currentChord}
+      />
 
       <h1>{selectedNote + selectedOctave}</h1>
 

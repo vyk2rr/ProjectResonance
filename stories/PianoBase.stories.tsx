@@ -22,6 +22,31 @@ const Template = (args) => <PianoBase {...args} />;
 
 export const defaultOption = Template.bind({});
 
+export const inOctave1 = Template.bind({});
+inOctave1.args = {
+  octave: 1,
+}
+
+export const inOctave2 = Template.bind({});
+inOctave2.args = {
+  octave: 1,
+}
+
+export const inOctave3 = Template.bind({});
+inOctave3.args = {
+  octave: 3,
+}
+
+export const inOctave4 = Template.bind({});
+inOctave4.args = {
+  octave: 4,
+}
+
+export const inOctave5 = Template.bind({});
+inOctave5.args = {
+  octave: 5,
+}
+
 export const withEmptyChordMap = Template.bind({});
 withEmptyChordMap.args = {
   chordMap: {}, // sin acordes

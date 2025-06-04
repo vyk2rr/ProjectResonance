@@ -6,13 +6,14 @@ type PianoEchoSpatialProps = PianoBaseProps & {
   showDescription: boolean;
 };
 
-export function PianoEchoSpatial({ chordMap, octaves = 1, showDescription = false }: PianoEchoSpatialProps) {
+export function PianoEchoSpatial({ chordMap, octaves = 1, octave = 4, showDescription = false }: PianoEchoSpatialProps) {
   return (
     <>
       {showDescription ? <span>Piano espacial con eco y profundidad envolvente</span> : null}
       <PianoBase
         chordMap={chordMap}
         octaves={octaves}
+        octave={octave}
         createSynth={() => {
           const synth = new Tone.DuoSynth({
             vibratoAmount: 0.7,
