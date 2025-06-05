@@ -24,27 +24,30 @@ export function simplifyNoteName(note: string): string {
   return note.replace(/\d+/, '');
 }
 
-export function buildChordInversions(note: string, type: ChordType, inversions: number) {
+export function buildBaseChord(note: string, type: ChordType) {
   const base = getChord(note, type);
-
-  // Simplificamos el nombre del acorde base
   const baseNoteName = simplifyNoteName(note);
   const simplifiedNotes = base.map(simplifyNoteName);
 
-  const result = [{
+  return {
     id: `${note}_${type}`,
     name: `${baseNoteName}${type}`, // Ej: "Cmaj"
     displayNotes: simplifiedNotes.join(" "), // Ej: "C E G"
     notes: base // Mantenemos las notas completas para la lógica del piano
-  }];
+  };
+}
+
+export function buildChordInversions(baseChord: ReturnType<typeof buildBaseChord>, inversions: number) {
+  const result = [];
+  const base = baseChord.notes;
 
   for (let i = 1; i <= inversions; i++) {
     const inverted = invertChord(base, i);
     const simplifiedInverted = inverted.map(simplifyNoteName);
     result.push({
-      id: `${note}_${type}_inv${i}`,
-      name: `${baseNoteName}${type} (${i}ª inv)`,
-      displayNotes: `${simplifiedInverted.join(" ")}`,
+      id: `${baseChord.id}_inv${i}`,
+      name: `${baseChord.name} (${i}ª)`,
+      displayNotes: simplifiedInverted.join(" "),
       notes: inverted
     });
   }
@@ -55,24 +58,42 @@ export function buildChordInversions(note: string, type: ChordType, inversions: 
 export const generateChordsForNote = (note: string, selectedOctave) => {
   const noteWithOctave = note + selectedOctave;
   return [
-    ...buildChordInversions(noteWithOctave, "maj", 2),
-    ...buildChordInversions(noteWithOctave, "min", 2),
-    ...buildChordInversions(noteWithOctave, "dim", 2),
-    ...buildChordInversions(noteWithOctave, "aug", 2),
-    ...buildChordInversions(noteWithOctave, "sus2", 2),
-    ...buildChordInversions(noteWithOctave, "sus4", 2),
-    ...buildChordInversions(noteWithOctave, "maj7", 3),
-    ...buildChordInversions(noteWithOctave, "m7", 3),
-    ...buildChordInversions(noteWithOctave, "dom7", 2),
-    ...buildChordInversions(noteWithOctave, "maj9", 3),
-    ...buildChordInversions(noteWithOctave, "m9", 3),
-    ...buildChordInversions(noteWithOctave, "dom9", 3),
-    ...buildChordInversions(noteWithOctave, "maj11", 3),
-    ...buildChordInversions(noteWithOctave, "m11", 3),
-    ...buildChordInversions(noteWithOctave, "dom11", 3),
-    ...buildChordInversions(noteWithOctave, "maj13", 3),
-    ...buildChordInversions(noteWithOctave, "m13", 3),
-    ...buildChordInversions(noteWithOctave, "dom13", 3),
+    buildBaseChord(noteWithOctave, "maj"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "maj"), 2),
+    buildBaseChord(noteWithOctave, "min"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "min"), 2),
+    buildBaseChord(noteWithOctave, "dim"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "dim"), 2),
+    buildBaseChord(noteWithOctave, "aug"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "aug"), 2),
+    buildBaseChord(noteWithOctave, "sus2"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "sus2"), 2),
+    buildBaseChord(noteWithOctave, "sus4"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "sus4"), 2),
+    buildBaseChord(noteWithOctave, "maj7"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "maj7"), 3),
+    buildBaseChord(noteWithOctave, "m7"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "m7"), 3),
+    buildBaseChord(noteWithOctave, "dom7"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "dom7"), 2),
+    buildBaseChord(noteWithOctave, "maj9"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "maj9"), 3),
+    buildBaseChord(noteWithOctave, "m9"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "m9"), 3),
+    buildBaseChord(noteWithOctave, "dom9"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "dom9"), 3),
+    buildBaseChord(noteWithOctave, "maj11"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "maj11"), 3),
+    buildBaseChord(noteWithOctave, "m11"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "m11"), 3),
+    buildBaseChord(noteWithOctave, "dom11"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "dom11"), 3),
+    buildBaseChord(noteWithOctave, "maj13"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "maj13"), 3),
+    buildBaseChord(noteWithOctave, "m13"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "m13"), 3),
+    buildBaseChord(noteWithOctave, "dom13"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "dom13"), 3),
   ];
 };
 
