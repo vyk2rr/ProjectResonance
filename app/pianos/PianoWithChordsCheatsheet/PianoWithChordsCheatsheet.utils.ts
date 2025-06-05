@@ -24,27 +24,30 @@ export function simplifyNoteName(note: string): string {
   return note.replace(/\d+/, '');
 }
 
-export function buildChordInversions(note: string, type: ChordType, inversions: number) {
+export function buildBaseChord(note: string, type: ChordType) {
   const base = getChord(note, type);
-
-  // Simplificamos el nombre del acorde base
   const baseNoteName = simplifyNoteName(note);
   const simplifiedNotes = base.map(simplifyNoteName);
 
-  const result = [{
+  return {
     id: `${note}_${type}`,
     name: `${baseNoteName}${type}`, // Ej: "Cmaj"
     displayNotes: simplifiedNotes.join(" "), // Ej: "C E G"
     notes: base // Mantenemos las notas completas para la lógica del piano
-  }];
+  };
+}
+
+export function buildChordInversions(baseChord: ReturnType<typeof buildBaseChord>, inversions: number) {
+  const result = [];
+  const base = baseChord.notes;
 
   for (let i = 1; i <= inversions; i++) {
     const inverted = invertChord(base, i);
     const simplifiedInverted = inverted.map(simplifyNoteName);
     result.push({
-      id: `${note}_${type}_inv${i}`,
-      name: `${baseNoteName}${type}`, // Mismo nombre base
-      displayNotes: `${simplifiedInverted.join(" ")} (${i}ª)`, // Ej: "E G C (1ª)"
+      id: `${baseChord.id}_inv${i}`,
+      name: `${baseChord.name} (${i}ª)`,
+      displayNotes: simplifiedInverted.join(" "),
       notes: inverted
     });
   }
@@ -55,22 +58,42 @@ export function buildChordInversions(note: string, type: ChordType, inversions: 
 export const generateChordsForNote = (note: string, selectedOctave) => {
   const noteWithOctave = note + selectedOctave;
   return [
-    ...buildChordInversions(noteWithOctave, "maj", 2),
-    ...buildChordInversions(noteWithOctave, "min", 2),
-    ...buildChordInversions(noteWithOctave, "dim", 2),
-    ...buildChordInversions(noteWithOctave, "aug", 2),
-    ...buildChordInversions(noteWithOctave, "maj7", 3),
-    ...buildChordInversions(noteWithOctave, "m7", 3),
-    ...buildChordInversions(noteWithOctave, "dom7", 2),
-    ...buildChordInversions(noteWithOctave, "maj9", 3),
-    ...buildChordInversions(noteWithOctave, "m9", 3),
-    ...buildChordInversions(noteWithOctave, "dom9", 3),
-    ...buildChordInversions(noteWithOctave, "maj11", 3),
-    ...buildChordInversions(noteWithOctave, "m11", 3),
-    ...buildChordInversions(noteWithOctave, "dom11", 3),
-    ...buildChordInversions(noteWithOctave, "maj13", 3),
-    ...buildChordInversions(noteWithOctave, "m13", 3),
-    ...buildChordInversions(noteWithOctave, "dom13", 3),
+    buildBaseChord(noteWithOctave, "maj"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "maj"), 2),
+    buildBaseChord(noteWithOctave, "min"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "min"), 2),
+    buildBaseChord(noteWithOctave, "dim"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "dim"), 2),
+    buildBaseChord(noteWithOctave, "aug"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "aug"), 2),
+    buildBaseChord(noteWithOctave, "sus2"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "sus2"), 2),
+    buildBaseChord(noteWithOctave, "sus4"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "sus4"), 2),
+    buildBaseChord(noteWithOctave, "maj7"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "maj7"), 3),
+    buildBaseChord(noteWithOctave, "m7"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "m7"), 3),
+    buildBaseChord(noteWithOctave, "dom7"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "dom7"), 2),
+    buildBaseChord(noteWithOctave, "maj9"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "maj9"), 3),
+    buildBaseChord(noteWithOctave, "m9"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "m9"), 3),
+    buildBaseChord(noteWithOctave, "dom9"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "dom9"), 3),
+    buildBaseChord(noteWithOctave, "maj11"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "maj11"), 3),
+    buildBaseChord(noteWithOctave, "m11"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "m11"), 3),
+    buildBaseChord(noteWithOctave, "dom11"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "dom11"), 3),
+    buildBaseChord(noteWithOctave, "maj13"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "maj13"), 3),
+    buildBaseChord(noteWithOctave, "m13"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "m13"), 3),
+    buildBaseChord(noteWithOctave, "dom13"),
+    ...buildChordInversions(buildBaseChord(noteWithOctave, "dom13"), 3),
   ];
 };
 
@@ -177,44 +200,28 @@ export function chordToColor(notes: string[]): string {
   return rgbToHex(r, g, b);
 }
 
+
+export function extractNotesFromSearchTerm(term: string): string[] {
+  return (term.match(/([A-G][#b]?)/gi) || []).map(n => n.toUpperCase());
+}
+
 export const filterChords = (chords: any[], searchTerm: string) => {
   if (!searchTerm) return chords;
 
-  // Normalizar el término de búsqueda
-  const searchNotes = searchTerm
-    .toUpperCase()
-    .split(/[-\s]+/)  // Primero intentamos separar por guión o espacio
-    .map(term => {
-      // Si el término tiene múltiples caracteres sin separador, lo separamos en notas individuales
-      if (term.length > 1) {
-        return term.match(/[A-G][#b]?/g) || [term];
-      }
-      return [term];
-    })
-    .flat()
-    .map(note => note.trim())
-    .filter(note => note.length > 0); // Eliminar strings vacíos
+  const upperTerm = searchTerm.toUpperCase();
+  const searchNotes = extractNotesFromSearchTerm(upperTerm);
 
-  return chords.filter(chord => {
-    const chordNotes = chord.notes.map(simplifyNoteName);
+  // Si contiene notas (por ejemplo "FACE")
+  if (searchNotes.length > 0) {
+    return chords.filter(chord => {
+      const chordNotes = chord.notes.map(simplifyNoteName);
+      return searchNotes.every(n => chordNotes.includes(n));
+    });
+  }
 
-    // Verificar que todas las notas de búsqueda estén presentes en orden
-    let currentIndex = 0;
-    for (const searchNote of searchNotes) {
-      while (currentIndex < chordNotes.length) {
-        if (chordNotes[currentIndex] === searchNote) {
-          break;
-        }
-        currentIndex++;
-      }
-
-      if (currentIndex >= chordNotes.length) {
-        return false;
-      }
-
-      currentIndex++;
-    }
-
-    return true;
-  });
+  // Si no contiene notas, buscar por nombre
+  return chords.filter(chord =>
+    chord.name.toUpperCase().includes(upperTerm) ||
+    chord.displayNotes.toUpperCase().includes(upperTerm)
+  );
 };
