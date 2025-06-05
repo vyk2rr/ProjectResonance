@@ -1,9 +1,46 @@
 .chord-button.selected {
-  background: #ffe082 !important;
   box-shadow: 0 0 10px #ffd54f;
+  border: 4px solid black;
 }
 
 .note-name {
   display: flex;
   flex-direction: column;
+}
+
+.chord-columns {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  justify-content: space-between;
+}
+
+.chord-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.chord-column h2 {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.chord-button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: left;
+  font-size: 14px;
+  transition: transform 0.1s;
+  margin-bottom: 5px;
+}
+
+.chord-button:hover {
+  transform: scale(1.02);
+}
+.chord-button.selected {
+  outline: 2px solid #000;
 }

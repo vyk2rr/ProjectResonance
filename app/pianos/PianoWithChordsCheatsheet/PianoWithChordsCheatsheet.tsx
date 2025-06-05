@@ -91,7 +91,6 @@ function chordToColor(notes: string[]): string {
   return rgbToHex(r, g, b);
 }
 
-
 export default function PianoWithChordsHelper({ chord, octaves = 2, octave = 4 }: PianoWithChordsHelperProps) {
   const [currentChord, setCurrentChord] = useState<string[]>([]);
   const [selectedChordId, setSelectedChordId] = useState<string>("");
@@ -118,8 +117,7 @@ export default function PianoWithChordsHelper({ chord, octaves = 2, octave = 4 }
     dom13: [0, 4, 7, 10, 14, 17, 21],
   };
 
-  const noteOptions = ["C", "D", "E", "F", "G", "A", "B"];
-  const octaveOptions = ["1", "2", "3", "4", "5"];
+  const notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
 
   const handleChordClick = (chord: ChordType) => {
     setCurrentChord(chord.notes);
@@ -163,12 +161,12 @@ export default function PianoWithChordsHelper({ chord, octaves = 2, octave = 4 }
 
   function buildChordInversions(note: string, type: ChordType, inversions: number) {
     const base = getChord(note, type);
-    const result = [{ id: `${type}`, name: `${note} ${type} ` + base.join("-"), notes: base }];
+    const result = [{ id: `${note}_${type}`, name: `${note} ${type} ` + base.join("-"), notes: base }];
 
     for (let i = 1; i <= inversions; i++) {
       const inverted = invertChord(base, i);
       result.push({
-        id: `${type}_inv${i}`,
+        id: `${note}_${type}_inv${i}`,
         name: `${note} ${type} (${i}st inversion) ` + inverted.join("-"),
         notes: inverted
       });
@@ -177,26 +175,27 @@ export default function PianoWithChordsHelper({ chord, octaves = 2, octave = 4 }
     return result;
   }
 
-  const chordNote = selectedNote + selectedOctave;
-
-  const chords = [
-    ...buildChordInversions(chordNote, "maj", 2),
-    ...buildChordInversions(chordNote, "min", 2),
-    ...buildChordInversions(chordNote, "dim", 2),
-    ...buildChordInversions(chordNote, "aug", 2),
-    ...buildChordInversions(chordNote, "maj7", 3),
-    ...buildChordInversions(chordNote, "m7", 3),
-    ...buildChordInversions(chordNote, "dom7", 2),
-    ...buildChordInversions(chordNote, "maj9", 3),
-    ...buildChordInversions(chordNote, "m9", 3),
-    ...buildChordInversions(chordNote, "dom9", 3),
-    ...buildChordInversions(chordNote, "maj11", 3),
-    ...buildChordInversions(chordNote, "m11", 3),
-    ...buildChordInversions(chordNote, "dom11", 3),
-    ...buildChordInversions(chordNote, "maj13", 3),
-    ...buildChordInversions(chordNote, "m13", 3),
-    ...buildChordInversions(chordNote, "dom13", 3),
-  ];
+  const generateChordsForNote = (note: string) => {
+    const noteWithOctave = note + selectedOctave;
+    return [
+      ...buildChordInversions(noteWithOctave, "maj", 2),
+      ...buildChordInversions(noteWithOctave, "min", 2),
+      ...buildChordInversions(noteWithOctave, "dim", 2),
+      ...buildChordInversions(noteWithOctave, "aug", 2),
+      ...buildChordInversions(noteWithOctave, "maj7", 3),
+      ...buildChordInversions(noteWithOctave, "m7", 3),
+      ...buildChordInversions(noteWithOctave, "dom7", 2),
+      ...buildChordInversions(noteWithOctave, "maj9", 3),
+      ...buildChordInversions(noteWithOctave, "m9", 3),
+      ...buildChordInversions(noteWithOctave, "dom9", 3),
+      ...buildChordInversions(noteWithOctave, "maj11", 3),
+      ...buildChordInversions(noteWithOctave, "m11", 3),
+      ...buildChordInversions(noteWithOctave, "dom11", 3),
+      ...buildChordInversions(noteWithOctave, "maj13", 3),
+      ...buildChordInversions(noteWithOctave, "m13", 3),
+      ...buildChordInversions(noteWithOctave, "dom13", 3),
+    ];
+  };
 
   return (
     <>
@@ -208,44 +207,23 @@ export default function PianoWithChordsHelper({ chord, octaves = 2, octave = 4 }
         />
       </div>
 
-      <h1>{selectedNote + selectedOctave}</h1>
-
-      <select
-        value={selectedNote}
-        onChange={handleNoteChange}
-        className="selected-note"
-      >
-        {noteOptions.map((note) => (
-          <option key={note} value={note}>
-            {note}
-          </option>
+      <div className="chord-columns">
+        {notes.map(note => (
+          <div key={note} className="chord-column">
+            <h2>{note} Chords</h2>
+            {generateChordsForNote(note).map(chord => (
+              <button
+                key={chord.id}
+                onClick={() => handleChordClick(chord)}
+                style={{ backgroundColor: chordToColor(chord.notes) }}
+                className={selectedChordId === chord.id ? 'chord-button selected' : 'chord-button'}
+              >
+                {chord.name}
+              </button>
+            ))}
+          </div>
         ))}
-      </select>
-
-      <select
-        value={selectedOctave}
-        onChange={handleOctaveChange}
-        className="selected-octave"
-      >
-        {octaveOptions.map((octave) => (
-          <option key={octave} value={octave}>
-            {octave}
-          </option>
-        ))}
-      </select>
-
-      <ul className="chord-list">
-        {chords.map(chord => (
-          <li key={chord.id}>
-            <button
-              onClick={() => handleChordClick(chord)}
-              className={selectedChordId === chord.id ? 'chord-button selected' : 'chord-button'}
-            >
-              {chord.name}
-            </button>
-          </li>
-        ))}
-      </ul>
+      </div>
     </>
   );
 }
