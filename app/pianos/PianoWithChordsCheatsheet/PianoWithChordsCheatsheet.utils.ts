@@ -200,44 +200,28 @@ export function chordToColor(notes: string[]): string {
   return rgbToHex(r, g, b);
 }
 
+
+export function extractNotesFromSearchTerm(term: string): string[] {
+  return (term.match(/([A-G][#b]?)/gi) || []).map(n => n.toUpperCase());
+}
+
 export const filterChords = (chords: any[], searchTerm: string) => {
   if (!searchTerm) return chords;
 
-  // Normalizar el término de búsqueda
-  const searchNotes = searchTerm
-    .toUpperCase()
-    .split(/[-\s]+/)  // Primero intentamos separar por guión o espacio
-    .map(term => {
-      // Si el término tiene múltiples caracteres sin separador, lo separamos en notas individuales
-      if (term.length > 1) {
-        return term.match(/[A-G][#b]?/g) || [term];
-      }
-      return [term];
-    })
-    .flat()
-    .map(note => note.trim())
-    .filter(note => note.length > 0); // Eliminar strings vacíos
+  const upperTerm = searchTerm.toUpperCase();
+  const searchNotes = extractNotesFromSearchTerm(upperTerm);
 
-  return chords.filter(chord => {
-    const chordNotes = chord.notes.map(simplifyNoteName);
+  // Si contiene notas (por ejemplo "FACE")
+  if (searchNotes.length > 0) {
+    return chords.filter(chord => {
+      const chordNotes = chord.notes.map(simplifyNoteName);
+      return searchNotes.every(n => chordNotes.includes(n));
+    });
+  }
 
-    // Verificar que todas las notas de búsqueda estén presentes en orden
-    let currentIndex = 0;
-    for (const searchNote of searchNotes) {
-      while (currentIndex < chordNotes.length) {
-        if (chordNotes[currentIndex] === searchNote) {
-          break;
-        }
-        currentIndex++;
-      }
-
-      if (currentIndex >= chordNotes.length) {
-        return false;
-      }
-
-      currentIndex++;
-    }
-
-    return true;
-  });
+  // Si no contiene notas, buscar por nombre
+  return chords.filter(chord =>
+    chord.name.toUpperCase().includes(upperTerm) ||
+    chord.displayNotes.toUpperCase().includes(upperTerm)
+  );
 };
