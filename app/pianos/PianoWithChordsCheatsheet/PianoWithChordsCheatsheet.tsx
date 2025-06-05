@@ -27,9 +27,13 @@ function chordToColor(notes: string[]): string {
   };
 
   // Extract base note name without octave (e.g., "G4" -> "G")
-  const extractBaseNote = (note: string): string => {
-    const match = note.match(/^[A-G][#b]?/);
-    return match ? match[0] : note;
+  const extractBaseNote = (note: string): { noteName: string, octave: number } => {
+    const match = note.match(/^([A-G][#b]?)(\d+)?/);
+    if (!match) return { noteName: note, octave: 4 }; // default to octave 4 if not found
+    return {
+      noteName: match[1],
+      octave: match[2] ? parseInt(match[2]) : 4
+    };
   };
 
   // Convierte HSL a RGB (h: 0-360, s: 0-100, l: 0-100)
@@ -66,26 +70,43 @@ function chordToColor(notes: string[]): string {
 
   if (notes.length === 0) return '#000000';
 
-  // Usar la nota raíz para el matiz base
-  const rootNote = extractBaseNote(notes[0]);
-  const hue = noteToHue[rootNote];
-  if (hue === undefined) throw new Error(`Nota no válida: ${rootNote}`);
+  // Usar la nota raíz para el matiz base y calcular octava promedio
+  const rootNoteInfo = extractBaseNote(notes[0]);
+  const hue = noteToHue[rootNoteInfo.noteName];
+  if (hue === undefined) throw new Error(`Nota no válida: ${rootNoteInfo.noteName}`);
 
-  // Ajustar saturación y luminosidad basado en el tipo de acorde
+  // Calcular la octava promedio del acorde
+  const octaveSum = notes.reduce((sum, note) => {
+    const { octave } = extractBaseNote(note);
+    return sum + octave;
+  }, 0);
+  const averageOctave = octaveSum / notes.length;
+  
+  // Ajustar saturación y luminosidad basado en el tipo de acorde y octava
   let saturation = 100; // Máxima saturación para colores más vivos
   let lightness = 50;   // Luminosidad base
 
+  // Ajustar luminosidad basada en la diferencia de octava con respecto a la octava 4 (base)
+  const octaveDiff = averageOctave - 4;
+  lightness += octaveDiff * 15; // Aumentar/disminuir 15% por cada octava de diferencia
+
+  // Ajustar saturación basada en el número de notas (acordes extendidos)
+  const baseNoteCount = 4; // Consideramos maj7 como base (4 notas)
+  const extraNotes = Math.max(0, notes.length - baseNoteCount);
+  saturation = Math.max(75, 100 - extraNotes * 8); // Reducir saturación gradualmente por cada nota extra
+  
   // Si es un acorde menor (tiene una tercera menor)
   if (notes.length >= 3) {
     const intervals = notes.map(note => Tone.Frequency(note).toMidi());
     const thirdInterval = intervals[1] - intervals[0];
     if (thirdInterval === 3) { // Tercera menor
-      lightness = 40; // Más oscuro para acordes menores
+      lightness -= 12; // Más oscuro para acordes menores
     }
   }
 
-  // Ajustar luminosidad basado en el número de notas
-  lightness = Math.max(30, lightness - (notes.length - 3) * 3);
+  // Ajustar luminosidad progresivamente basado en el número de notas
+  const luminosityChangePerNote = 6; // Cambio más notorio por nota
+  lightness = Math.max(30, Math.min(70, lightness + extraNotes * luminosityChangePerNote));
 
   const [r, g, b] = hslToRgb(hue, saturation, lightness);
   return rgbToHex(r, g, b);
