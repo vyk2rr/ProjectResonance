@@ -32,10 +32,9 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  text-align: left;
-  font-size: 14px;
   transition: transform 0.1s;
   margin-bottom: 5px;
+  text-align: left;
 }
 
 .chord-button:hover {
@@ -43,4 +42,36 @@
 }
 .chord-button.selected {
   outline: 2px solid #000;
+}
+
+.chord-name {
+  font-weight: bold;
+  font-size: 15px;
+  margin-bottom: 4px;
+  opacity: 0.7;
+}
+
+.chord-notes {
+  font-size: 18px;
+  opacity: 0.8;
+}
+
+.search-container {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.chord-search {
+  width: 300px;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.chord-search:focus {
+  border-color: #666;
 }

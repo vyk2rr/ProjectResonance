@@ -97,6 +97,7 @@ export default function PianoWithChordsHelper({ chord, octaves = 2, octave = 4 }
   const [selectedNote, setSelectedNote] = useState<string>("C");
   const [selectedOctave, setSelectedOctave] = useState<string>("4");
   const [currentColor, setCurrentColor] = useState<string>("");
+  const [searchFilter, setSearchFilter] = useState<string>("");
 
   const chordIntervals: Record<ChordType, number[]> = {
     maj: [0, 4, 7],
@@ -159,15 +160,32 @@ export default function PianoWithChordsHelper({ chord, octaves = 2, octave = 4 }
     return result;
   }
 
+  function simplifyNoteName(note: string): string {
+    // Elimina el número de octava (ej: "C4" -> "C")
+    return note.replace(/\d+/, '');
+  }
+
   function buildChordInversions(note: string, type: ChordType, inversions: number) {
     const base = getChord(note, type);
-    const result = [{ id: `${note}_${type}`, name: `${note} ${type} ` + base.join("-"), notes: base }];
+    
+    // Simplificamos el nombre del acorde base
+    const baseNoteName = simplifyNoteName(note);
+    const simplifiedNotes = base.map(simplifyNoteName);
+    
+    const result = [{ 
+      id: `${note}_${type}`, 
+      name: `${baseNoteName}${type}`, // Ej: "Cmaj"
+      displayNotes: simplifiedNotes.join(" "), // Ej: "C E G"
+      notes: base // Mantenemos las notas completas para la lógica del piano
+    }];
 
     for (let i = 1; i <= inversions; i++) {
       const inverted = invertChord(base, i);
+      const simplifiedInverted = inverted.map(simplifyNoteName);
       result.push({
         id: `${note}_${type}_inv${i}`,
-        name: `${note} ${type} (${i}st inversion) ` + inverted.join("-"),
+        name: `${baseNoteName}${type}`, // Mismo nombre base
+        displayNotes: `${simplifiedInverted.join(" ")} (${i}ª)`, // Ej: "E G C (1ª)"
         notes: inverted
       });
     }
@@ -197,6 +215,48 @@ export default function PianoWithChordsHelper({ chord, octaves = 2, octave = 4 }
     ];
   };
 
+  const filterChords = (chords: any[], searchTerm: string) => {
+    if (!searchTerm) return chords;
+    
+    // Normalizar el término de búsqueda
+    const searchNotes = searchTerm
+      .toUpperCase()
+      .split(/[-\s]+/)  // Primero intentamos separar por guión o espacio
+      .map(term => {
+        // Si el término tiene múltiples caracteres sin separador, lo separamos en notas individuales
+        if (term.length > 1) {
+          return term.match(/[A-G][#b]?/g) || [term];
+        }
+        return [term];
+      })
+      .flat()
+      .map(note => note.trim())
+      .filter(note => note.length > 0); // Eliminar strings vacíos
+    
+    return chords.filter(chord => {
+      const chordNotes = chord.notes.map(simplifyNoteName);
+      
+      // Verificar que todas las notas de búsqueda estén presentes en orden
+      let currentIndex = 0;
+      for (const searchNote of searchNotes) {
+        while (currentIndex < chordNotes.length) {
+          if (chordNotes[currentIndex] === searchNote) {
+            break;
+          }
+          currentIndex++;
+        }
+        
+        if (currentIndex >= chordNotes.length) {
+          return false;
+        }
+        
+        currentIndex++;
+      }
+      
+      return true;
+    });
+  };
+
   return (
     <>
       <div style={{ backgroundColor: currentColor, padding: "10px" }}>
@@ -207,22 +267,41 @@ export default function PianoWithChordsHelper({ chord, octaves = 2, octave = 4 }
         />
       </div>
 
+      <div className="search-container">
+        <input
+          type="text"
+          value={searchFilter}
+          onChange={(e) => setSearchFilter(e.target.value)}
+          placeholder="Filter chords (e.g. 'C', 'C E', 'C-E')"
+          className="chord-search"
+        />
+      </div>
+
       <div className="chord-columns">
-        {notes.map(note => (
-          <div key={note} className="chord-column">
-            <h2>{note} Chords</h2>
-            {generateChordsForNote(note).map(chord => (
-              <button
-                key={chord.id}
-                onClick={() => handleChordClick(chord)}
-                style={{ backgroundColor: chordToColor(chord.notes) }}
-                className={selectedChordId === chord.id ? 'chord-button selected' : 'chord-button'}
-              >
-                {chord.name}
-              </button>
-            ))}
-          </div>
-        ))}
+        {notes.map(note => {
+          const chordsForNote = generateChordsForNote(note);
+          const filteredChords = filterChords(chordsForNote, searchFilter);
+          
+          // Solo mostrar la columna si tiene acordes que coincidan con el filtro
+          if (filteredChords.length === 0 && searchFilter) return null;
+          
+          return (
+            <div key={note} className="chord-column">
+              <h2>{note} Chords</h2>
+              {filteredChords.map(chord => (
+                <button
+                  key={chord.id}
+                  onClick={() => handleChordClick(chord)}
+                  style={{ backgroundColor: chordToColor(chord.notes) }}
+                  className={selectedChordId === chord.id ? 'chord-button selected' : 'chord-button'}
+                >
+                  <div className="chord-name">{chord.name}</div>
+                  <div className="chord-notes">{chord.displayNotes}</div>
+                </button>
+              ))}
+            </div>
+          );
+        })}
       </div>
     </>
   );
