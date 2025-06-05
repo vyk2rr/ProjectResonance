@@ -17,6 +17,7 @@ export default function PianoWithChordsHelper({ chord, octaves = 2, octave = 4 }
   const [selectedOctave, setSelectedOctave] = useState<string>("4");
   const [currentColor, setCurrentColor] = useState<string>("");
   const [searchFilter, setSearchFilter] = useState<string>("");
+  const [showInversions, setShowInversions] = useState<boolean>(false);
 
   const notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
 
@@ -62,10 +63,15 @@ export default function PianoWithChordsHelper({ chord, octaves = 2, octave = 4 }
         />
       </div>
 
+      <button onClick={() => setShowInversions(prev => !prev)}>
+        {showInversions ? "Ocultar inversiones" : "Mostrar inversiones"}
+      </button>
+
       <div className="chord-columns">
         {notes.map(note => {
           const chordsForNote = generateChordsForNote(note, selectedOctave);
-          const filteredChords = filterChords(chordsForNote, searchFilter);
+          const filteredChords = filterChords(chordsForNote, searchFilter)
+          .filter(chord => showInversions || !chord.id.includes('_inv'));
           
           // Solo mostrar la columna si tiene acordes que coincidan con el filtro
           if (filteredChords.length === 0 && searchFilter) return null;
