@@ -43,8 +43,8 @@ export function buildChordInversions(note: string, type: ChordType, inversions: 
     const simplifiedInverted = inverted.map(simplifyNoteName);
     result.push({
       id: `${note}_${type}_inv${i}`,
-      name: `${baseNoteName}${type}`, // Mismo nombre base
-      displayNotes: `${simplifiedInverted.join(" ")} (${i}ª)`, // Ej: "E G C (1ª)"
+      name: `${baseNoteName}${type} (${i}ª inv)`,
+      displayNotes: `${simplifiedInverted.join(" ")}`,
       notes: inverted
     });
   }
@@ -59,6 +59,8 @@ export const generateChordsForNote = (note: string, selectedOctave) => {
     ...buildChordInversions(noteWithOctave, "min", 2),
     ...buildChordInversions(noteWithOctave, "dim", 2),
     ...buildChordInversions(noteWithOctave, "aug", 2),
+    ...buildChordInversions(noteWithOctave, "sus2", 2),
+    ...buildChordInversions(noteWithOctave, "sus4", 2),
     ...buildChordInversions(noteWithOctave, "maj7", 3),
     ...buildChordInversions(noteWithOctave, "m7", 3),
     ...buildChordInversions(noteWithOctave, "dom7", 2),

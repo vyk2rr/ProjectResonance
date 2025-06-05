@@ -78,7 +78,9 @@ export default function PianoWithChordsHelper({ chord, octaves = 2, octave = 4 }
                   key={chord.id}
                   onClick={() => handleChordClick(chord)}
                   style={{ backgroundColor: chordToColor(chord.notes) }}
-                  className={selectedChordId === chord.id ? 'chord-button selected' : 'chord-button'}
+                  className={`
+                  chord-button ${chord.id.includes('_inv') ? 'inverted' : ''} 
+                  ${selectedChordId === chord.id ? 'selected' : ''}`}
                 >
                   <div className="chord-name">{chord.name}</div>
                   <div className="chord-notes">{chord.displayNotes}</div>

@@ -12,6 +12,7 @@ export type SupportedSynth =
 
 export type ChordType =
   | "maj" | "min" | "dim" | "aug"
+  | "sus2" | "sus4"
   | "maj7" | "m7" | "dom7"
   | "maj9" | "m9" | "dom9"
   | "maj11" | "m11" | "dom11"
@@ -31,6 +32,8 @@ export const chordIntervals: Record<ChordType, number[]> = {
   min: [0, 3, 7],
   dim: [0, 3, 6],
   aug: [0, 4, 8],
+  sus2: [0, 2, 7],
+  sus4: [0, 5, 7],
   maj7: [0, 4, 7, 11],
   m7: [0, 3, 7, 10],
   dom7: [0, 4, 7, 10],

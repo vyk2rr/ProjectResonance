@@ -1,6 +1,5 @@
 .chord-button.selected {
-  box-shadow: 0 0 10px #ffd54f;
-  border: 4px solid black;
+  box-shadow: 0 0 50px #ffd54f;
 }
 
 .note-name {
@@ -37,16 +36,21 @@
   text-align: left;
 }
 
-.chord-button:hover {
-  transform: scale(1.02);
+.chord-button.inverted {
+  transform: scale(0.70);
 }
+
+.chord-button:hover {
+  transform: scale(1.05);
+}
+
 .chord-button.selected {
-  outline: 2px solid #000;
+  outline: 1px solid #000;
 }
 
 .chord-name {
   font-weight: bold;
-  font-size: 15px;
+  font-size: 10px;
   margin-bottom: 4px;
   opacity: 0.7;
 }
