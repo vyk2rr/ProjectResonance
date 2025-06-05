@@ -2,6 +2,7 @@ import * as Tone from "tone";
 import React, { useState } from "react";
 import PianoBase from "../../PianoBase/PianoBase";
 import type { PianoBaseProps, OctaveRangeType, ChordType } from "../../PianoBase/PianoBase.types";
+import { chordToColor, generateChordsForNote, filterChords } from "./PianoWithChordsCheatsheet.utils";
 import "./PianoWithChordsCheatsheet.css";
 
 type PianoWithChordsHelperProps = PianoBaseProps & {
@@ -14,153 +15,79 @@ export default function PianoWithChordsHelper({ chord, octaves = 2, octave = 4 }
   const [selectedChordId, setSelectedChordId] = useState<string>("");
   const [selectedNote, setSelectedNote] = useState<string>("C");
   const [selectedOctave, setSelectedOctave] = useState<string>("4");
+  const [currentColor, setCurrentColor] = useState<string>("");
+  const [searchFilter, setSearchFilter] = useState<string>("");
 
-  const chordIntervals: Record<ChordType, number[]> = {
-    maj: [0, 4, 7],
-    min: [0, 3, 7],
-    dim: [0, 3, 6],
-    aug: [0, 4, 8],
-    maj7: [0, 4, 7, 11],
-    m7: [0, 3, 7, 10],
-    dom7: [0, 4, 7, 10],
-    maj9: [0, 4, 7, 11, 14],
-    m9: [0, 3, 7, 10, 14],
-    dom9: [0, 4, 7, 10, 14],
-    maj11: [0, 4, 7, 11, 14, 17],
-    m11: [0, 3, 7, 10, 14, 17],
-    dom11: [0, 4, 7, 10, 14, 17],
-    maj13: [0, 4, 7, 11, 14, 17, 21],
-    m13: [0, 3, 7, 10, 14, 17, 21],
-    dom13: [0, 4, 7, 10, 14, 17, 21],
-  };
+  const notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
 
-  const noteOptions = ["C", "D", "E", "F", "G", "A", "B"];
-  const octaveOptions = ["1", "2", "3", "4", "5"];
+  const handlePlayNote = (note: string) => {
+    setCurrentChord([note]);
+  }
 
   const handleChordClick = (chord: ChordType) => {
     setCurrentChord(chord.notes);
+    setCurrentColor(chordToColor(chord.notes));
     setSelectedChordId(chord.id);
   };
 
   const handleNoteChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const note = event.target.value;
     setSelectedNote(note);
-    playNote(note + selectedOctave);
+    handlePlayNote(note + selectedOctave);
   };
 
   const handleOctaveChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const octave = event.target.value;
     setSelectedOctave(octave);
-    playNote(selectedNote + octave);
+    handlePlayNote(selectedNote + octave);
   };
-
-
-  const playNote = (note: string) => {
-    setCurrentChord([note]);
-  }
-
-  function getChord(note: string, type: ChordType): string[] {
-    const base = Tone.Frequency(note);
-    return chordIntervals[type].map(i => base.transpose(i).toNote());
-  }
-
-  function invertChord(notes: string[], inversion: number): string[] {
-    const result = [...notes];
-    for (let i = 0; i < inversion; i++) {
-      const note = result.shift();
-      if (note) {
-        const octaveUp = Tone.Frequency(note).transpose(12).toNote();
-        result.push(octaveUp);
-      }
-    }
-    return result;
-  }
-
-  function buildChordInversions(note: string, type: ChordType, inversions: number) {
-    const base = getChord(note, type);
-    const result = [{ id: `${type}`, name: `${note} ${type} ` + base.join("-"), notes: base }];
-
-    for (let i = 1; i <= inversions; i++) {
-      const inverted = invertChord(base, i);
-      result.push({
-        id: `${type}_inv${i}`,
-        name: `${note} ${type} (${i}st inversion) ` + inverted.join("-"),
-        notes: inverted
-      });
-    }
-
-    return result;
-  }
-
-  const chordNote = selectedNote + selectedOctave;
-
-  const chords = [
-    ...buildChordInversions(chordNote, "maj", 2),
-    ...buildChordInversions(chordNote, "min", 2),
-    ...buildChordInversions(chordNote, "dim", 2),
-    ...buildChordInversions(chordNote, "aug", 2),
-    ...buildChordInversions(chordNote, "maj7", 3),
-    ...buildChordInversions(chordNote, "m7", 3),
-    ...buildChordInversions(chordNote, "dom7", 2),
-    ...buildChordInversions(chordNote, "maj9", 3),
-    ...buildChordInversions(chordNote, "m9", 3),
-    ...buildChordInversions(chordNote, "dom9", 3),
-    ...buildChordInversions(chordNote, "maj11", 3),
-    ...buildChordInversions(chordNote, "m11", 3),
-    ...buildChordInversions(chordNote, "dom11", 3),
-    ...buildChordInversions(chordNote, "maj13", 3),
-    ...buildChordInversions(chordNote, "m13", 3),
-    ...buildChordInversions(chordNote, "dom13", 3),
-  ];
 
   return (
     <>
-      <PianoBase 
-        octaves={octaves}
-        octave={octave}
-        showChordOnThePiano={currentChord}
-      />
+      <div style={{ backgroundColor: currentColor, padding: "10px" }}>
+        <PianoBase
+          octaves={octaves}
+          octave={octave}
+          showChordOnThePiano={currentChord}
+        />
+      </div>
 
-      <h1>{selectedNote + selectedOctave}</h1>
+      <div className="search-container">
+        <input
+          type="text"
+          value={searchFilter}
+          onChange={(e) => setSearchFilter(e.target.value)}
+          placeholder="Filter chords (e.g. 'C', 'C E', 'C-E')"
+          className="chord-search"
+        />
+      </div>
 
-      <select
-        value={selectedNote}
-        onChange={handleNoteChange}
-        className="selected-note"
-      >
-        {noteOptions.map((note) => (
-          <option key={note} value={note}>
-            {note}
-          </option>
-        ))}
-      </select>
-
-      <select
-        value={selectedOctave}
-        onChange={handleOctaveChange}
-        className="selected-octave"
-      >
-        {octaveOptions.map((octave) => (
-          <option key={octave} value={octave}>
-            {octave}
-          </option>
-        ))}
-      </select>
-
-      <ul className="chord-list">
-        {chords.map(chord => (
-          <li key={chord.id}>
-            <button
-              onClick={() => handleChordClick(chord)}
-              className={selectedChordId === chord.id ? 'chord-button selected' : 'chord-button'}
-            >
-              {chord.name}
-            </button>
-          </li>
-        ))}
-      </ul>
-
-      {/* falta tonos inversiones */}
+      <div className="chord-columns">
+        {notes.map(note => {
+          const chordsForNote = generateChordsForNote(note, selectedOctave);
+          const filteredChords = filterChords(chordsForNote, searchFilter);
+          
+          // Solo mostrar la columna si tiene acordes que coincidan con el filtro
+          if (filteredChords.length === 0 && searchFilter) return null;
+          
+          return (
+            <div key={note} className="chord-column">
+              <h2>{note} Chords</h2>
+              {filteredChords.map(chord => (
+                <button
+                  key={chord.id}
+                  onClick={() => handleChordClick(chord)}
+                  style={{ backgroundColor: chordToColor(chord.notes) }}
+                  className={selectedChordId === chord.id ? 'chord-button selected' : 'chord-button'}
+                >
+                  <div className="chord-name">{chord.name}</div>
+                  <div className="chord-notes">{chord.displayNotes}</div>
+                </button>
+              ))}
+            </div>
+          );
+        })}
+      </div>
     </>
   );
 }
