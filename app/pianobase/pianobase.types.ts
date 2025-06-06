@@ -18,14 +18,6 @@ export type ChordType =
   | "maj11" | "m11" | "dom11"
   | "maj13" | "m13" | "dom13";
 
-export type PianoBaseProps = {
-  createSynth?: () => SupportedSynth;
-  chordMap?: chordMapType;
-  octave?: OctaveRangeType;
-  octaves?: OctaveRangeType;
-  showChordOnThePiano?: string[];
-};
-
 
 export const chordIntervals: Record<ChordType, number[]> = {
   maj: [0, 4, 7],
