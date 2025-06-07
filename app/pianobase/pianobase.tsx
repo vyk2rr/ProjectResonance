@@ -2,7 +2,6 @@ import * as Tone from "tone";
 import React, { useState, useEffect, useRef } from "react";
 import { Button, DropdownMenu } from "@radix-ui/themes";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
-import type { PianoBaseProps } from "./PianoBase.types";
 import {
   defaultChordMap,
   generateNotes,
@@ -10,19 +9,32 @@ import {
   getBlackKeyLeft,
   getBlackKeyWidth,
   createDefaultSynth,
-  playNote as playNoteUtil,
-  playChord as playChordUtil,
-  playSequence as playSequenceUtil
+  playNote,
+  playChord,
+  playSequence,
 } from "./PianoBase.utils";
+import type { PianoBaseProps, tChord } from "./PianoBase.types";
 
 import './PianoBase.css';
+
+export interface PianoBaseProps {
+  createSynth?: () => SupportedSynthType;
+  chordMap?: ChordMap;
+  octave?: tOctaveRange;
+  octaves?: tOctaveRange;
+  hightlightOnThePiano?: tChord;
+  playitOnThePiano?: tChord;
+  sequenceToPlay?: tChord[];
+  onSequenceEnd?: () => void;
+}
 
 export default function PianoBase({
   createSynth,
   chordMap = defaultChordMap,
   octave = 4,
   octaves = 3,
-  showChordOnThePiano
+  hightlightOnThePiano,
+  playitOnThePiano,
 }: PianoBaseProps) {
   const synthRef = useRef<Tone.Synth | Tone.DuoSynth | Tone.PolySynth | null>(null);
   const [activeNotes, setActiveNotes] = useState<string[]>([]);
@@ -44,23 +56,29 @@ export default function PianoBase({
   }, [createSynth]);
 
   useEffect(() => {
-    if (showChordOnThePiano && showChordOnThePiano.length > 0) {
-      setHighlightedKeys(showChordOnThePiano);
-      playChordUtil(showChordOnThePiano, synthRef.current);
+    if (hightlightOnThePiano && hightlightOnThePiano.length > 0) {
+      setHighlightedKeys(hightlightOnThePiano);
+      // playChord(hightlightOnThePiano, synthRef.current);
     }
-  }, [showChordOnThePiano]);
+  }, [hightlightOnThePiano]);
+
+  useEffect(() => {
+    if (hightlightOnThePiano && hightlightOnThePiano.length > 0) {
+      playChord(hightlightOnThePiano, synthRef.current);
+    }
+  }, [playitOnThePiano]);{
 
   const handlePlayNote = (note: string) => {
     setActiveNotes([note]);
-    playNoteUtil(note, synthRef.current);
+    playNote(note, synthRef.current);
     setTimeout(() => setActiveNotes([]), 180);
   };
 
-  const handlePlayChord = (notes: string[]) => {
-    setActiveNotes(notes);
-    playChordUtil(notes, synthRef.current);
-    setTimeout(() => setActiveNotes([]), 180);
-  };
+  // const handlePlayChord = (notes: string[]) => {
+  //   setActiveNotes(notes);
+  //   playChord(notes, synthRef.current);
+  //   setTimeout(() => setActiveNotes([]), 180);
+  // };
 
   const handlePlaySequence = (notesOrName: string[] | string) => {
     const notes = Array.isArray(notesOrName)
@@ -70,7 +88,7 @@ export default function PianoBase({
     if (notes.length === 0) return;
 
     setActiveNotes(notes);
-    playSequenceUtil(notesOrName, synthRef.current, chordMap);
+    playSequence(notesOrName, synthRef.current, chordMap);
     setTimeout(() => setActiveNotes([]), notes.length * 200 + 180);
   };
 
