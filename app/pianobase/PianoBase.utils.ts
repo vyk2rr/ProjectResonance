@@ -1,8 +1,8 @@
 import * as Tone from "tone";
 import type {
-  tOctaveRange, tChordMap, tNoteName,
+  tOctaveRange, tChordMap,
   tNoteWithOctave, tPianoNotes, tPercentString,
-  tNoteName
+  tNoteName, tChord, SupportedSynthType
 } from "./PianoBase.types";
 import { SHARP_TO_FLAT_MAP } from "./PianoBase.types";
 
@@ -33,20 +33,20 @@ export function generateNotes(octaves: tOctaveRange = 3, startOctave: tOctaveRan
   return { white, black };
 }
 
-export function getAlternativeNotation(note: tNoteName): tNoteName {
+export function getAlternativeNotation(note: tNoteWithOctave): tNoteWithOctave {
   const match = note.match(/^([A-G]#)(\d)$/);
   if (match) {
     const [, noteName, octave] = match;
     const flat = SHARP_TO_FLAT_MAP[noteName as keyof typeof SHARP_TO_FLAT_MAP];
     if (flat) {
-      return `${flat}${octave}`;
+      return `${flat}${octave}` as tNoteWithOctave;
     }
   }
-  return "" as tNoteName;
+  return "" as tNoteWithOctave;
 }
 
 export function getBlackKeyLeft(note: tNoteName, whiteNotes: tNoteName[]): tPercentString {
-  const blackToWhiteBefore: Partial<Record<tNoteName, tNoteName> = {
+  const blackToWhiteBefore: Partial<Record<tNoteName, tNoteName>> = {
     "C#": "C",
     "D#": "D",
     "F#": "F",
@@ -58,8 +58,8 @@ export function getBlackKeyLeft(note: tNoteName, whiteNotes: tNoteName[]): tPerc
   if (!match) return "0%";
 
   const [_, pitchClass, octave] = match;
-  const whiteBefore = `${blackToWhiteBefore[pitchClass]}${octave}` as tNoteWithOctave;
-  const whiteIndex = whiteNotes.indexOf(whiteBefore as);
+  const whiteBefore = `${blackToWhiteBefore[pitchClass as tNoteName]}${octave}` as tNoteWithOctave;
+  const whiteIndex = whiteNotes.indexOf(whiteBefore as tNoteName);
 
   if (whiteIndex === -1) return "0%";
 
@@ -69,7 +69,7 @@ export function getBlackKeyLeft(note: tNoteName, whiteNotes: tNoteName[]): tPerc
   return `${left}%`; // ya está centrado por transform: translateX(-50%)
 }
 
-export function getBlackKeyWidth(octaves: tOctaveRange): string {
+export function getBlackKeyWidth(octaves: tOctaveRange): tPercentString {
   if (octaves <= 1) return "7%";
   if (octaves === 2) return "4%";
   if (octaves === 3) return "3%";
@@ -77,7 +77,7 @@ export function getBlackKeyWidth(octaves: tOctaveRange): string {
   return "1.4%";
 }
 
-export function createDefaultSynth() {
+export function createDefaultSynth(): SupportedSynthType {
   // Sintetizador principal para el tono del piano
   const synth = new Tone.PolySynth(Tone.Synth, {
     volume: -8,
@@ -130,28 +130,22 @@ export function createDefaultSynth() {
   } as unknown as Tone.PolySynth;
 }
 
-export function playNote(note: string, synth: Tone.PolySynth | null) {
+export function playNote(note: tNoteWithOctave, synth: SupportedSynthType | null) {
   if (!synth) return;
   synth.triggerAttackRelease(note, "4n");
 }
 
-export function playChord(notes: string[], synth: Tone.PolySynth | null) {
+export function playChord(notes: tChord, synth: SupportedSynthType | null) {
   if (!synth) return;
   notes.forEach(note => synth.triggerAttackRelease(note, "2n"));
 }
 
 export function playSequence(
-  notesOrName: string[] | string,
-  synth: Tone.PolySynth | null,
-  chordMap: tChordMap = defaultChordMap,
+  notes: tChord,
+  synth: SupportedSynthType | null,
   delay = 200
 ) {
   if (!synth) return;
-
-  const notes = Array.isArray(notesOrName)
-    ? notesOrName
-    : chordMap[notesOrName] || [];
-
   if (notes.length === 0) return;
 
   notes.forEach((note, i) => {
