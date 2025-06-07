@@ -1,21 +1,14 @@
 import React, { useState } from "react";
-import PianoBase from "./../../PianoBase/PianoBase";
+import PianoBase from "../../PianoBase/PianoBase";
+import type { tChord } from "../../PianoBase/PianoBase.types";
 
-export default function PianoWithSequenceButton() {
+export default function SequencePlayground() {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [sequenceToPlay, setSequenceToPlay] = useState<string[]>([]);
+  const [sequenceToPlay, setSequenceToPlay] = useState<tChord[]>([]);
 
   const handleTriggerSequence = () => {
     setIsPlaying(true);
-    setSequenceToPlay([
-      ["C", "E", "G"],
-      "D",
-      "E",
-      ["F", "A", "C"],
-      "G",
-      "A",
-      "B"
-    ]);
+    setSequenceToPlay([["D4", "A4", "F#5", "A5", "D6"]] as tChord[]);
   };
 
   return (<>
@@ -26,7 +19,7 @@ export default function PianoWithSequenceButton() {
     />
 
     <button onClick={handleTriggerSequence} disabled={isPlaying}>
-      <h1>Clikc to Trigger Sequence</h1>
+      <h1>🚀 Zap!</h1>
     </button>
   </>);
 }
