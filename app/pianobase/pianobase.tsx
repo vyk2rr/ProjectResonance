@@ -70,7 +70,10 @@ export default function PianoBase({
 
     let cancelled = false;
     const runSequence = async () => {
-      await handlePlaySequenceWithHighlight(sequenceToPlay.sequenceToPlay, () => cancelled);
+      await handlePlaySequenceWithHighlight(
+        sequenceToPlay.sequenceToPlay,
+        sequenceToPlay.hihlightedKeys,
+        () => cancelled);
     };
     runSequence();
 
@@ -79,24 +82,28 @@ export default function PianoBase({
 
   async function playNoteWithHighlight(
     note: tNoteWithOctave,
+    highlight?: boolean = true,
     isCancelled?: () => boolean,
     duration?: tTime
   ) {
     if (isCancelled?.()) return;
-    if (sequenceToPlay?.hihlightedKeys) setActiveNotes([note]);
+
+    if (highlight) setActiveNotes([note]);
+    
     await playNote(note, synthRef.current, duration);
     setActiveNotes([]);
   }
 
   const handlePlaySequenceWithHighlight = async (
     sequence: tChordSequence,
+    highlight?: boolean,
     isCancelled?: () => boolean
   ) => {
     if (!sequence || sequence.length === 0) return;
 
     for (const chord of sequence) {
       for (const note of chord) {
-        await playNoteWithHighlight(note, isCancelled);
+        await playNoteWithHighlight(note, highlight, isCancelled);
       }
     }
 
@@ -108,7 +115,7 @@ export default function PianoBase({
     if (chord.length === 0) return;
 
     for (const note of chord) {
-      await playNoteWithHighlight(note, undefined, "13n");
+      await playNoteWithHighlight(note, true, undefined, "13n");
     }
 
     setActiveNotes([]);
