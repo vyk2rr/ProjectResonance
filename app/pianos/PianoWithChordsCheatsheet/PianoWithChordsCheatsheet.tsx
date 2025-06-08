@@ -2,13 +2,12 @@ import * as Tone from "tone";
 import React, { useState } from "react";
 import type { PianoBaseProps } from "../../PianoBase/PianoBase";
 import type {
-  tOctaveRange, tChord, tNote,
-  tNoteWithOctave,
-  tChordWithName,
+  tOctaveRange, tChord, tNote, tChordWithName,
 } from "../../PianoBase/PianoBase.types";
 import { chordToColor, generateChordsForNote, filterChords } from "./PianoWithChordsCheatsheet.utils";
 import "./PianoWithChordsCheatsheet.css";
 import { PianoDryLeaf } from "../PianoDryLeaf";
+import PianoBase from "../../PianoBase/PianoBase";
 
 interface PianoWithChordsHelperProps extends PianoBaseProps {
   chord: string[],
@@ -26,11 +25,11 @@ export default function PianoWithChordsHelper({ chord, octaves = 2, octave = 4 }
 
   const notes: tNote[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
 
-  const handlePlayNote = (note: tNoteWithOctave) => {
-    const chord: tChord = [note];
-    // const sequence: tChordSequence = [chord]
-    setCurrentChord(chord);
-  }
+  // const handlePlayNote = (note: tNoteWithOctave) => {
+  //   const chord: tChord = [note];
+  //   // const sequence: tChordSequence = [chord]
+  //   setCurrentChord(chord);
+  // }
 
   const handleChordClick = (chord: tChordWithName) => {
     setCurrentChord(chord.chord);

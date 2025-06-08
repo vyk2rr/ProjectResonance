@@ -148,15 +148,18 @@ export async function playChord(
   duration: tTime = "4n"
 ): Promise<void> {
   if (!synth) return;
+  await Promise.all(notes.map(note => playNote(note, synth, duration)));
   for (const note of notes) {
     await playNote(note, synth, duration);
   }
 }
 
-export function playChordSimultaneous(
-  notes: string[],
-  synth: SupportedSynthType
+export async function playChordSimultaneous(
+  notes: tChord,
+  synth: SupportedSynthType,
+  duration: tTime = "2n"
 ) {
-  if (!synth) return;
-  synth.triggerAttackRelease(notes, "2n");
+  await playNote(notes, synth, duration);
 }
+
+
