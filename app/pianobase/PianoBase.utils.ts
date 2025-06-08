@@ -1,6 +1,6 @@
 import * as Tone from "tone";
 import type {
-  tOctaveRange, tChordMap,
+  tOctaveRange, tChordMap, tTime, tChordSequence,
   tNoteWithOctave, tPianoNotes, tPercentString,
   tNoteName, tChord, SupportedSynthType
 } from "./PianoBase.types";
@@ -130,12 +130,24 @@ export function createDefaultSynth(): SupportedSynthType {
   } as unknown as Tone.PolySynth;
 }
 
-export function playNote(note: tNoteWithOctave, synth: SupportedSynthType | null) {
-  if (!synth) return;
-  synth.triggerAttackRelease(note, "4n");
+export function playNote(
+  note: tNoteWithOctave,
+  synth: SupportedSynthType | null,
+  duration: tTime = "4n"
+): Promise<void> {
+  if (!synth) return Promise.resolve();
+  synth.triggerAttackRelease(note, duration);
+  const ms = Tone.Time(duration).toMilliseconds();
+  return new Promise(res => setTimeout(res, ms));
 }
 
-export function playChord(notes: tChord, synth: SupportedSynthType | null) {
+export async function playChord(
+  notes: tChord,
+  synth: SupportedSynthType | null,
+  duration: tTime = "4n"
+): Promise<void> {
   if (!synth) return;
-  notes.forEach(note => synth.triggerAttackRelease(note, "2n"));
+  for (const note of notes) {
+    await playNote(note, synth, duration);
+  }
 }

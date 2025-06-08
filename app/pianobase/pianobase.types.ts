@@ -43,7 +43,44 @@ export const MODES = [
   'locrian'
 ] as const;
 
-export const CHORD_INTERVALS: Record<ChordType, number[]> = {
+export type tOctaveRange = typeof OCTAVES_RANGE[number]; // example: 1, 2, 3, 4, 5
+export type tChordQualities = typeof CHORD_QUALITIES[number]; // "maj", "min", "dim", etc.
+export type tMajorScaleChordQualities = typeof MAJOR_SCALE_CHORD_QUALITIES[number]; // "maj", "min"...
+export type tMinorScaleChordQualities = typeof MINOR_SCALE_CHORD_QUALITIES[number]; // "min", "dim"...
+
+export type tMode = typeof MODES[number]; // example: "ionian", "dorian", etc.
+export type tNoteName = typeof NOTES[number]; // example: "C", "Db", "E#", etc.
+export type tNoteWithOctave = `${tNoteName}${tOctaveRange}`; // example: "C4", "D#5", "Bb3", etc.
+export type tNoteWQuality = `${tNoteName}${tChordQualities}`; // example: "Cmaj", "Dmin", "E#sus4", etc.
+export type tNoteWOCtaveQuality = `${tNoteName}${tOctaveRange}${tChordQualities}`; // example: "C3maj", "Dmin", "E#sus4", etc.
+export type tPercentString = `${number}%`; // example: "Cmaj", "Dmin", "E#sus4", etc.
+export type tTime = Tone.Unit.Time; // exa mple: "4n", "2m", "1:2:3", etc.
+
+export type tChord = tNoteWithOctave[]
+export type tChordSequence = tChord[]
+
+export type SupportedSynthType =
+  | Tone.Synth
+  | Tone.DuoSynth
+  | Tone.PolySynth
+  // | Tone.MonoSynth
+  | Tone.FMSynth
+  | Tone.PluckSynth;
+
+export type tChordMap = Record<string, tNoteWithOctave[]>;
+
+export type tPianoNotes = {
+  white: tNoteWithOctave[];
+  black: tNoteWithOctave[];
+};
+
+export type tSequenceToPlayProps = {
+  sequenceToPlay: tChordSequence;
+  onSequenceEnd: () => void;
+  hihlightedKeys?: boolean;
+}
+
+export const CHORD_INTERVALS: Record<tChordQualities, number[]> = {
   maj: [0, 4, 7],
   min: [0, 3, 7],
   dim: [0, 3, 6],
@@ -62,36 +99,6 @@ export const CHORD_INTERVALS: Record<ChordType, number[]> = {
   maj13: [0, 4, 7, 11, 14, 17, 21],
   m13: [0, 3, 7, 10, 14, 17, 21],
   dom13: [0, 4, 7, 10, 14, 17, 21],
-};
-
-export type tOctaveRange = typeof OCTAVES_RANGE[number]; // example: 1, 2, 3, 4, 5
-export type tChordQualities = typeof CHORD_QUALITIES[number]; // "maj", "min", "dim", etc.
-export type tMajorScaleChordQualities = typeof MAJOR_SCALE_CHORD_QUALITIES[number]; // "maj", "min"...
-export type tMinorScaleChordQualities = typeof MINOR_SCALE_CHORD_QUALITIES[number]; // "min", "dim"...
-
-export type tMode = typeof MODES[number]; // example: "ionian", "dorian", etc.
-export type tNoteName = typeof NOTES[number]; // example: "C", "Db", "E#", etc.
-export type tNoteWithOctave = `${tNoteName}${tOctaveRange}`; // example: "C4", "D#5", "Bb3", etc.
-export type tNoteWQuality = `${tNoteName}${tChordQualities}`; // example: "Cmaj", "Dmin", "E#sus4", etc.
-export type tNoteWOCtaveQuality = `${tNoteName}${tOctaveRange}${tChordQualities}`; // example: "C3maj", "Dmin", "E#sus4", etc.
-export type tPercentString = `${number}%`; // example: "Cmaj", "Dmin", "E#sus4", etc.
-
-export type tChord = tNoteWithOctave[]
-export type tChordSequence = tChord[]
-
-export type SupportedSynthType =
-  | Tone.Synth
-  | Tone.DuoSynth
-  | Tone.PolySynth
-  | Tone.MonoSynth
-  | Tone.FMSynth
-  | Tone.PluckSynth;
-
-export type tChordMap = Record<string, tNoteWithOctave[]>;
-
-export type tPianoNotes = {
-  white: tNoteWithOctave[];
-  black: tNoteWithOctave[];
 };
 
 // Examples: 
