@@ -1,6 +1,9 @@
 import * as Tone from "tone";
 
-export const OCTAVES_RANGE = [1, 2, 3, 4, 5, 6, 7] as const;
+export const OCTAVES_RANGE = [1, 2, 3, 4, 5, 6] as const;
+export const BASE_NOTES = [
+  'C', 'D', 'E', 'F', 'G', 'A', 'B'
+] as const;
 export const NOTES = [
   'Ab', 'A', 'A#', 'Bb', 'B', 'B#', 'Cb', 'C', 'C#', 'Db',
   'D', 'D#', 'Eb', 'E', 'E#', 'Fb', 'F', 'F#', 'Gb', 'G', 'G#'
@@ -49,6 +52,7 @@ export type tMajorScaleChordQualities = typeof MAJOR_SCALE_CHORD_QUALITIES[numbe
 export type tMinorScaleChordQualities = typeof MINOR_SCALE_CHORD_QUALITIES[number]; // "min", "dim"...
 
 export type tMode = typeof MODES[number]; // example: "ionian", "dorian", etc.
+export type tNote = typeof BASE_NOTES[number]; // example: "C", "D", "E", etc.
 export type tNoteName = typeof NOTES[number]; // example: "C", "Db", "E#", etc.
 export type tNoteWithOctave = `${tNoteName}${tOctaveRange}`; // example: "C4", "D#5", "Bb3", etc.
 export type tNoteWQuality = `${tNoteName}${tChordQualities}`; // example: "Cmaj", "Dmin", "E#sus4", etc.
@@ -58,6 +62,13 @@ export type tTime = Tone.Unit.Time; // exa mple: "4n", "2m", "1:2:3", etc.
 
 export type tChord = tNoteWithOctave[]
 export type tChordSequence = tChord[]
+
+export type tChordWithName = {
+  id: string;
+  name: string; // Faltan ejemplos aquí
+  displayNotes: string;
+  chord: tChord;
+}
 
 export type SupportedSynthType =
   | Tone.Synth
@@ -81,6 +92,8 @@ export type tSequenceToPlayProps = {
 }
 
 export const CHORD_INTERVALS: Record<tChordQualities, number[]> = {
+  // casa posición del array representa 
+  // la cantidad de semitonos desde la tónica
   maj: [0, 4, 7],
   min: [0, 3, 7],
   dim: [0, 3, 6],

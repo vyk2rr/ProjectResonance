@@ -26,7 +26,7 @@ export interface PianoBaseProps {
   chordMap?: tChordMap;
   octave?: tOctaveRange;
   octaves?: tOctaveRange;
-  hightlightOnThePiano?: tChord;
+  highlightOnThePiano?: tChord;
   sequenceToPlay?: tSequenceToPlayProps;
 }
 
@@ -35,7 +35,7 @@ export default function PianoBase({
   chordMap = DEFAULT_CHORD_MAP,
   octave = 4,
   octaves = 3,
-  hightlightOnThePiano,
+  highlightOnThePiano,
   sequenceToPlay
 }: PianoBaseProps) {
   const synthRef = useRef<SupportedSynthType | null>(null);
@@ -58,11 +58,11 @@ export default function PianoBase({
   }, []);
 
   useEffect(() => {
-    if (hightlightOnThePiano && hightlightOnThePiano.length > 0) {
-      setHighlightedKeys(hightlightOnThePiano);
-      playChord(hightlightOnThePiano, synthRef.current);
+    if (highlightOnThePiano && highlightOnThePiano.length > 0) {
+      setHighlightedKeys(highlightOnThePiano);
+      playChord(highlightOnThePiano, synthRef.current);
     }
-  }, [hightlightOnThePiano]);
+  }, [highlightOnThePiano]);
 
   useEffect(() => {
     if (!sequenceToPlay?.sequenceToPlay || sequenceToPlay.sequenceToPlay.length === 0) return;
