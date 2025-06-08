@@ -73,6 +73,7 @@ export type tMode = typeof MODES[number]; // example: "ionian", "dorian", etc.
 export type tNoteName = typeof NOTES[number]; // example: "C", "Db", "E#", etc.
 export type tNoteWithOctave = `${tNoteName}${tOctaveRange}`; // example: "C4", "D#5", "Bb3", etc.
 export type tNoteWQuality = `${tNoteName}${tChordQualities}`; // example: "Cmaj", "Dmin", "E#sus4", etc.
+export type tNoteWOCtaveQuality = `${tNoteName}${tOctaveRange}${tChordQualities}`; // example: "C3maj", "Dmin", "E#sus4", etc.
 export type tPercentString = `${number}%`; // example: "Cmaj", "Dmin", "E#sus4", etc.
 
 export type tChord = tNoteWithOctave[]

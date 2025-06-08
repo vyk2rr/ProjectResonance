@@ -16,8 +16,7 @@ import {
 import type {
   tChord, tOctaveRange,
   tChordMap, SupportedSynthType,
-  tNoteWithOctave,
-  tNoteName
+  tNoteWithOctave, tNoteWOCtaveQuality
 } from "./PianoBase.types";
 
 import './PianoBase.css';
@@ -85,11 +84,12 @@ export default function PianoBase({
   //   setTimeout(() => setActiveNotes([]), 180);
   // };
 
-  const handlePlaySequence = (notes: tChord) => {
+  const handlePlaySequence = (chordName: tNoteWOCtaveQuality) => {
+    const notes = chordMap[chordName] || [];
+    
     if (notes.length === 0) return;
-
     setActiveNotes(notes);
-    playSequence(notesOrName, synthRef.current, chordMap);
+    playSequence(notes, synthRef.current);
     setTimeout(() => setActiveNotes([]), notes.length * 200 + 180);
   };
 
@@ -109,7 +109,7 @@ export default function PianoBase({
               {Object.entries(chordMap).map(([chordName], i) => (
                 <DropdownMenu.Item
                   key={chordName}
-                  onClick={() => handlePlaySequence(chordName)}
+                  onClick={() => handlePlaySequence(chordName as tNoteWOCtaveQuality)}
                   color={["orange", "yellow", "green", "blue", "indigo", "purple", "red"][i % 7]}
                 >
                   Play {chordName}
@@ -123,7 +123,7 @@ export default function PianoBase({
       {showChords && Object.entries(chordMap).map(([chordName], i) => (
         <Button
           key={chordName}
-          onClick={() => handlePlaySequence(chordName)}
+          onClick={() => handlePlaySequence(chordName as tNoteWOCtaveQuality)}
           variant="classic"
           color={["orange", "yellow", "green", "blue", "indigo", "purple", "red"][i % 7]}
         >
