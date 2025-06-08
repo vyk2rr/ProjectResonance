@@ -77,6 +77,7 @@ export type tNoteWOCtaveQuality = `${tNoteName}${tOctaveRange}${tChordQualities}
 export type tPercentString = `${number}%`; // example: "Cmaj", "Dmin", "E#sus4", etc.
 
 export type tChord = tNoteWithOctave[]
+export type tChordSequence = tChord[]
 
 export type SupportedSynthType =
   | Tone.Synth
@@ -96,7 +97,7 @@ export type tPianoNotes = {
 
 // Examples: 
 // const showChordOnThePiano: tChord = ['C4', 'E4', 'G4'];
-// const sequenceToPlay: tChord[] = [
+// const sequenceToPlay: tChordSequence = [
 //   ['C4', 'E4', 'G4'],
 //   ['D4', 'F#4', 'A4']
 // ];

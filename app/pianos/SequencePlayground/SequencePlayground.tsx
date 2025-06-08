@@ -8,14 +8,20 @@ export default function SequencePlayground() {
 
   const handleTriggerSequence = () => {
     setIsPlaying(true);
-    setSequenceToPlay([["D4", "A4", "F#5", "A5", "D6"]] as tChord[]);
+    setSequenceToPlay([
+      ["E4", "B4", "G5", "B5", "E6"]
+    ] as tChord[]);
   };
 
   return (<>
     <PianoBase
       chordMap={{}}
       sequenceToPlay={sequenceToPlay}
-      onSequenceEnd={() => setSequenceToPlay([])}
+      onSequenceEnd={() => {
+        console.log("Sequence ended");
+        setSequenceToPlay([]);
+        setIsPlaying(false);
+      }}
     />
 
     <button onClick={handleTriggerSequence} disabled={isPlaying}>

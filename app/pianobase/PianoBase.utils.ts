@@ -139,18 +139,3 @@ export function playChord(notes: tChord, synth: SupportedSynthType | null) {
   if (!synth) return;
   notes.forEach(note => synth.triggerAttackRelease(note, "2n"));
 }
-
-export function playSequence(
-  notes: tChord,
-  synth: SupportedSynthType | null,
-  delay = 200
-) {
-  if (!synth) return;
-  if (notes.length === 0) return;
-
-  notes.forEach((note, i) => {
-    setTimeout(() => {
-      synth.triggerAttackRelease(note, "8n");
-    }, i * delay);
-  });
-}

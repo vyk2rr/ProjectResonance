@@ -10,11 +10,10 @@ import {
   getBlackKeyWidth,
   createDefaultSynth,
   playNote,
-  playChord,
-  playSequence,
+  playChord
 } from "./PianoBase.utils";
 import type {
-  tChord, tOctaveRange,
+  tChord, tOctaveRange, tChordSequence,
   tChordMap, SupportedSynthType,
   tNoteWithOctave, tNoteWOCtaveQuality
 } from "./PianoBase.types";
@@ -27,8 +26,7 @@ export interface PianoBaseProps {
   octave?: tOctaveRange;
   octaves?: tOctaveRange;
   hightlightOnThePiano?: tChord;
-  playitOnThePiano?: tChord;
-  sequenceToPlay?: tChord[];
+  sequenceToPlay?: tChordSequence;
   onSequenceEnd?: () => void;
 }
 
@@ -38,7 +36,8 @@ export default function PianoBase({
   octave = 4,
   octaves = 3,
   hightlightOnThePiano,
-  playitOnThePiano,
+  sequenceToPlay,
+  onSequenceEnd
 }: PianoBaseProps) {
   const synthRef = useRef<SupportedSynthType | null>(null);
   const [activeNotes, setActiveNotes] = useState<tChord>([]);
@@ -66,11 +65,26 @@ export default function PianoBase({
     }
   }, [hightlightOnThePiano]);
 
+  // useEffect(() => {
+  //   if (hightlightOnThePiano && hightlightOnThePiano.length > 0) {
+  //     playChord(hightlightOnThePiano, synthRef.current);
+  //   }
+  // }, [playitOnThePiano]);
+
   useEffect(() => {
-    if (hightlightOnThePiano && hightlightOnThePiano.length > 0) {
-      playChord(hightlightOnThePiano, synthRef.current);
+    if (sequenceToPlay && sequenceToPlay.length > 0) {
+      sequenceToPlay.forEach((chord, index) => {
+        setTimeout(() => {
+          playChord(chord, synthRef.current);
+          setActiveNotes(chord);
+          setTimeout(() => {
+            setActiveNotes([]);
+            onSequenceEnd();
+          }, 180);
+        }, index * 200); // Adjust timing as needed
+      });
     }
-  }, [playitOnThePiano]);
+  }, [sequenceToPlay]);
 
   const handlePlayNote = (note: tNoteWithOctave) => {
     setActiveNotes([note]);
@@ -86,11 +100,11 @@ export default function PianoBase({
 
   const handlePlaySequence = (chordName: tNoteWOCtaveQuality) => {
     const notes = chordMap[chordName] || [];
-    
+
     if (notes.length === 0) return;
-    setActiveNotes(notes);
-    playSequence(notes, synthRef.current);
-    setTimeout(() => setActiveNotes([]), notes.length * 200 + 180);
+    // setActiveNotes(notes);
+    playChord(notes, synthRef.current);
+    // setTimeout(() => setActiveNotes([]), notes.length * 200 + 180);
   };
 
   return (
