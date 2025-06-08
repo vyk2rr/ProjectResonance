@@ -1,7 +1,12 @@
 import * as Tone from "tone";
-import type { OctaveRangeType, chordMapType } from "./PianoBase.types";
+import type {
+  tOctaveRange, tChordMap, tTime, tChordSequence,
+  tNoteWithOctave, tPianoNotes, tPercentString,
+  tNoteName, tChord, SupportedSynthType
+} from "./PianoBase.types";
+import { SHARP_TO_FLAT_MAP } from "./PianoBase.types";
 
-export const defaultChordMap: chordMapType = {
+export const DEFAULT_CHORD_MAP: tChordMap = {
   D4maj: ["D4", "A4", "F#5", "A5", "D6"],
   E4min: ["E4", "B4", "G5", "B5", "E6"],
   G4bmin: ["F#4", "C#5", "A5", "C#6", "F#6"],
@@ -12,40 +17,36 @@ export const defaultChordMap: chordMapType = {
   D5maj: ["D5", "A5", "F#6", "A6", "D7"],
 };
 
-export const sharpToFlatMap: Record<string, string> = {
-  "C#": "Db",
-  "D#": "Eb",
-  "F#": "Gb",
-  "G#": "Ab",
-  "A#": "Bb"
-};
-
-export function generateNotes(octaves: OctaveRangeType = 3, startOctave: OctaveRangeType = 4) {
-  const white = [];
-  const black = [];
+export function generateNotes(octaves: tOctaveRange = 3, startOctave: tOctaveRange = 4): tPianoNotes {
+  const white: tNoteWithOctave[] = [];
+  const black: tNoteWithOctave[] = [];
 
   for (let i = 0; i < octaves; i++) {
     const currentOctave = startOctave + i;
-    white.push(...["C", "D", "E", "F", "G", "A", "B"].map(n => `${n}${currentOctave}`));
-    black.push(...["C#", "D#", "F#", "G#", "A#"].map(n => `${n}${currentOctave}`));
+    white.push(...["C", "D", "E", "F", "G", "A", "B"].map(n => `${n}${currentOctave}` as tNoteWithOctave));
+    black.push(...["C#", "D#", "F#", "G#", "A#"].map(n => `${n}${currentOctave}` as tNoteWithOctave));
   }
 
   // Agrega la nota final del último do (ej. C6)
-  white.push(`C${startOctave + octaves}`);
+  white.push(`C${startOctave + octaves}` as tNoteWithOctave);
 
   return { white, black };
 }
 
-export function getAlternativeNotation(note: string): string {
-  const [, noteName, octave] = note.match(/([A-G]#)(\d)/) || [];
-  if (noteName && sharpToFlatMap[noteName]) {
-    return `${sharpToFlatMap[noteName]}${octave}`;
+export function getAlternativeNotation(note: tNoteWithOctave): tNoteWithOctave {
+  const match = note.match(/^([A-G]#)(\d)$/);
+  if (match) {
+    const [, noteName, octave] = match;
+    const flat = SHARP_TO_FLAT_MAP[noteName as keyof typeof SHARP_TO_FLAT_MAP];
+    if (flat) {
+      return `${flat}${octave}` as tNoteWithOctave;
+    }
   }
-  return "";
+  return "" as tNoteWithOctave;
 }
 
-export function getBlackKeyLeft(note: string, whiteNotes: string[]): string {
-  const blackToWhiteBefore: Record<string, string> = {
+export function getBlackKeyLeft(note: tNoteName, whiteNotes: tNoteName[]): tPercentString {
+  const blackToWhiteBefore: Partial<Record<tNoteName, tNoteName>> = {
     "C#": "C",
     "D#": "D",
     "F#": "F",
@@ -57,8 +58,8 @@ export function getBlackKeyLeft(note: string, whiteNotes: string[]): string {
   if (!match) return "0%";
 
   const [_, pitchClass, octave] = match;
-  const whiteBefore = `${blackToWhiteBefore[pitchClass]}${octave}`;
-  const whiteIndex = whiteNotes.indexOf(whiteBefore);
+  const whiteBefore = `${blackToWhiteBefore[pitchClass as tNoteName]}${octave}` as tNoteWithOctave;
+  const whiteIndex = whiteNotes.indexOf(whiteBefore as tNoteName);
 
   if (whiteIndex === -1) return "0%";
 
@@ -68,7 +69,7 @@ export function getBlackKeyLeft(note: string, whiteNotes: string[]): string {
   return `${left}%`; // ya está centrado por transform: translateX(-50%)
 }
 
-export function getBlackKeyWidth(octaves: OctaveRangeType): string {
+export function getBlackKeyWidth(octaves: tOctaveRange): tPercentString {
   if (octaves <= 1) return "7%";
   if (octaves === 2) return "4%";
   if (octaves === 3) return "3%";
@@ -76,7 +77,7 @@ export function getBlackKeyWidth(octaves: OctaveRangeType): string {
   return "1.4%";
 }
 
-export function createDefaultSynth() {
+export function createDefaultSynth(): SupportedSynthType {
   // Sintetizador principal para el tono del piano
   const synth = new Tone.PolySynth(Tone.Synth, {
     volume: -8,
@@ -117,7 +118,8 @@ export function createDefaultSynth() {
 
   // Retornamos un objeto compatible con la interfaz esperada
   return {
-    triggerAttackRelease(note: string, duration: string | number) {
+    triggerAttackRelease(note: string | string[], duration: string | number): void {
+      console.log('wrapper: triggerAttackRelease:');
       synth.triggerAttackRelease(note, duration);
     },
     dispose() {
@@ -129,33 +131,35 @@ export function createDefaultSynth() {
   } as unknown as Tone.PolySynth;
 }
 
-export function playNote(note: string, synth: Tone.PolySynth | null) {
-  if (!synth) return;
-  synth.triggerAttackRelease(note, "4n");
+export function playNote(
+  note: tNoteWithOctave,
+  synth: SupportedSynthType | null,
+  duration: tTime = "4n"
+): Promise<void> {
+  if (!synth) return Promise.resolve();
+  synth.triggerAttackRelease(note, duration);
+  const ms = Tone.Time(duration).toMilliseconds();
+  return new Promise(res => setTimeout(res, ms));
 }
 
-export function playChord(notes: string[], synth: Tone.PolySynth | null) {
+export async function playChord(
+  notes: tChord,
+  synth: SupportedSynthType | null,
+  duration: tTime = "4n"
+): Promise<void> {
   if (!synth) return;
-  notes.forEach(note => synth.triggerAttackRelease(note, "2n"));
+  await Promise.all(notes.map(note => playNote(note, synth, duration)));
+  for (const note of notes) {
+    await playNote(note, synth, duration);
+  }
 }
 
-export function playSequence(
-  notesOrName: string[] | string, 
-  synth: Tone.PolySynth | null, 
-  chordMap: chordMapType = defaultChordMap, 
-  delay = 200
+export async function playChordSimultaneous(
+  notes: tChord,
+  synth: SupportedSynthType,
+  duration: tTime = "2n"
 ) {
-  if (!synth) return;
-  
-  const notes = Array.isArray(notesOrName)
-    ? notesOrName
-    : chordMap[notesOrName] || [];
-
-  if (notes.length === 0) return;
-
-  notes.forEach((note, i) => {
-    setTimeout(() => {
-      synth.triggerAttackRelease(note, "8n");
-    }, i * delay);
-  });
+  await playNote(notes, synth, duration);
 }
+
+

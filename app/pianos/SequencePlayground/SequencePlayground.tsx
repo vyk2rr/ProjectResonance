@@ -1,0 +1,45 @@
+import React, { useState } from "react";
+import { PianoDryLeaf } from "../PianoDryLeaf";
+import type { tChordSequence, tSequenceToPlayProps } from "../../PianoBase/PianoBase.types";
+
+export default function SequencePlayground() {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [sequenceToPlay, setSequenceToPlay] = useState<tChordSequence>([]);
+  const [highlightedKeys, setHighlightedKeys] = useState(false);
+
+  const handleTriggerSequence = (highlightedKeys: boolean = true) => {
+    setIsPlaying(true);
+    setHighlightedKeys(highlightedKeys);
+    setSequenceToPlay([
+      ["E4", "B4", "G5", "B5", "E6"],
+      ["E4", "B4", "G5"]
+    ] as tChordSequence);
+  };
+
+  return (<>
+    <PianoDryLeaf
+      sequenceToPlay={{
+        sequenceToPlay: sequenceToPlay,
+        hihlightedKeys: highlightedKeys,
+        onSequenceEnd: () => {
+          setSequenceToPlay([]);
+          setIsPlaying(false);
+        }
+      }}
+    />
+
+    <br />
+
+    <button onClick={handleTriggerSequence} disabled={isPlaying}>
+      <h1>🚀 Zap with Highlight!</h1>
+    </button>
+
+    <br />
+    <br />
+
+    <button onClick={() => handleTriggerSequence(false)} disabled={isPlaying}>
+      <h1>🚀 Zap without highlighted keys!</h1>
+    </button>
+
+  </>);
+}

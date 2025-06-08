@@ -1,21 +1,20 @@
 import * as Tone from "tone";
 import PianoBase from "../PianoBase/PianoBase";
-import type { PianoBaseProps } from "../PianoBase/PianoBase.types";
+import type { PianoBaseProps } from "../PianoBase/PianoBase";
 
-type PianoDryLeafProps = PianoBaseProps & {
-  showDescription: boolean;
+interface PianoDryLeafProps extends PianoBaseProps {
+  showDescription?: boolean;
 };
 
-export function PianoDryLeaf({ chordMap, octaves = 1, octave = 4, showDescription = false }: PianoDryLeafProps) {
+export function PianoDryLeaf({ showDescription = false, ...props }: PianoDryLeafProps) {
   return (
     <>
-      {showDescription?<span>Piano crujiente como pisando hojas secas en otoño</span>:null}
-      <PianoBase 
-        chordMap={chordMap}
-        octaves={octaves}
+      {showDescription ? <span>Piano crujiente como pisando hojas secas en otoño</span> : null}
+      <PianoBase
+        {...props}
         createSynth={() => {
-          // Synth melódico tipo campanilla de madera
-          const synth = new Tone.Synth({
+          // PolySynth con el mismo tipo de voz
+          const synth = new Tone.PolySynth(Tone.Synth, {
             oscillator: { type: "triangle" },
             envelope: { attack: 0.005, decay: 0.18, sustain: 0.05, release: 0.5 }
           });
@@ -37,7 +36,7 @@ export function PianoDryLeaf({ chordMap, octaves = 1, octave = 4, showDescriptio
 
           // Devuelve un objeto compatible con PianoBase
           return {
-            triggerAttackRelease(note: string, duration: string | number) {
+            triggerAttackRelease(note: string | string[], duration: string | number) {
               synth.triggerAttackRelease(note, duration);
               // Opcional: aleatoriza el volumen del ruido para más realismo
               noise.volume.value = -10 + Math.random() * 6;
@@ -49,7 +48,7 @@ export function PianoDryLeaf({ chordMap, octaves = 1, octave = 4, showDescriptio
               gain.dispose();
               reverb.dispose();
             }
-          } as unknown as Tone.Synth;
+          } as Tone.PolySynth;
         }}
       />
     </>

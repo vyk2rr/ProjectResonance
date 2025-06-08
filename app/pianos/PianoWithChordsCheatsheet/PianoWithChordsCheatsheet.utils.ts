@@ -1,62 +1,68 @@
 import * as Tone from "tone";
-import type { ChordType } from "../../PianoBase/PianoBase.types";
-import { chordIntervals } from "../../PianoBase/PianoBase.types";
+import { OCTAVES_RANGE } from "../../PianoBase/PianoBase.types";
+import type {
+  tChord, tNote, tNoteWithOctave, tChordQualities,
+  tChordWithName, tOctaveRange
+} from "../../PianoBase/PianoBase.types";
+import { CHORD_INTERVALS } from "../../PianoBase/PianoBase.types";
 
-function getChord(note: string, type: ChordType): string[] {
-  const base = Tone.Frequency(note);
-  return chordIntervals[type].map(i => base.transpose(i).toNote());
+function calculateChordNotes(note: tNoteWithOctave, type: tChordQualities): tChord {
+  const rootFrequency = Tone.Frequency(note);
+  return CHORD_INTERVALS[type].map(i => rootFrequency.transpose(i).toNote() as tNoteWithOctave);
 }
 
-function invertChord(notes: string[], inversion: number): string[] {
-  const result = [...notes];
+function invertChord(notes: tChord, inversion: number): tChord {
+  const result: tChord = [...notes];
   for (let i = 0; i < inversion; i++) {
     const note = result.shift();
     if (note) {
-      const octaveUp = Tone.Frequency(note).transpose(12).toNote();
+      const octaveUp: tNoteWithOctave = Tone.Frequency(note).transpose(12).toNote() as tNoteWithOctave;
       result.push(octaveUp);
     }
   }
   return result;
 }
 
-export function simplifyNoteName(note: string): string {
-  // Elimina el número de octava (ej: "C4" -> "C")
-  return note.replace(/\d+/, '');
+export function simplifyNoteName(note: tNoteWithOctave): tNote {
+  return note.replace(/\d+/, '') as tNote;
 }
 
-export function buildBaseChord(note: string, type: ChordType) {
-  const base = getChord(note, type);
-  const baseNoteName = simplifyNoteName(note);
-  const simplifiedNotes = base.map(simplifyNoteName);
+// para construir un acorde base
+export function buildBaseChord(note: tNoteWithOctave, type: tChordQualities): tChordWithName {
+  const rootFrequency = calculateChordNotes(note, type);
+  const baseNoteName: tNote = simplifyNoteName(note);
+  const simplifiedNotes: tNote[] = rootFrequency.map(simplifyNoteName);
 
   return {
     id: `${note}_${type}`,
     name: `${baseNoteName}${type}`, // Ej: "Cmaj"
     displayNotes: simplifiedNotes.join(" "), // Ej: "C E G"
-    notes: base // Mantenemos las notas completas para la lógica del piano
+    chord: rootFrequency // Mantenemos las notas completas para la lógica del piano
   };
 }
 
+// para construir las inversiones de un acorde base
 export function buildChordInversions(baseChord: ReturnType<typeof buildBaseChord>, inversions: number) {
   const result = [];
-  const base = baseChord.notes;
+  const chord: tChord = baseChord.chord;
 
   for (let i = 1; i <= inversions; i++) {
-    const inverted = invertChord(base, i);
+    const inverted = invertChord(chord, i);
     const simplifiedInverted = inverted.map(simplifyNoteName);
     result.push({
       id: `${baseChord.id}_inv${i}`,
       name: `${baseChord.name} (${i}ª)`,
       displayNotes: simplifiedInverted.join(" "),
-      notes: inverted
+      chord: inverted
     });
   }
 
   return result;
 }
 
-export const generateChordsForNote = (note: string, selectedOctave) => {
-  const noteWithOctave = note + selectedOctave;
+// genera todas las combinaciones para una nota específica, ejemplo "D"
+export const generateChordsForNote = (note: tNote, selectedOctave: tOctaveRange): tChordWithName[] => {
+  const noteWithOctave: tNoteWithOctave = note + selectedOctave as tNoteWithOctave;
   return [
     buildBaseChord(noteWithOctave, "maj"),
     ...buildChordInversions(buildBaseChord(noteWithOctave, "maj"), 2),
@@ -97,7 +103,7 @@ export const generateChordsForNote = (note: string, selectedOctave) => {
   ];
 };
 
-export function chordToColor(notes: string[]): string {
+export function chordToColor(notes: tChord): string {
   // Mapeo de notas a matices (hue) siguiendo el espectro del arcoíris
   const noteToHue: Record<string, number> = {
     'C': 0,    // Rojo (0)
@@ -115,7 +121,7 @@ export function chordToColor(notes: string[]): string {
   };
 
   // Extract base note name without octave (e.g., "G4" -> "G")
-  const extractBaseNote = (note: string): { noteName: string, octave: number } => {
+  const extractBaseNote = (note: tNoteWithOctave): { noteName: string, octave: number } => {
     const match = note.match(/^([A-G][#b]?)(\d+)?/);
     if (!match) return { noteName: note, octave: 4 }; // default to octave 4 if not found
     return {
@@ -201,11 +207,12 @@ export function chordToColor(notes: string[]): string {
 }
 
 
+// convierte la búsqueda a mayúsculas
 export function extractNotesFromSearchTerm(term: string): string[] {
   return (term.match(/([A-G][#b]?)/gi) || []).map(n => n.toUpperCase());
 }
 
-export const filterChords = (chords: any[], searchTerm: string) => {
+export const filterChords = (chords: tChordWithName[], searchTerm: string): tChordWithName[] => {
   if (!searchTerm) return chords;
 
   const upperTerm = searchTerm.toUpperCase();
@@ -214,7 +221,7 @@ export const filterChords = (chords: any[], searchTerm: string) => {
   // Si contiene notas (por ejemplo "FACE")
   if (searchNotes.length > 0) {
     return chords.filter(chord => {
-      const chordNotes = chord.notes.map(simplifyNoteName);
+      const chordNotes = chord.chord.map(simplifyNoteName);
       return searchNotes.every(n => chordNotes.includes(n));
     });
   }
