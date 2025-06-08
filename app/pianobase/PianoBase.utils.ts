@@ -118,7 +118,8 @@ export function createDefaultSynth(): SupportedSynthType {
 
   // Retornamos un objeto compatible con la interfaz esperada
   return {
-    triggerAttackRelease(note: string, duration: string | number) {
+    triggerAttackRelease(note: string | string[], duration: string | number): void {
+      console.log('wrapper: triggerAttackRelease:');
       synth.triggerAttackRelease(note, duration);
     },
     dispose() {
@@ -150,4 +151,12 @@ export async function playChord(
   for (const note of notes) {
     await playNote(note, synth, duration);
   }
+}
+
+export function playChordSimultaneous(
+  notes: string[],
+  synth: SupportedSynthType
+) {
+  if (!synth) return;
+  synth.triggerAttackRelease(notes, "2n");
 }

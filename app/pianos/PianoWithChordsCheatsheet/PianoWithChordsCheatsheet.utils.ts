@@ -12,7 +12,6 @@ function calculateChordNotes(note: tNoteWithOctave, type: tChordQualities): tCho
 }
 
 function invertChord(notes: tChord, inversion: number): tChord {
-  debugger
   const result: tChord = [...notes];
   for (let i = 0; i < inversion; i++) {
     const note = result.shift();
@@ -44,11 +43,10 @@ export function buildBaseChord(note: tNoteWithOctave, type: tChordQualities): tC
 
 // para construir las inversiones de un acorde base
 export function buildChordInversions(baseChord: ReturnType<typeof buildBaseChord>, inversions: number) {
-  const result: t = [];
+  const result = [];
   const chord: tChord = baseChord.chord;
 
   for (let i = 1; i <= inversions; i++) {
-    debugger
     const inverted = invertChord(chord, i);
     const simplifiedInverted = inverted.map(simplifyNoteName);
     result.push({

@@ -10,7 +10,8 @@ import {
   getBlackKeyWidth,
   createDefaultSynth,
   playNote,
-  playChord
+  playChord,
+  playChordSimultaneous
 } from "./PianoBase.utils";
 import type {
   tChord, tOctaveRange, tChordSequence,
@@ -60,7 +61,7 @@ export default function PianoBase({
   useEffect(() => {
     if (highlightOnThePiano && highlightOnThePiano.length > 0) {
       setHighlightedKeys(highlightOnThePiano);
-      playChord(highlightOnThePiano, synthRef.current);
+      playChordSimultaneous(highlightOnThePiano, synthRef.current);
     }
   }, [highlightOnThePiano]);
 

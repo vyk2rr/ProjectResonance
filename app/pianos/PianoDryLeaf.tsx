@@ -6,15 +6,15 @@ interface PianoDryLeafProps extends PianoBaseProps {
   showDescription?: boolean;
 };
 
-export function PianoDryLeaf({  showDescription = false, ...props }: PianoDryLeafProps) {
+export function PianoDryLeaf({ showDescription = false, ...props }: PianoDryLeafProps) {
   return (
     <>
-      {showDescription?<span>Piano crujiente como pisando hojas secas en otoño</span>:null}
-      <PianoBase 
+      {showDescription ? <span>Piano crujiente como pisando hojas secas en otoño</span> : null}
+      <PianoBase
         {...props}
         createSynth={() => {
-          // Synth melódico tipo campanilla de madera
-          const synth = new Tone.Synth({
+          // PolySynth con el mismo tipo de voz
+          const synth = new Tone.PolySynth(Tone.Synth, {
             oscillator: { type: "triangle" },
             envelope: { attack: 0.005, decay: 0.18, sustain: 0.05, release: 0.5 }
           });
@@ -36,7 +36,7 @@ export function PianoDryLeaf({  showDescription = false, ...props }: PianoDryLea
 
           // Devuelve un objeto compatible con PianoBase
           return {
-            triggerAttackRelease(note: string, duration: string | number) {
+            triggerAttackRelease(note: string | string[], duration: string | number) {
               synth.triggerAttackRelease(note, duration);
               // Opcional: aleatoriza el volumen del ruido para más realismo
               noise.volume.value = -10 + Math.random() * 6;
@@ -48,7 +48,7 @@ export function PianoDryLeaf({  showDescription = false, ...props }: PianoDryLea
               gain.dispose();
               reverb.dispose();
             }
-          } as unknown as Tone.Synth;
+          } as Tone.PolySynth;
         }}
       />
     </>
