@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import PianoBase from "../../PianoBase/PianoBase";
+import {PianoDryLeaf} from "../PianoDryLeaf";
 import type { tChord } from "../../PianoBase/PianoBase.types";
 
 export default function SequencePlayground() {
@@ -14,11 +14,10 @@ export default function SequencePlayground() {
   };
 
   return (<>
-    <PianoBase
-      chordMap={{}}
+    <PianoDryLeaf
       sequenceToPlay={sequenceToPlay}
       onSequenceEnd={() => {
-        console.log("Sequence ended");
+        console.log("Sequence ended"); 
         setSequenceToPlay([]);
         setIsPlaying(false);
       }}

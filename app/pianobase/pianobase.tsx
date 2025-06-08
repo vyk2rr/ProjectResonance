@@ -72,18 +72,7 @@ export default function PianoBase({
   // }, [playitOnThePiano]);
 
   useEffect(() => {
-    if (sequenceToPlay && sequenceToPlay.length > 0) {
-      sequenceToPlay.forEach((chord, index) => {
-        setTimeout(() => {
-          playChord(chord, synthRef.current);
-          setActiveNotes(chord);
-          setTimeout(() => {
-            setActiveNotes([]);
-            onSequenceEnd();
-          }, 180);
-        }, index * 200); // Adjust timing as needed
-      });
-    }
+    console.log("sequenceToPlay changed:", sequenceToPlay);
   }, [sequenceToPlay]);
 
   const handlePlayNote = (note: tNoteWithOctave) => {

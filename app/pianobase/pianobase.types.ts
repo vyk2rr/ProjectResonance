@@ -94,28 +94,30 @@ export type tPianoNotes = {
   black: tNoteWithOctave[];
 };
 
-
 // Examples: 
-// const showChordOnThePiano: tChord = ['C4', 'E4', 'G4'];
-// const sequenceToPlay: tChordSequence = [
+// const octaveRange: tOctaveRange = 4;
+// const chordQualities: tChordQualities = 'maj';
+// const majorScaleChordQualities: tMajorScaleChordQualities = 'maj';
+// const minorScaleChordQualities: tMinorScaleChordQualities = 'min';
+
+// const mode: tMode = 'ionian';
+// const noteName: tNoteName = 'C';
+// const noteWithOctave: tNoteWithOctave = 'D4';
+// const noteWQuality: tNoteWQuality = 'Abmaj13'
+// const noteWOCtaveQuality: tNoteWOCtaveQuality = 'A#5dom11'
+// const percentString: tPercentString = '50%';
+
+// const chord: tChord = ['C4', 'E4', 'G4'];
+// const chordSequence: tChordSequence = [
 //   ['C4', 'E4', 'G4'],
 //   ['D4', 'F#4', 'A4']
 // ];
-
-// const note_name: tNoteName = 'Cb'
-// const note_with_octave: tNoteWithOctave = 'C4'
-
-// const escala_de_notas: iNoteSequence = {
-//   root: 'C',
-//   notes: [
-//     { name: 'C', octave: 4 },
-//     { name: 'D', octave: 4 },
-//     { name: 'E', octave: 4 },
-//     { name: 'F', octave: 4 },
-//     { name: 'G', octave: 4 },
-//     { name: 'A', octave: 4 },
-//     { name: 'B', octave: 4 }
-//   ]
+// const chordMap:tChordMap =  {
+//   'Cmaj': ['C4', 'E4', 'G4'],
+//   'Dmin': ['D4', 'F4', 'A4'],
+//   'E#sus4': ['E#4', 'A#4', 'B#4']
+// } 
+// const pianoNotes: tPianoNotes = {
+//   white: ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4'],
+//   black: ['C#4', 'D#4', 'F#4', 'G#4', 'A#4']
 // };
-
-

@@ -1,18 +1,17 @@
 import * as Tone from "tone";
 import PianoBase from "../PianoBase/PianoBase";
-import type { PianoBaseProps } from "../PianoBase/PianoBase.types";
+import type { PianoBaseProps } from "../PianoBase/PianoBase";
 
-type PianoDryLeafProps = PianoBaseProps & {
-  showDescription: boolean;
+interface PianoDryLeafProps extends PianoBaseProps {
+  showDescription?: boolean;
 };
 
-export function PianoDryLeaf({ chordMap, octaves = 1, octave = 4, showDescription = false }: PianoDryLeafProps) {
+export function PianoDryLeaf({  showDescription = false, ...props }: PianoDryLeafProps) {
   return (
     <>
       {showDescription?<span>Piano crujiente como pisando hojas secas en otoño</span>:null}
       <PianoBase 
-        chordMap={chordMap}
-        octaves={octaves}
+        {...props}
         createSynth={() => {
           // Synth melódico tipo campanilla de madera
           const synth = new Tone.Synth({
