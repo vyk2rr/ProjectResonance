@@ -1,17 +1,9 @@
 import React from 'react'
-import { Theme } from '@radix-ui/themes';
 import { PianoQuartzEcho } from "../app/pianos/PianoQuartzEcho";
 
 export default {
   title: "Components/PianoQuartzEcho",
-  component: PianoQuartzEcho,
-  decorators: [
-    (Story) => (
-      <Theme>
-        <Story />
-      </Theme>
-    ),
-  ]
+  component: PianoQuartzEcho
 };
 
 const Template = (args) => <PianoQuartzEcho {...args} />;
