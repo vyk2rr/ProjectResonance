@@ -57,8 +57,8 @@ export type tNoteName = typeof NOTES[number]; // example: "C", "Db", "E#", etc.
 export type tNoteWithOctave = `${tNoteName}${tOctaveRange}`; // example: "C4", "D#5", "Bb3", etc.
 export type tNoteWQuality = `${tNoteName}${tChordQualities}`; // example: "Cmaj", "Dmin", "E#sus4", etc.
 export type tNoteWOCtaveQuality = `${tNoteName}${tOctaveRange}${tChordQualities}`; // example: "C3maj", "Dmin", "E#sus4", etc.
-export type tPercentString = `${number}%`; // example: "Cmaj", "Dmin", "E#sus4", etc.
-export type tTime = Tone.Unit.Time; // exa mple: "4n", "2m", "1:2:3", etc.
+export type tPercentString = `${number}%`; // example: "7.5%"
+export type tTime = Tone.Unit.Time; // example: "4n", "2m", "1:2:3", etc.
 
 export type tChord = tNoteWithOctave[]
 export type tChordSequence = tChord[]
@@ -140,4 +140,18 @@ export const CHORD_INTERVALS: Record<tChordQualities, number[]> = {
 // const pianoNotes: tPianoNotes = {
 //   white: ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4'],
 //   black: ['C#4', 'D#4', 'F#4', 'G#4', 'A#4']
+// };
+// const chordWithName: tChordWithName = {
+//   id: "C4_maj",
+//   name: "Cmaj",
+//   displayNotes: "C E G",
+//   chord: ["C4", "E4", "G4"]
+// };
+// const sequenceToPlayProps: tSequenceToPlayProps = {
+//   sequenceToPlay: [
+//     ["C4", "E4", "G4"],
+//     ["D4", "F#4", "A4"]
+//   ],
+//   onSequenceEnd: () => { console.log("Sequence finished!"); },
+//   hihlightedKeys: true
 // };
