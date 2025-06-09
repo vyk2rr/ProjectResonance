@@ -1,11 +1,26 @@
+import React from 'react';
 import type { Preview } from '@storybook/react-vite'
 
+import { Theme } from '@radix-ui/themes';
+import '@radix-ui/themes/styles.css';
+
+const withProviders = (Story: React.ComponentType) => {
+  return (
+    <>
+      <Theme>
+        <Story />
+      </Theme>
+    </>
+  );
+};
+
 const preview: Preview = {
+  decorators: [withProviders],
   parameters: {
     controls: {
       matchers: {
-       color: /(background|color)$/i,
-       date: /Date$/i,
+        color: /(background|color)$/i,
+        date: /Date$/i,
       },
     },
 

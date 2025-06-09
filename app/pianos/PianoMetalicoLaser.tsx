@@ -1,24 +1,20 @@
 import * as Tone from "tone";
 import PianoBase from "../PianoBase/PianoBase";
-import type { PianoBaseProps } from "../PianoBase/PianoBase.types";
+import type { PianoBaseProps } from "../PianoBase/PianoBase";
 
-type PianoMetalicoLaserProps = PianoBaseProps & {
-  showDescription: boolean;
-};  
+interface PianoMetalicoLaserProps extends PianoBaseProps {
+  showDescription?: boolean;
+};
 
-export function PianoMetalicoLaser({ chordMap, octaves = 1, octave = 4, showDescription = false }: PianoMetalicoLaserProps) {
+export function PianoMetalicoLaser({ showDescription = false, ...props }: PianoMetalicoLaserProps) {
   return (
     <>
-      {showDescription?<span>Piano metálico tipo laser</span>:null}
+      {showDescription ? <span>Piano metálico tipo laser</span> : null}
       <PianoBase
-        chordMap={chordMap}
-        octaves={octaves}
-        octave={octave}
+        {...props}
         createSynth={() => {
-          //  metálico pulsante
-
-          // Sintetizador principal
-          const synth = new Tone.MonoSynth({
+          // PolySynth con MonoSynth como voz
+          const synth = new Tone.PolySynth(Tone.MonoSynth, {
             oscillator: {
               type: "square"
             },
@@ -45,21 +41,16 @@ export function PianoMetalicoLaser({ chordMap, octaves = 1, octave = 4, showDesc
 
           // Tremolo (LFO en volumen)
           const tremolo = new Tone.Tremolo({
-            frequency: 2,   // dos pulsos por segundo
-            depth: 0.75,    // intensidad del efecto
-            spread: 180     // estéreo completo
+            frequency: 2,
+            depth: 0.75,
+            spread: 180
           }).start();
 
-          // Compresor para más pegada
           const compressor = new Tone.Compressor(-20, 3);
-
-          // Reverb seco y corto, como golpe metálico en espacio cerrado
           const reverb = new Tone.Reverb({ decay: 1.2, wet: 0.3 }).toDestination();
 
-          // Cadena
           synth.chain(tremolo, compressor, reverb);
 
-          // Retorna el sintetizador listo
           return synth;
         }}
       />

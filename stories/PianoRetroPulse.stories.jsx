@@ -1,17 +1,9 @@
 import React from 'react'
-import { Theme } from '@radix-ui/themes';
 import { PianoRetroPulse } from "../app/pianos/PianoRetroPulse";
 
 export default {
   title: "Components/PianoRetroPulse",
-  component: PianoRetroPulse,
-  decorators: [
-    (Story) => (
-      <Theme>
-        <Story />
-      </Theme>
-    ),
-  ]
+  component: PianoRetroPulse
 };
 
 const Template = (args) => <PianoRetroPulse {...args} />;

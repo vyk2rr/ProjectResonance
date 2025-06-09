@@ -1,19 +1,17 @@
 import * as Tone from "tone";
 import PianoBase from "../PianoBase/PianoBase";
-import type { PianoBaseProps } from "../PianoBase/PianoBase.types";
+import type { PianoBaseProps } from "../PianoBase/PianoBase";
 
-type PianoEchoSpatialProps = PianoBaseProps & {
-  showDescription: boolean;
+interface PianoEchoSpatialProps extends PianoBaseProps {
+  showDescription?: boolean;
 };
 
-export function PianoEchoSpatial({ chordMap, octaves = 1, octave = 4, showDescription = false }: PianoEchoSpatialProps) {
+export function PianoEchoSpatial({ showDescription = false, ...props }: PianoEchoSpatialProps) {
   return (
     <>
       {showDescription ? <span>Piano espacial con eco y profundidad envolvente</span> : null}
       <PianoBase
-        chordMap={chordMap}
-        octaves={octaves}
-        octave={octave}
+        {...props}
         createSynth={() => {
           const synth = new Tone.DuoSynth({
             vibratoAmount: 0.7,

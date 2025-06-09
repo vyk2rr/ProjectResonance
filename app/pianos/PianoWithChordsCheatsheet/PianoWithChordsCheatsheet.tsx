@@ -7,6 +7,7 @@ import type {
 import { chordToColor, generateChordsForNote, filterChords } from "./PianoWithChordsCheatsheet.utils";
 import "./PianoWithChordsCheatsheet.css";
 import { PianoDryLeaf } from "../PianoDryLeaf";
+import { PianoMetalicoLaser } from "../PianoMetalicoLaser";
 import PianoBase from "../../PianoBase/PianoBase";
 
 interface PianoWithChordsHelperProps extends PianoBaseProps {
@@ -40,7 +41,7 @@ export default function PianoWithChordsHelper({ chord, octaves = 2, octave = 4 }
   return (
     <>
       <div style={{ backgroundColor: currentColor, padding: "10px" }}>
-        <PianoDryLeaf
+        <PianoMetalicoLaser
           octaves={octaves}
           octave={octave}
           highlightOnThePiano={currentChord}
