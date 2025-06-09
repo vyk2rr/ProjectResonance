@@ -1,17 +1,9 @@
 import React from 'react'
-import { Theme } from '@radix-ui/themes';
 import { PianoMetalicoLaser } from "../app/pianos/PianoMetalicoLaser";
 
 export default {
   title: "Components/PianoMetalicoLaser",
-  component: PianoMetalicoLaser,
-  decorators: [
-    (Story) => (
-      <Theme>
-        <Story />
-      </Theme>
-    ),
-  ]
+  component: PianoMetalicoLaser
 };
 
 const Template = (args) => <PianoMetalicoLaser {...args} />;

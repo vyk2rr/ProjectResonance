@@ -1,21 +1,9 @@
 import React from 'react'
-import { Theme } from '@radix-ui/themes';
 import PianoBase from "../app/PianoBase/PianoBase";
-import '@radix-ui/themes/styles.css';
-// import type { StoryObj } from '@storybook/react'
-
-// type Story = StoryObj<typeof PianoBase>;
 
 export default {
   title: "Components/PianoBase",
-  component: PianoBase,
-  decorators: [
-    (Story) => (
-      <Theme>
-        <Story />
-      </Theme>
-    ),
-  ]
+  component: PianoBase
 };
 
 const Template = (args) => <PianoBase {...args} />;
@@ -32,7 +20,6 @@ withDmajHighlightedOnThePiano.args = {
   octaves: 1,
   showChordOnThePiano: ["D4", "F#4", "A4"],
 };
-
 
 
 export const inOctaveC1 = Template.bind({});

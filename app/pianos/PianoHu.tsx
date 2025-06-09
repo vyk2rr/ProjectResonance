@@ -1,19 +1,17 @@
 import * as Tone from "tone";
 import PianoBase from "../PianoBase/PianoBase";
-import type { PianoBaseProps } from "../PianoBase/PianoBase.types";
+import type { PianoBaseProps } from "../PianoBase/PianoBase";
 
-type PianoHuProps = PianoBaseProps & {
-  showDescription: boolean;
+interface PianoHuProps extends PianoBaseProps {
+  showDescription?: boolean;
 };
 
-export function PianoHu({ chordMap, octaves = 1, octave = 4, showDescription = false }: PianoHuProps) {
+export function PianoHu({ showDescription = false, ...props }: PianoHuProps) {
   return (
     <>
       {showDescription?<span>Piano tipo "hu"</span>:null}
       <PianoBase
-        chordMap={chordMap}
-        octaves={octaves}
-        octave={octave}
+        {...props} 
         createSynth={() => {
           // PolySynth para varias voces
           const synth = new Tone.PolySynth(Tone.Synth, {
