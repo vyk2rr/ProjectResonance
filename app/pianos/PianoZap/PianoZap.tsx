@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { PianoDryLeaf } from "../PianoDryLeaf";
-import type { tChordSequence, tSequenceToPlayProps } from "../../PianoBase/PianoBase.types";
+import type { tChordSequence } from "../../PianoBase/PianoBase.types";
 
-export default function SequencePlayground() {
+export default function PianoZap() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [sequenceToPlay, setSequenceToPlay] = useState<tChordSequence>([]);
   const [highlightedKeys, setHighlightedKeys] = useState(false);

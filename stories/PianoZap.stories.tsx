@@ -1,10 +1,10 @@
 import React from 'react'
 import { Theme } from '@radix-ui/themes';
-import SequencePlayground from "../app/pianos/SequencePlayground/SequencePlayground";
+import PianoZap from "../app/pianos/PianoZap/PianoZap";
 
 export default {
-  title: "Components/SequencePlayground",
-  component: SequencePlayground,
+  title: "Components/PianoZap",
+  component: PianoZap,
   decorators: [
     (Story) => (
       <Theme>
@@ -14,7 +14,7 @@ export default {
   ]
 };
 
-const Template = (args) => <SequencePlayground {...args} />;
+const Template = (args) => <PianoZap {...args} />;
 
 export const withoutArgs = Template.bind({});
 
