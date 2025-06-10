@@ -2,7 +2,7 @@ import React from 'react'
 import { PianoQuartzEcho } from "../app/pianos/PianoQuartzEcho";
 
 export default {
-  title: "Components/PianoQuartzEcho",
+  title: "Synths/PianoQuartzEcho",
   component: PianoQuartzEcho
 };
 

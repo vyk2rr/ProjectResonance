@@ -2,7 +2,7 @@ import React from 'react'
 import { PianoDryLeaf } from "../app/pianos/PianoDryLeaf";
 
 export default {
-  title: "Components/PianoDryLeaf",
+  title: "Synths/PianoDryLeaf",
   component: PianoDryLeaf
 };
 
