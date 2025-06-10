@@ -45,7 +45,7 @@ export default function PianoSequenceCreator() {
           highlightOnThePiano={currentChord}
           sequenceToPlay={{
             sequenceToPlay: chordSequence.map(chord => chord.chord),
-            hihlightedKeys: true,
+            highlightedKeys: true,
             onSequenceEnd: () => {
               // setChordSequence([]);
               // setIsPlaying(false);
