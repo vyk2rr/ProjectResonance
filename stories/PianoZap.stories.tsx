@@ -2,7 +2,7 @@ import React from 'react'
 import PianoZap from "../app/pianos/PianoZap/PianoZap";
 
 export default {
-  title: "Components/PianoZap",
+  title: "Experiments/PianoZap",
   component: PianoZap
 };
 

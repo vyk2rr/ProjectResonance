@@ -2,7 +2,7 @@ import * as Tone from "tone";
 import { OCTAVES_RANGE } from "../PianoBase/PianoBase.types";
 import type {
   tChord, tNote, tNoteWithOctave, tChordQualities,
-  tChordWithName, tOctaveRange
+  tChordWithName, tOctaveRange, tNoteName
 } from "../PianoBase/pianobase.types";
 import { CHORD_INTERVALS } from "../PianoBase/PianoBase.types";
 
@@ -27,43 +27,59 @@ export function simplifyNoteName(note: tNoteWithOctave): tNote {
   return note.replace(/\d+/, '') as tNote;
 }
 
-
 // Mapa de notas a tonos base (colores más vivos para acordes mayores)
-const NOTE_TO_HUE: Record<tNote, number> = {
-  'C': 0,     // Rojo vivo
-  'D': 30,    // Naranja brillante
-  'E': 60,    // Amarillo intenso
-  'F': 120,   // Verde esmeralda
-  'G': 195,   // Azul cielo
-  'A': 240,   // Azul profundo
-  'B': 270    // Morado intenso
+const NOTE_TO_HUE: Partial<Record<tNoteName, number>> = {
+  'C': 0,       // Rojo
+  'C#': 15,     // Rojo anaranjado (intermedio hacia D)
+  'D': 30,      // Naranja
+  'D#': 45,     // Naranja amarillento (intermedio hacia E)
+  'E': 60,      // Amarillo
+  'F': 120,     // Verde
+  'F#': 150,    // Verde azulado (intermedio hacia G)
+  'G': 180,     // Cian
+  'G#': 210,    // Azul violáceo (intermedio hacia A)
+  'A': 240,     // Azul
+  'A#': 270,    // Violeta
+  'B': 300      // Magenta
 };
 
-// Mapa de cualidades de acorde a modificadores de color
-const CHORD_QUALITY_MODIFIERS: Record<string, { saturation: number, lightness: number, hueShift: number }> = {
-  'maj': { saturation: 100, lightness: 50, hueShift: 0 },      // Colores vivos y brillantes
-  'maj7': { saturation: 100, lightness: 60, hueShift: 5 },     // Versión rica
-  'maj9': { saturation: 100, lightness: 78, hueShift: 8 },     // Versión rica
-  'maj11': { saturation: 100, lightness: 80, hueShift: 10 },   // Versión rica
-  'maj13': { saturation: 100, lightness: 90, hueShift: 12 },   // Versión rica
+const CHORD_QUALITY_MODIFIERS: Record<tChordQualities, { saturation: number; lightness: number }> = {
+  maj:    { saturation: 80,  lightness: 50 },
+  min:    { saturation: 40,  lightness: 50 },
+  dim:    { saturation: 25,  lightness: 50 },
+  aug:    { saturation: 80,  lightness: 65 },
+  sus2:   { saturation: 80,  lightness: 40 },
+  sus4:   { saturation: 80,  lightness: 50 },
 
-  'min': { saturation: 80, lightness: 40, hueShift: -5 },      // Versión más oscura y menos saturada
-  'm7': { saturation: 85, lightness: 40, hueShift: -5 },       // Versión oscura
-  'm9': { saturation: 90, lightness: 45, hueShift: -8 },       // Versión oscura
-  'm11': { saturation: 95, lightness: 50, hueShift: -10 },     // Versión oscura
-  'm13': { saturation: 100, lightness: 60, hueShift: -12 },    // Versión oscura
+  maj7:   { saturation: 100, lightness: 50 },
+  m7:     { saturation: 60,  lightness: 50 },
+  dom7:   { saturation: 80,  lightness: 45 },
 
-  'dim': { saturation: 80, lightness: 30, hueShift: 28 },     // Versión apagada y oscura
-  'aug': { saturation: 100, lightness: 60, hueShift: 5 },      // Versión más brillante del color base
+  maj9:   { saturation: 100, lightness: 55 },
+  m9:     { saturation: 60,  lightness: 55 },
+  dom9:   { saturation: 80,  lightness: 50 },
 
-  'sus2': { saturation: 90, lightness: 52, hueShift: 5 },      // Versión suave
-  'sus4': { saturation: 90, lightness: 52, hueShift: -5 },     // Versión suave
+  maj11:  { saturation: 100, lightness: 60 },
+  m11:    { saturation: 60,  lightness: 60 },
+  dom11:  { saturation: 80,  lightness: 55 },
 
-  'dom7': { saturation: 95, lightness: 45, hueShift: 0 },      // Versión intermedia
-  'dom9': { saturation: 95, lightness: 43, hueShift: 0 },      // Versión intermedia
-  'dom11': { saturation: 100, lightness: 41, hueShift: 0 },    // Versión intermedia
-  'dom13': { saturation: 100, lightness: 39, hueShift: 0 }     // Versión intermedia
+  maj13:  { saturation: 100, lightness: 65 },
+  m13:    { saturation: 60,  lightness: 65 },
+  dom13:  { saturation: 80,  lightness: 60 },
 };
+
+export function getChordColor(
+  rootNote: tNoteName,
+  quality: tChordQualities
+) {
+  const base = NOTE_TO_HUE[rootNote] !== undefined
+    ? { hue: NOTE_TO_HUE[rootNote] }
+    : { hue: 0 }
+  const mod = CHORD_QUALITY_MODIFIERS[quality] || { saturation: 100, lightness: 50 };
+  const { hue } = base;
+  const { saturation, lightness } = mod;
+  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+}
 
 // Función auxiliar para convertir HSL a RGB
 function hslToRgb(h: number, s: number, l: number): [number, number, number] {
@@ -128,64 +144,6 @@ function generateGradient(startHue: number, endHue: number, saturation: number, 
   return `linear-gradient(to right, ${colors.join(', ')})`;
 }
 
-export function chordToColor(notes: tChord): string {
-  if (notes.length === 0) return '#808080';
-
-  // Extraer la nota base y la calidad del acorde
-  const rootNote = notes[0];
-  const baseNote = simplifyNoteName(rootNote);
-  const naturalNote = getNaturalNote(baseNote);
-  const baseHue = NOTE_TO_HUE[naturalNote];
-
-  // Determinar la calidad del acorde basado en los intervalos
-  const intervals = notes.map(note => Tone.Frequency(note).toMidi());
-  const rootInterval = intervals[0];
-  const relativeIntervals = intervals.map(i => i - rootInterval);
-
-  // Identificar la calidad del acorde basado en los intervalos
-  let quality = 'maj';
-  if (relativeIntervals.includes(3)) { // Tercera menor
-    quality = 'min';
-  }
-  if (relativeIntervals.includes(6)) { // Quinta disminuida
-    quality = 'dim';
-  }
-  if (relativeIntervals.includes(8)) { // Quinta aumentada
-    quality = 'aug';
-  }
-  if (relativeIntervals.includes(2)) { // Sus2
-    quality = 'sus2';
-  }
-  if (relativeIntervals.includes(5)) { // Sus4
-    quality = 'sus4';
-  }
-  if (relativeIntervals.includes(11)) { // Séptima mayor
-    quality = 'maj7';
-  }
-  if (relativeIntervals.includes(10)) { // Séptima menor
-    quality = 'm7';
-  }
-  if (relativeIntervals.includes(14)) { // Novena mayor
-    quality = 'maj9';
-  }
-  if (relativeIntervals.includes(13)) { // Novena menor
-    quality = 'm9';
-  }
-  if (relativeIntervals.includes(17)) { // Undécima
-    quality = 'maj11';
-  }
-  if (relativeIntervals.includes(21)) { // Decimotercera
-    quality = 'maj13';
-  }
-
-  const modifier = CHORD_QUALITY_MODIFIERS[quality as keyof typeof CHORD_QUALITY_MODIFIERS] || CHORD_QUALITY_MODIFIERS['maj'];
-
-  // Calcular el color final
-  const finalHue = (baseHue + modifier.hueShift + 360) % 360;
-  const [r, g, b] = hslToRgb(finalHue, modifier.saturation, modifier.lightness);
-  return rgbToHex(r, g, b);
-}
-
 // convierte la búsqueda a mayúsculas
 export function extractNotesFromSearchTerm(term: string): string[] {
   return (term.match(/([A-G][#b]?)/gi) || []).map(n => n.toUpperCase());
@@ -219,7 +177,9 @@ export function buildBaseChord(note: tNoteWithOctave, type: tChordQualities): tC
   const simplifiedNotes: tNote[] = rootFrequency.map(simplifyNoteName);
 
   return {
-    id: `${note}_${type}`,
+    id: `${note}_${type}`, // just an identifier, Ej: "A#5maj"
+    quality: type, // Ej: "maj", "min", etc.
+    rootNote: baseNoteName,
     name: `${baseNoteName}${type}`, // Ej: "Cmaj"
     displayNotes: simplifiedNotes.join(" "), // Ej: "C E G"
     chord: rootFrequency // Mantenemos las notas completas para la lógica del piano
@@ -236,6 +196,8 @@ export function buildChordInversions(baseChord: ReturnType<typeof buildBaseChord
     const simplifiedInverted = inverted.map(simplifyNoteName);
     result.push({
       id: `${baseChord.id}_inv${i}`,
+      rootNote: baseChord.rootNote,
+      quality: baseChord.quality,
       name: `${baseChord.name} (${i}ª)`,
       displayNotes: simplifiedInverted.join(" "),
       chord: inverted
@@ -248,6 +210,7 @@ export function buildChordInversions(baseChord: ReturnType<typeof buildBaseChord
 // genera todas las combinaciones para una nota específica, ejemplo "D"
 export const generateChordsForNote = (note: tNote, selectedOctave: tOctaveRange): tChordWithName[] => {
   const noteWithOctave: tNoteWithOctave = note + selectedOctave as tNoteWithOctave;
+
   return [
     buildBaseChord(noteWithOctave, "maj"),
     ...buildChordInversions(buildBaseChord(noteWithOctave, "maj"), 2),
@@ -286,4 +249,6 @@ export const generateChordsForNote = (note: tNote, selectedOctave: tOctaveRange)
     buildBaseChord(noteWithOctave, "dom13"),
     ...buildChordInversions(buildBaseChord(noteWithOctave, "dom13"), 3),
   ];
+
+
 };

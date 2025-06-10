@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import type { tChordWithName, tNote, tOctaveRange, tChord } from "../PianoBase/pianobase.types";
-import {
-  generateChordsForNote, filterChords, chordToColor, buildBaseChord
-} from "./ChordPalette.utils";
-import "./ChordPalette.css"; 
+import { generateChordsForNote, filterChords, getChordColor } from "./chordPalette.utils.tsx";
+import "./chordPalette.css";
 
 type ChordPaletteParams = {
   currentChord: tChord;
@@ -13,13 +11,19 @@ type ChordPaletteParams = {
   octave: tOctaveRange;
 };
 
-export default function ChordPalette({ params }: { params: ChordPaletteParams }) {
+interface tChordPaletteProps {
+  params: ChordPaletteParams;
+  showNotes?: boolean;
+  showName?: boolean;
+  debug?: boolean;
+}
+
+export default function ChordPalette({ params, showNotes = true, showName = true, debug = false }: tChordPaletteProps) {
   const {
     currentChord, setCurrentChord,
     currentColor, setCurrentColor,
     octave
   } = params;
-
   const notes: tNote[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
   const [showInversions, setShowInversions] = useState<boolean>(false);
   const [selectedChordId, setSelectedChordId] = useState<string>("");
@@ -27,7 +31,7 @@ export default function ChordPalette({ params }: { params: ChordPaletteParams })
 
   const handleChordClick = (chord: tChordWithName) => {
     setCurrentChord(chord.chord);
-    setCurrentColor(chordToColor(chord.chord));
+    setCurrentColor(getChordColor(chord.rootNote, chord.quality));
     setSelectedChordId(chord.id);
   };
 
@@ -52,6 +56,16 @@ export default function ChordPalette({ params }: { params: ChordPaletteParams })
         />
       </div>
 
+      {debug && (
+        <>
+          <h3>Debug Info</h3>
+          currentChord: {currentChord.join(", ")}<br />
+          currentColor: {currentColor}<br />
+          showInversions: {showInversions ? "si" : "no"}<br />
+          selectedChordId: {selectedChordId}<br />
+          searchFilter: {searchFilter}<br />
+        </>
+      )}
       <div className="chord-columns">
         {notes.map(note => {
           const chordsForNote: tChordWithName[] = generateChordsForNote(note, octave);
@@ -68,13 +82,13 @@ export default function ChordPalette({ params }: { params: ChordPaletteParams })
                 <button
                   key={chord.id}
                   onClick={() => handleChordClick(chord)}
-                  style={{ backgroundColor: chordToColor(chord.chord) }}
+                  style={{ backgroundColor: getChordColor(chord.rootNote, chord.quality) }}
                   className={`chord-button ${chord.id.includes('_inv') ? 'inverted' : ''} ${selectedChordId === chord.id ? 'selected' : ''}`}
                   draggable
                   onDragStart={e => handleDragStart(e, chord)}
                 >
-                  <div className="chord-name">{chord.name}</div>
-                  <div className="chord-notes">{chord.displayNotes}</div>
+                  {showName ? <div className="chord-name">{chord.name}</div> : ''}
+                  {showNotes ? <div className="chord-notes">{chord.displayNotes}</div> : ''}
                 </button>
               ))}
             </div>
