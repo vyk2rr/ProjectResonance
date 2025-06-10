@@ -162,4 +162,98 @@ export async function playChordSimultaneous(
   await playNote(notes, synth, duration);
 }
 
+// Función auxiliar para convertir HSL a RGB
+function hslToRgb(h: number, s: number, l: number): [number, number, number] {
+  h /= 360;
+  s /= 100;
+  l /= 100;
+
+  let r, g, b;
+
+  if (s === 0) {
+    r = g = b = l;
+  } else {
+    const hue2rgb = (p: number, q: number, t: number) => {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1/6) return p + (q - p) * 6 * t;
+      if (t < 1/2) return q;
+      if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+      return p;
+    };
+
+    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    const p = 2 * l - q;
+
+    r = hue2rgb(p, q, h + 1/3);
+    g = hue2rgb(p, q, h);
+    b = hue2rgb(p, q, h - 1/3);
+  }
+
+  return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+}
+
+// Función auxiliar para convertir RGB a HEX
+function rgbToHex(r: number, g: number, b: number): string {
+  return '#' + [r, g, b].map(x => {
+    const hex = x.toString(16);
+    return hex.length === 1 ? '0' + hex : hex;
+  }).join('');
+}
+
+// Mapa de notas a tonos base
+const NOTE_TO_HUE: Record<string, number> = {
+  'C': 0,    // Rojo
+  'C#': 30,  // Naranja rojizo
+  'D': 60,   // Naranja
+  'D#': 90,  // Amarillo naranja
+  'E': 120,  // Amarillo
+  'F': 150,  // Amarillo verdoso
+  'F#': 180, // Verde
+  'G': 210,  // Verde azulado
+  'G#': 240, // Azul
+  'A': 270,  // Azul violáceo
+  'A#': 300, // Violeta
+  'B': 330   // Rojo violáceo
+};
+
+// Mapa de cualidades de acorde a modificadores de color
+const CHORD_QUALITY_MODIFIERS: Record<string, { saturation: number, lightness: number, hueShift: number }> = {
+  'maj': { saturation: 80, lightness: 50, hueShift: 0 },      // Colores vivos y brillantes
+  'min': { saturation: 70, lightness: 45, hueShift: -15 },    // Colores más oscuros y menos saturados
+  'dim': { saturation: 60, lightness: 40, hueShift: -30 },    // Colores más oscuros y menos saturados
+  'aug': { saturation: 90, lightness: 55, hueShift: 15 },     // Colores más brillantes y saturados
+  'sus2': { saturation: 75, lightness: 52, hueShift: 10 },    // Colores intermedios
+  'sus4': { saturation: 75, lightness: 52, hueShift: -10 },   // Colores intermedios
+  'maj7': { saturation: 85, lightness: 48, hueShift: 5 },     // Colores más saturados
+  'm7': { saturation: 75, lightness: 43, hueShift: -5 },      // Colores más oscuros
+  'dom7': { saturation: 80, lightness: 45, hueShift: 0 },     // Colores intermedios
+  'maj9': { saturation: 90, lightness: 46, hueShift: 8 },     // Colores más saturados
+  'm9': { saturation: 80, lightness: 41, hueShift: -8 },      // Colores más oscuros
+  'dom9': { saturation: 85, lightness: 43, hueShift: 0 },     // Colores intermedios
+  'maj11': { saturation: 95, lightness: 44, hueShift: 10 },   // Colores más saturados
+  'm11': { saturation: 85, lightness: 39, hueShift: -10 },    // Colores más oscuros
+  'dom11': { saturation: 90, lightness: 41, hueShift: 0 },    // Colores intermedios
+  'maj13': { saturation: 100, lightness: 42, hueShift: 12 },  // Colores más saturados
+  'm13': { saturation: 90, lightness: 37, hueShift: -12 },    // Colores más oscuros
+  'dom13': { saturation: 95, lightness: 39, hueShift: 0 }     // Colores intermedios
+};
+
+export function chordToColor(chordName: string): string {
+  // Extraer la nota base y la calidad del acorde
+  const match = chordName.match(/^([A-G]#?)(\d+)?(.*)$/);
+  if (!match) return '#808080'; // Gris por defecto
+
+  const [, note, octave, quality] = match;
+  const baseHue = NOTE_TO_HUE[note] || 0;
+  const modifier = CHORD_QUALITY_MODIFIERS[quality] || CHORD_QUALITY_MODIFIERS['maj'];
+
+  // Calcular el tono final con el desplazamiento
+  const finalHue = (baseHue + modifier.hueShift + 360) % 360;
+
+  // Convertir HSL a RGB y luego a HEX
+  const [r, g, b] = hslToRgb(finalHue, modifier.saturation, modifier.lightness);
+  return rgbToHex(r, g, b);
+}
+
 

@@ -1,0 +1,7 @@
+.chord-drop-zone {
+  min-height: 60;
+  border: 2px dashed #aaa;
+  margin: 16px 0;
+  padding: 8px;
+  background: #fafafa;
+}
