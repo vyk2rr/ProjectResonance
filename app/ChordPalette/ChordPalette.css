@@ -1,7 +1,3 @@
-.chord-button.selected {
-  box-shadow: 0 0 50px #ffd54f;
-}
-
 .note-name {
   display: flex;
   flex-direction: column;
