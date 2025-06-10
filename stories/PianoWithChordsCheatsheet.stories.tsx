@@ -2,7 +2,7 @@ import React from 'react'
 import PianoWithChordsCheatsheet from "../app/pianos/PianoWithChordsCheatsheet/PianoWithChordsCheatsheet";
 
 export default {
-  title: "Components/PianoWithChordsCheatsheet",
+  title: "Experiments/PianoWithChordsCheatsheet",
   component: PianoWithChordsCheatsheet
 };
 

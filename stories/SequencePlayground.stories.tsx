@@ -2,7 +2,7 @@ import React from 'react'
 import SequencePlayground from "../app/pianos/SequencePlayground/SequencePlayground";
 
 export default {
-  title: "Components/SequencePlayground",
+  title: "Experiments/SequencePlayground",
   component: SequencePlayground,
 };
 
