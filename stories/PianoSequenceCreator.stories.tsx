@@ -2,7 +2,7 @@ import React from 'react'
 import PianoSequenceCreator from "../app/pianos/PianoSequenceCreator/PianoSequenceCreator";
 
 export default {
-  title: "Components/PianoSequenceCreator",
+  title: "Experiments/PianoSequenceCreator",
   component: PianoSequenceCreator
 };
 
