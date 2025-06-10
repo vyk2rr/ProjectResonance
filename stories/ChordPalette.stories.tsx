@@ -13,7 +13,7 @@ const mockChordWithName: tChordWithName = {
 };
 
 const meta: Meta<typeof ChordPalette> = {
-  title: "Piano/ChordPalette",
+  title: "ChordPalette",
   component: ChordPalette,
 };
 export default meta;
@@ -34,6 +34,89 @@ export const Default: Story = {
           setCurrentColor,
           octave: 4,
         }}
+      />
+    );
+  },
+};
+
+export const withoutNotes: Story = {
+  render: () => {
+    const [currentChord, setCurrentChord] = useState<tChord>(mockChord);
+    const [currentColor, setCurrentColor] = useState<string>("#ffe");
+
+    return (
+      <ChordPalette
+        params={{
+          currentChord,
+          setCurrentChord,
+          currentColor,
+          setCurrentColor,
+          octave: 4,
+        }}
+        showNotes={false}
+      />
+    );
+  },
+};
+
+export const withoutChordName: Story = {
+  render: () => {
+    const [currentChord, setCurrentChord] = useState<tChord>(mockChord);
+    const [currentColor, setCurrentColor] = useState<string>("#ffe");
+
+    return (
+      <ChordPalette
+        params={{
+          currentChord,
+          setCurrentChord,
+          currentColor,
+          setCurrentColor,
+          octave: 4,
+        }}
+        showName={false}
+      />
+    );
+  },
+};
+
+export const onlyColor: Story = {
+  render: () => {
+    const [currentChord, setCurrentChord] = useState<tChord>(mockChord);
+    const [currentColor, setCurrentColor] = useState<string>("#ffe");
+
+    return (
+      <ChordPalette
+        params={{
+          currentChord,
+          setCurrentChord,
+          currentColor,
+          setCurrentColor,
+          octave: 4,
+        }}
+        showName={false}
+        showNotes={false}
+      />
+    );
+  },
+};
+
+export const withDebuggerActivated: Story = {
+  render: () => {
+    const [currentChord, setCurrentChord] = useState<tChord>(mockChord);
+    const [currentColor, setCurrentColor] = useState<string>("#ffe");
+
+    return (
+      <ChordPalette
+        params={{
+          currentChord,
+          setCurrentChord,
+          currentColor,
+          setCurrentColor,
+          octave: 4,
+        }}
+        showName={false}
+        showNotes={false}
+        debug={true}
       />
     );
   },

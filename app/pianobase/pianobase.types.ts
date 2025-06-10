@@ -23,23 +23,6 @@ export const CHORD_QUALITIES = [
   'maj11', 'm11', 'dom11',
   'maj13', 'm13', 'dom13'
 ] as const;
-export const MAJOR_SCALE_CHORD_QUALITIES = [
-  'maj', 'min', 'dim', 'aug',
-  'sus2', 'sus4',
-  'maj7', 'm7', 'dom7',
-  'maj9', 'm9', 'dom9',
-  'maj11', 'm11', 'dom11',
-  'maj13', 'm13', 'dom13'
-] as const;
-export const MINOR_SCALE_CHORD_QUALITIES = [
-  'min', 'dim', 'aug',
-  'sus2', 'sus4',
-  'm7', 'dom7',
-  'm9', 'dom9',
-  'm11', 'dom11',
-  'm13', 'dom13'
-] as const;
-
 export const MODES = [
   'ionian', 'dorian', 'phrygian',
   'lydian', 'mixolydian', 'aeolian',
@@ -48,8 +31,6 @@ export const MODES = [
 
 export type tOctaveRange = typeof OCTAVES_RANGE[number]; // example: 1, 2, 3, 4, 5
 export type tChordQualities = typeof CHORD_QUALITIES[number]; // "maj", "min", "dim", etc.
-export type tMajorScaleChordQualities = typeof MAJOR_SCALE_CHORD_QUALITIES[number]; // "maj", "min"...
-export type tMinorScaleChordQualities = typeof MINOR_SCALE_CHORD_QUALITIES[number]; // "min", "dim"...
 
 export type tMode = typeof MODES[number]; // example: "ionian", "dorian", etc.
 export type tNote = typeof BASE_NOTES[number]; // example: "C", "D", "E", etc.
@@ -64,10 +45,12 @@ export type tChord = tNoteWithOctave[]
 export type tChordSequence = tChord[]
 
 export type tChordWithName = {
-  id: string;
-  name: string; // Faltan ejemplos aquí
-  displayNotes: string;
-  chord: tChord;
+  id: string; // note+type 
+  quality: tChordQualities, // Ejemplo: "maj", "min", "sus4", etc.
+  rootNote: tNoteName, // Ejemplo: "C", "D#", "E#", etc.
+  name: string; // baseNoteName+type Ej: "Cmaj", "Dmin", "E#sus4"
+  displayNotes: string; // Ej: "C E G"; 
+  chord: tChord; // notas en logica completa para piano
 }
 
 export type SupportedSynthType =
@@ -88,7 +71,7 @@ export type tPianoNotes = {
 export type tSequenceToPlayProps = {
   sequenceToPlay: tChordSequence;
   onSequenceEnd: () => void;
-  hihlightedKeys?: boolean;
+  highlightedKeys?: boolean;
 }
 
 export const CHORD_INTERVALS: Record<tChordQualities, number[]> = {
@@ -153,5 +136,5 @@ export const CHORD_INTERVALS: Record<tChordQualities, number[]> = {
 //     ["D4", "F#4", "A4"]
 //   ],
 //   onSequenceEnd: () => { console.log("Sequence finished!"); },
-//   hihlightedKeys: true
+//   hightlightedKeys: true
 // };

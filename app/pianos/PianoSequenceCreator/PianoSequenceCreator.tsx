@@ -9,7 +9,7 @@ import { PianoMetalicoLaser } from "../PianoMetalicoLaser";
 import { PianoHu } from "../PianoHu";
 import PianoBase from "../../PianoBase/PianoBase";
 import ChordPalette from "./../../ChordPalette/ChordPalette";
-import { chordToColor } from "./../../ChordPalette/ChordPalette.utils";
+import { getChordColor } from "./../../ChordPalette/ChordPalette.utils";
 
 
 export default function PianoSequenceCreator() {
@@ -64,7 +64,7 @@ export default function PianoSequenceCreator() {
             <span
               key={chord.id}
               style={{
-                background: chordToColor(chord.chord),
+                background: getChordColor(chord.chord),
                 padding: '4px 8px',
                 borderRadius: 4,
                 fontWeight: 500,
@@ -89,7 +89,10 @@ export default function PianoSequenceCreator() {
         currentColor: currentColor,
         setCurrentColor: setCurrentColor,
         octave: octave
-      }} />
+      }} 
+        showName={true}
+        showNotes={false}
+      />
     </>
   );
 }

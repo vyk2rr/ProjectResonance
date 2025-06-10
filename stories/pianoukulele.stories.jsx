@@ -2,7 +2,7 @@ import React from 'react'
 import { PianoUkulele } from "../app/pianos/PianoUkulele";
 
 export default {
-  title: "Ukulele/PianoUkulele",
+  title: "Ukulele Experiment/PianoUkulele",
   component: PianoUkulele
 };
 
