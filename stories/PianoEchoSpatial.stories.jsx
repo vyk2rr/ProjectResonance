@@ -2,7 +2,7 @@ import React from 'react'
 import { PianoEchoSpatial } from "../app/pianos/PianoEchoSpatial";
 
 export default {
-  title: "Components/PianoEchoSpatial",
+  title: "Synths/PianoEchoSpatial",
   component: PianoEchoSpatial
 };
 

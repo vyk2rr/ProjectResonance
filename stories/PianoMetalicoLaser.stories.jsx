@@ -2,7 +2,7 @@ import React from 'react'
 import { PianoMetalicoLaser } from "../app/pianos/PianoMetalicoLaser";
 
 export default {
-  title: "Components/PianoMetalicoLaser",
+  title: "Synths/PianoMetalicoLaser",
   component: PianoMetalicoLaser
 };
 

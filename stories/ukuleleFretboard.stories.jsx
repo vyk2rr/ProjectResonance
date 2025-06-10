@@ -2,7 +2,7 @@ import React from 'react'
 import UkuleleFretboard from "../app/UkuleleFretboard/UkuleleFretboard";
 
 export default {
-  title: "Components/UkuleleFretboard",
+  title: "Ukulele/UkuleleFretboard",
   component: UkuleleFretboard,
   decorators: [
     (Story) => (

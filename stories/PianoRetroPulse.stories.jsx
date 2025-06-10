@@ -2,7 +2,7 @@ import React from 'react'
 import { PianoRetroPulse } from "../app/pianos/PianoRetroPulse";
 
 export default {
-  title: "Components/PianoRetroPulse",
+  title: "Synths/PianoRetroPulse",
   component: PianoRetroPulse
 };
 

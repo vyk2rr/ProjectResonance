@@ -2,7 +2,7 @@ import React from 'react'
 import { PianoHu } from "../app/pianos/PianoHu";
 
 export default {
-  title: "Components/PianoHu",
+  title: "Synths/PianoHu",
   component: PianoHu
 };
 

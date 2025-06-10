@@ -2,7 +2,7 @@ import React from 'react'
 import PianoBase from "../app/PianoBase/PianoBase";
 
 export default {
-  title: "Components/PianoBase",
+  title: "PianoBase",
   component: PianoBase
 };
 

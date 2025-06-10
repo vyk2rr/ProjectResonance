@@ -2,7 +2,7 @@ import React from 'react'
 import { PianoEtherealStrings } from "../app/pianos/PianoEtherealStrings";
 
 export default {
-  title: "Components/PianoEtherealStrings",
+  title: "Synths/PianoEtherealStrings",
   component: PianoEtherealStrings,
 };
 
