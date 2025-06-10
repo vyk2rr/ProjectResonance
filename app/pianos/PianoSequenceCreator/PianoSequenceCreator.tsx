@@ -60,9 +60,9 @@ export default function PianoSequenceCreator() {
       >
         <strong>Arrastra acordes aquí para construir una secuencia:</strong>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 8 }}>
-          {chordSequence.map((chord, idx) => (
+          {chordSequence.map((chord) => (
             <span
-              key={idx}
+              key={chord.id}
               style={{
                 background: chordToColor(chord.chord),
                 padding: '4px 8px',
