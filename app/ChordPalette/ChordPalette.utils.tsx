@@ -1,10 +1,9 @@
 import * as Tone from "tone";
-import { OCTAVES_RANGE } from "../PianoBase/PianoBase.types";
+import { CHORD_INTERVALS } from "../PianoBase/PianoBase.types";
 import type {
   tChord, tNote, tNoteWithOctave, tChordQualities,
   tChordWithName, tOctaveRange, tNoteName
-} from "../PianoBase/pianobase.types";
-import { CHORD_INTERVALS } from "../PianoBase/PianoBase.types";
+} from "../PianoBase/PianoBase.types";
 
 function calculateChordNotes(note: tNoteWithOctave, type: tChordQualities): tChord {
   const rootFrequency = Tone.Frequency(note);
@@ -153,13 +152,13 @@ export const filterChords = (chords: tChordWithName[], searchTerm: string): tCho
   if (!searchTerm) return chords;
 
   const upperTerm = searchTerm.toUpperCase();
-  const searchNotes = extractNotesFromSearchTerm(upperTerm);
+  const searchNotes:string[] = extractNotesFromSearchTerm(upperTerm);
 
   // Si contiene notas (por ejemplo "FACE")
   if (searchNotes.length > 0) {
     return chords.filter(chord => {
       const chordNotes = chord.chord.map(simplifyNoteName);
-      return searchNotes.every(n => chordNotes.includes(n));
+      return searchNotes.every(n => chordNotes.includes(n as tNote));
     });
   }
 

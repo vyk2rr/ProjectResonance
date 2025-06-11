@@ -159,5 +159,5 @@ export async function playChordSimultaneous(
   synth: SupportedSynthType,
   duration: tTime = "2n"
 ) {
-  await playNote(notes, synth, duration);
+  await Promise.all(notes.map(note => playNote(note, synth, duration)));
 }
