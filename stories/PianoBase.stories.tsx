@@ -4,6 +4,14 @@ import PianoBase from "../app/PianoBase/PianoBase";
 
 const meta = {
   component: PianoBase,
+  argTypes: {
+    octaves: {
+      control: { type: "range", min: 1, max: 5, step: 1 },
+    },
+    octave: {
+      control: { type: "range", min: 1, max: 5, step: 1 },
+    }
+  },
 } satisfies Meta<typeof PianoBase>;
 
 export default meta;
