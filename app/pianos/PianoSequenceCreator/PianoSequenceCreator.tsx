@@ -64,7 +64,7 @@ export default function PianoSequenceCreator() {
             <span
               key={chord.id}
               style={{
-                background: getChordColor(chord.chord),
+                background: getChordColor(chord.rootNote, chord.quality),
                 padding: '4px 8px',
                 borderRadius: 4,
                 fontWeight: 500,
