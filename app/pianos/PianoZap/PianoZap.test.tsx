@@ -3,6 +3,7 @@ import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { Theme } from '@radix-ui/themes';
 import PianoZap from "./PianoZap";
+import { triggerAttackReleaseMock } from "../../../__mocks__/tone";
 
 describe("PianoZap", () => {
   beforeEach(() => {
@@ -31,7 +32,7 @@ describe("PianoZap", () => {
     expect(btn1).toBeDisabled();
     expect(btn2).toBeDisabled();
     
-    // expect(triggerAttackReleaseMock).toHaveBeenCalledTimes(2);
+    expect(triggerAttackReleaseMock).toHaveBeenCalledTimes(4);
   })
 
 
