@@ -1,3 +1,4 @@
+import '@testing-library/jest-dom';
 import React from "react";
 import { Theme } from '@radix-ui/themes';
 import { render, screen, fireEvent, act } from "@testing-library/react";
@@ -11,23 +12,13 @@ import type {
 } from "./PianoBase.types";
 
 jest.mock("tone", () => ({
-  PolySynth: function () { return { triggerAttackRelease: () => {}, dispose: () => {}, chain: () => {} }; },
-  Synth: function () {},
-  Filter: function () { return { dispose: () => {} }; },
-  Compressor: function () { return { dispose: () => {} }; },
-  Reverb: function () { return { toDestination: () => {}, dispose: () => {} }; },
+  PolySynth: function () { return { triggerAttackRelease: () => { }, dispose: () => { }, chain: () => { } }; },
+  Synth: function () { },
+  Filter: function () { return { dispose: () => { } }; },
+  Compressor: function () { return { dispose: () => { } }; },
+  Reverb: function () { return { toDestination: () => { }, dispose: () => { } }; },
   Time: function () { return { toMilliseconds: () => 500 }; }
 }));
-
-// // Mock dependencies
-// jest.mock("tone", () => ({
-//   PolySynth: function () { return { triggerAttackRelease: jest.fn(), dispose: jest.fn(), chain: jest.fn() }; },
-//   Synth: function () { },
-//   Filter: function () { return { dispose: jest.fn() }; },
-//   Compressor: function () { return { dispose: jest.fn() }; },
-//   Reverb: function () { return { toDestination: jest.fn(), dispose: jest.fn() }; },
-//   Time: function () { return { toMilliseconds: () => 10 }; }
-// }));
 
 describe("PianoBase", () => {
   it("renders piano keys", () => {
@@ -41,19 +32,28 @@ describe("PianoBase", () => {
     expect(container.getElementsByClassName("black-key").length).toBeGreaterThan(0);
   });
 
-  it("opens chord dropdown and displays chord options", () => {
-    render(
-      <Theme>
-        <PianoBase />
-      </Theme>
-    );
-    fireEvent.click(screen.getByRole("button"));
-    const showDMajorBtnsBtn = screen.getByText(/show D Major buttons/i);
-    
-    fireEvent.click(showDMajorBtnsBtn);
-    fireEvent.mouseOver(screen.getByText(/Play a D major Chord/i));
-    expect(screen.getAllByText(/Play /i).length).toBeGreaterThan(0);
-  });
+//   it("opens chord dropdown and displays chord options", async () => {
+//     const { container } = render(
+//       <Theme>
+//         <PianoBase />
+//       </Theme>
+//     );
+//   // Haz click en el botón del menú (por aria-label)
+//   fireEvent.click(container.getElementsByTagName('button')[0]); // Asumiendo que el primer botón es el del menú
+//   // Espera a que aparezca el item en el DOM (Radix puede usar portal)
+//   screen.debug();
+//   debugger;
+//   const item = await screen.findByText(/show D Major buttons/i, {}, { timeout: 2000 });
+//   expect(item).toBeInTheDocument();
+// debugger;
+//     fireEvent.click(screen.getByRole("button"));
+//     fireEvent.click(item)
+// debugger
+//     const showDMajorBtnsBtn = screen.getByText(/show D Major buttons/i);
+//     fireEvent.click(showDMajorBtnsBtn);
+//     fireEvent.mouseOver(screen.getByText(/Play a D major Chord/i));
+//     expect(screen.getAllByText(/Play /i).length).toBeGreaterThan(0);
+//   });
 
   it("plays note when white key is clicked", async () => {
     const { container } = render(

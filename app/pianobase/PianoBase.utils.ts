@@ -46,7 +46,6 @@ export function getAlternativeNotation(note: tNoteWithOctave): tNoteWithOctave {
 }
 
 export function getBlackKeyLeft(note: tNoteWithOctave, whiteNotes: tNoteWithOctave[]): tPercentString {
-  debugger;
   const blackToWhiteBefore: Partial<Record<tNoteName, tNoteName>> = {
     "C#": "C",
     "D#": "D",
