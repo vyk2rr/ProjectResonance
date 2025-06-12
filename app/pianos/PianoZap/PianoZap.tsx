@@ -32,7 +32,7 @@ export default function PianoZap() {
 
     <br />
 
-    <button onClick={() => handleTriggerSequence()} disabled={isPlaying}>
+    <button onClick={() => handleTriggerSequence(true)} disabled={isPlaying}>
       <h1>🚀 Zap with Highlight!</h1>
     </button>
 
