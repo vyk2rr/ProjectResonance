@@ -1,8 +1,10 @@
-import * as Tone from "tone";
+import React from "react";
 import PianoBase from "../PianoBase/PianoBase";
 import type { PianoBaseProps } from "../PianoBase/PianoBase";
+import * as Tone from "tone"; 
 
 interface PianoDryLeafProps extends PianoBaseProps {
+  id?: string;
   showDescription?: boolean;
 };
 
@@ -31,8 +33,12 @@ export function PianoDryLeaf({ showDescription = false, ...props }: PianoDryLeaf
           noise.connect(gain);
 
           // Reverb para ambiente etéreo
-          const reverb = new Tone.Reverb({ decay: 3.5, wet: 0.35 }).toDestination();
-          gain.connect(reverb);
+          // 1. Create the Reverb instance
+          const reverbInstance = new Tone.Reverb({ decay: 3.5, wet: 0.35 });
+          // 2. Connect the gain to the Reverb instance
+          gain.connect(reverbInstance);
+          // 3. Connect the Reverb instance to the destination
+          reverbInstance.toDestination(); 
 
           // Devuelve un objeto compatible con PianoBase
           return {
@@ -46,7 +52,7 @@ export function PianoDryLeaf({ showDescription = false, ...props }: PianoDryLeaf
               synth.dispose();
               noise.dispose();
               gain.dispose();
-              reverb.dispose();
+              reverbInstance.dispose(); // Call dispose on the actual Reverb instance
             }
           } as Tone.PolySynth;
         }}

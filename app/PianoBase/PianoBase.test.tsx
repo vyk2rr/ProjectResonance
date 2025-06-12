@@ -10,15 +10,6 @@ import type {
   tChordMap, tPianoNotes, tChordWithName, tSequenceToPlayProps
 } from "./PianoBase.types";
 
-jest.mock("tone", () => ({
-  PolySynth: function () { return { triggerAttackRelease: () => { }, dispose: () => { }, chain: () => { } }; },
-  Synth: function () { },
-  Filter: function () { return { dispose: () => { } }; },
-  Compressor: function () { return { dispose: () => { } }; },
-  Reverb: function () { return { toDestination: () => { }, dispose: () => { } }; },
-  Time: function () { return { toMilliseconds: () => 500 }; }
-}));
-
 describe("Type structure examples", () => {
   it("should allow valid example objects", () => {
     const octaveRange: tOctaveRange = 4;

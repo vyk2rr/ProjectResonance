@@ -1,3 +1,4 @@
+import * as Tone from "tone";
 import React, { useState } from "react";
 import { PianoDryLeaf } from "../PianoDryLeaf";
 import type { tChordSequence } from "../../PianoBase/PianoBase.types";
@@ -18,9 +19,10 @@ export default function PianoZap() {
 
   return (<>
     <PianoDryLeaf
+      id="piano-zap"
       sequenceToPlay={{
         sequenceToPlay: sequenceToPlay,
-        hihlightedKeys: highlightedKeys,
+        highlightedKeys: highlightedKeys,
         onSequenceEnd: () => {
           setSequenceToPlay([]);
           setIsPlaying(false);
@@ -30,7 +32,7 @@ export default function PianoZap() {
 
     <br />
 
-    <button onClick={handleTriggerSequence} disabled={isPlaying}>
+    <button onClick={() => handleTriggerSequence()} disabled={isPlaying}>
       <h1>🚀 Zap with Highlight!</h1>
     </button>
 
