@@ -3,7 +3,7 @@ import '@testing-library/jest-dom';
 import { render, screen, fireEvent, act, waitFor } from "@testing-library/react";
 import { Theme } from '@radix-ui/themes';
 import PianoBase from "./PianoBase";
-import { generateNotes, getBlackKeyLeft } from "./PianoBase.utils";
+import { generateNotes, getBlackKeyLeft, getBlackKeyWidth } from "./PianoBase.utils";
 import type {
   tOctaveRange, tChordQualities, tMode, tNoteName, tNoteWithOctave,
   tNoteWQuality, tNoteWOCtaveQuality, tPercentString, tChord, tChordSequence,
@@ -76,7 +76,7 @@ describe("Type structure examples", () => {
   });
 });
 
-describe("PianoBase", () => {
+describe("PianoBase externals", () => {
   it("renders piano keys", () => {
     const { container } = render(
       <Theme>
@@ -144,9 +144,7 @@ describe("PianoBase", () => {
     render(<Theme><PianoBase sequenceToPlay={sequenceToPlay} /></Theme>);
     // Would need timers or async handling for real checks
   });
-});
 
-describe("Piano utilities:", () => {
   // testing indirectly "playNoteWithHighlight" (no sound, only highlight)
   it("highlights the note when a white key is clicked", async () => {
     const { container } = render(<Theme><PianoBase /></Theme>);
@@ -158,7 +156,9 @@ describe("Piano utilities:", () => {
       expect(whiteKey.className).not.toContain("active-key");
     });
   });
+});
 
+describe("PianoBase internals:", () => {
   describe("generateNotes", () => {
     it("should generate notes for 3 octaves starting from C4", () => {
       const result = generateNotes(3, 4);
@@ -231,6 +231,33 @@ describe("Piano utilities:", () => {
       expect(getBlackKeyLeft("B#4", white)).toBe("0%");
     });
   });
+
+  describe("getBlackKeyWidth", () => {
+    it("returns correct width for 1 octave", () => {
+      expect(getBlackKeyWidth(1)).toBe("7%");
+    });
+
+    it("returns correct width for 2 octaves", () => {
+      expect(getBlackKeyWidth(2)).toBe("4%");
+    });
+
+    it("returns correct width for 3 octaves", () => {
+      expect(getBlackKeyWidth(3)).toBe("3%");
+    });
+
+    it("returns correct width for 4 octaves", () => {
+      expect(getBlackKeyWidth(4)).toBe("2%");
+    });
+
+    it("returns correct width for 5 octaves", () => {
+      expect(getBlackKeyWidth(5)).toBe("1.4%");
+    });
+
+    it("returns correct width for 6 octaves", () => {
+      expect(getBlackKeyWidth(6)).toBe("1.4%");
+    });
+  });
+
 });
 
 
