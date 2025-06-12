@@ -7,5 +7,9 @@ module.exports = {
       'ts-jest',
       { useESM: true }
     ],
-  }
+  },
+  "testEnvironment": "jsdom",
+  moduleNameMapper: {
+    '\\.css$': 'identity-obj-proxy'
+  },
 };

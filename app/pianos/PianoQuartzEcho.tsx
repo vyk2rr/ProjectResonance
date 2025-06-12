@@ -1,6 +1,6 @@
 import * as Tone from "tone";
 import PianoBase from "../PianoBase/PianoBase";
-import type { PianoBaseProps } from "../PianoBase/PianoBase.types";
+import type { PianoBaseProps } from "../PianoBase/PianoBase";
 
 interface PianoEtherealStringsProps extends PianoBaseProps {
   showDescription?: boolean;

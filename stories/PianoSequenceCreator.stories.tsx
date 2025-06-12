@@ -6,9 +6,7 @@ export default {
   component: PianoSequenceCreator
 };
 
-const Template = (args) => <PianoSequenceCreator {...args} />;
+const Template = () => <PianoSequenceCreator />;
 
 export const withoutArgs = Template.bind({});
-withoutArgs.args = {
-};
 

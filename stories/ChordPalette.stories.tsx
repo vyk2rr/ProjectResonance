@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import ChordPalette from "./../app/ChordPalette/ChordPalette";
-import type { tChord, tChordWithName } from "../PianoBase/PianoBase.types";
+import type { tChord, tChordWithName } from "../app/PianoBase/PianoBase.types";
 
 // Mock data for the story
 const mockChord: tChord = ["C4", "E4", "G4"];
-const mockChordWithName: tChordWithName = {
-  id: "Cmaj",
-  name: "Cmaj",
-  displayNotes: "C E G",
-  chord: ["C4", "E4", "G4"]
-};
+// const mockChordWithName: tChordWithName = {
+//   id: "Cmaj",
+//   name: "Cmaj",
+//   displayNotes: "C E G",
+//   chord: ["C4", "E4", "G4"]
+// };
 
 const meta: Meta<typeof ChordPalette> = {
   title: "ChordPalette",

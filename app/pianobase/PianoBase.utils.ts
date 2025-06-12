@@ -2,7 +2,7 @@ import * as Tone from "tone";
 import type {
   tOctaveRange, tChordMap, tTime, tChordSequence,
   tNoteWithOctave, tPianoNotes, tPercentString,
-  tNoteName, tChord, SupportedSynthType
+  tNoteName, tChord, SupportedSynthType, tNote
 } from "./PianoBase.types";
 import { SHARP_TO_FLAT_MAP } from "./PianoBase.types";
 
@@ -45,7 +45,8 @@ export function getAlternativeNotation(note: tNoteWithOctave): tNoteWithOctave {
   return "" as tNoteWithOctave;
 }
 
-export function getBlackKeyLeft(note: tNoteName, whiteNotes: tNoteName[]): tPercentString {
+export function getBlackKeyLeft(note: tNoteWithOctave, whiteNotes: tNoteWithOctave[]): tPercentString {
+  debugger;
   const blackToWhiteBefore: Partial<Record<tNoteName, tNoteName>> = {
     "C#": "C",
     "D#": "D",
@@ -56,13 +57,11 @@ export function getBlackKeyLeft(note: tNoteName, whiteNotes: tNoteName[]): tPerc
 
   const match = note.match(/^([A-G]#)(\d)$/);
   if (!match) return "0%";
-
   const [_, pitchClass, octave] = match;
   const whiteBefore = `${blackToWhiteBefore[pitchClass as tNoteName]}${octave}` as tNoteWithOctave;
-  const whiteIndex = whiteNotes.indexOf(whiteBefore as tNoteName);
+  const whiteIndex = whiteNotes.indexOf(whiteBefore); // falta la octava en whiteBefore
 
   if (whiteIndex === -1) return "0%";
-
   const whiteKeyWidth = 100 / whiteNotes.length;
   const left = (whiteIndex + 1) * whiteKeyWidth;
 
@@ -119,14 +118,13 @@ export function createDefaultSynth(): SupportedSynthType {
   // Retornamos un objeto compatible con la interfaz esperada
   return {
     triggerAttackRelease(note: string | string[], duration: string | number): void {
-      console.log('wrapper: triggerAttackRelease:');
       synth.triggerAttackRelease(note, duration);
     },
     dispose() {
       synth.dispose();
-      filter.dispose();
-      compressor.dispose();
-      reverb.dispose();
+      filter?.dispose();
+      compressor?.dispose();
+      reverb?.dispose();
     }
   } as unknown as Tone.PolySynth;
 }

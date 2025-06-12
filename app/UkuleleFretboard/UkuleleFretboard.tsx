@@ -56,7 +56,7 @@ export default function UkuleleFretboard({ markers = [], active = false }) {
           />
         ))}
 
-        {marks.map(([humanString, fret], i) => {
+        {(marks ?? []).map(([humanString, fret], i) => {
           const string = 5 - humanString;
 
           return (

@@ -17,7 +17,7 @@ import type {
   tChord, tOctaveRange, tChordSequence,
   tChordMap, SupportedSynthType,
   tNoteWithOctave, tNoteWOCtaveQuality,
-  tSequenceToPlayProps, tTime
+  tSequenceToPlayProps, tTime, tNoteName
 } from "./PianoBase.types";
 
 import './PianoBase.css';
@@ -59,9 +59,9 @@ export default function PianoBase({
   }, []);
 
   useEffect(() => {
-    if (highlightOnThePiano && highlightOnThePiano.length > 0) {
-      setHighlightedKeys(highlightOnThePiano);
+    if (highlightOnThePiano && highlightOnThePiano.length > 0 && synthRef.current) {
       playChordSimultaneous(highlightOnThePiano, synthRef.current);
+      setHighlightedKeys(highlightOnThePiano);
     }
   }, [highlightOnThePiano]);
 
@@ -72,7 +72,7 @@ export default function PianoBase({
     const runSequence = async () => {
       await handlePlaySequenceWithHighlight(
         sequenceToPlay.sequenceToPlay,
-        sequenceToPlay.hihlightedKeys,
+        sequenceToPlay.highlightedKeys,
         () => cancelled);
     };
     runSequence();
@@ -82,14 +82,14 @@ export default function PianoBase({
 
   async function playNoteWithHighlight(
     note: tNoteWithOctave,
-    highlight?: boolean = true,
+    highlight: boolean = true,
     isCancelled?: () => boolean,
     duration?: tTime
   ) {
     if (isCancelled?.()) return;
 
     if (highlight) setActiveNotes([note]);
-    
+
     await playNote(note, synthRef.current, duration);
     setActiveNotes([]);
   }
@@ -127,6 +127,8 @@ export default function PianoBase({
     setTimeout(() => setActiveNotes([]), 180);
   };
 
+  const colors = ["orange", "yellow", "green", "blue", "indigo", "purple", "red"] as const;
+
   return (
     <div className="piano-base">
       {Object.keys(chordMap).length > 0 && (<DropdownMenu.Root >
@@ -144,7 +146,7 @@ export default function PianoBase({
                 <DropdownMenu.Item
                   key={chordName}
                   onClick={() => handlePlaySequenceFromChordMap(chordName as tNoteWOCtaveQuality)}
-                  color={["orange", "yellow", "green", "blue", "indigo", "purple", "red"][i % 7]}
+                  color={colors[i % colors.length]}
                 >
                   Play {chordName}
                 </DropdownMenu.Item>
@@ -159,7 +161,7 @@ export default function PianoBase({
           key={chordName}
           onClick={() => handlePlaySequenceFromChordMap(chordName as tNoteWOCtaveQuality)}
           variant="classic"
-          color={["orange", "yellow", "green", "blue", "indigo", "purple", "red"][i % 7]}
+          color={colors[i % colors.length]}
         >
           {chordName}
         </Button>

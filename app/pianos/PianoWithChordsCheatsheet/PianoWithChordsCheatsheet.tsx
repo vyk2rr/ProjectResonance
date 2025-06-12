@@ -11,7 +11,7 @@ import PianoBase from "../../PianoBase/PianoBase";
 import ChordPalette from "./../../ChordPalette/ChordPalette";
 import { getChordColor } from "./../../ChordPalette/ChordPalette.utils";
 
-interface PianoWithChordsHelperProps extends PianoBaseProps {
+export interface PianoWithChordsHelperProps extends PianoBaseProps {
   chord: string[],
   octaves: tOctaveRange
 }
