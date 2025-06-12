@@ -1,10 +1,10 @@
-import '@testing-library/jest-dom';
 import React from "react";
-import { Theme } from '@radix-ui/themes';
+import '@testing-library/jest-dom';
 import { render, screen, fireEvent, act } from "@testing-library/react";
+import { Theme } from '@radix-ui/themes';
 import PianoBase from "./PianoBase";
 
-import { generateNotes } from "./PianoBase.utils";
+import { generateNotes, getBlackKeyLeft } from "./PianoBase.utils";
 import type {
   tOctaveRange, tChordQualities, tMode, tNoteName, tNoteWithOctave,
   tNoteWQuality, tNoteWOCtaveQuality, tPercentString, tChord, tChordSequence,
@@ -32,28 +32,28 @@ describe("PianoBase", () => {
     expect(container.getElementsByClassName("black-key").length).toBeGreaterThan(0);
   });
 
-//   it("opens chord dropdown and displays chord options", async () => {
-//     const { container } = render(
-//       <Theme>
-//         <PianoBase />
-//       </Theme>
-//     );
-//   // Haz click en el botón del menú (por aria-label)
-//   fireEvent.click(container.getElementsByTagName('button')[0]); // Asumiendo que el primer botón es el del menú
-//   // Espera a que aparezca el item en el DOM (Radix puede usar portal)
-//   screen.debug();
-//   debugger;
-//   const item = await screen.findByText(/show D Major buttons/i, {}, { timeout: 2000 });
-//   expect(item).toBeInTheDocument();
-// debugger;
-//     fireEvent.click(screen.getByRole("button"));
-//     fireEvent.click(item)
-// debugger
-//     const showDMajorBtnsBtn = screen.getByText(/show D Major buttons/i);
-//     fireEvent.click(showDMajorBtnsBtn);
-//     fireEvent.mouseOver(screen.getByText(/Play a D major Chord/i));
-//     expect(screen.getAllByText(/Play /i).length).toBeGreaterThan(0);
-//   });
+  //   it("opens chord dropdown and displays chord options", async () => {
+  //     const { container } = render(
+  //       <Theme>
+  //         <PianoBase />
+  //       </Theme>
+  //     );
+  //   // Haz click en el botón del menú (por aria-label)
+  //   fireEvent.click(container.getElementsByTagName('button')[0]); // Asumiendo que el primer botón es el del menú
+  //   // Espera a que aparezca el item en el DOM (Radix puede usar portal)
+  //   screen.debug();
+  //   debugger;
+  //   const item = await screen.findByText(/show D Major buttons/i, {}, { timeout: 2000 });
+  //   expect(item).toBeInTheDocument();
+  // debugger;
+  //     fireEvent.click(screen.getByRole("button"));
+  //     fireEvent.click(item)
+  // debugger
+  //     const showDMajorBtnsBtn = screen.getByText(/show D Major buttons/i);
+  //     fireEvent.click(showDMajorBtnsBtn);
+  //     fireEvent.mouseOver(screen.getByText(/Play a D major Chord/i));
+  //     expect(screen.getAllByText(/Play /i).length).toBeGreaterThan(0);
+  //   });
 
   it("plays note when white key is clicked", async () => {
     const { container } = render(
@@ -106,6 +106,60 @@ describe("generateNotes", () => {
     ];
     expect(result.white).toEqual(expectedWhite);
     expect(result.black).toEqual(expectedBlack);
+  });
+});
+
+describe("getBlackKeyLeft", () => {
+  it("should calculate the correct left position for black keys with 4 octaves", () => {
+    const octaves = 4;
+    const startOctave = 4;
+    const { white } = generateNotes(octaves, startOctave);
+    expect(getBlackKeyLeft("C#4", white)).toBe("3.4482758620689653%");
+    expect(getBlackKeyLeft("D#4", white)).toBe("6.896551724137931%");
+    expect(getBlackKeyLeft("E#4", white)).toBe("0%");
+    expect(getBlackKeyLeft("F#4", white)).toBe("13.793103448275861%");
+    expect(getBlackKeyLeft("G#4", white)).toBe("17.241379310344826%");
+    expect(getBlackKeyLeft("A#4", white)).toBe("20.689655172413794%");
+    expect(getBlackKeyLeft("B#4", white)).toBe("0%");
+  });
+
+  it("should calculate the correct left position for black keys with 4 octaves", () => {
+    const octaves = 4;
+    const startOctave = 3;
+    const { white } = generateNotes(octaves, startOctave);
+    expect(getBlackKeyLeft("C#4", white)).toBe("27.586206896551722%");
+    expect(getBlackKeyLeft("D#4", white)).toBe("31.034482758620687%");
+    expect(getBlackKeyLeft("E#4", white)).toBe("0%");
+    expect(getBlackKeyLeft("F#4", white)).toBe("37.93103448275862%");
+    expect(getBlackKeyLeft("G#4", white)).toBe("41.37931034482759%");
+    expect(getBlackKeyLeft("A#4", white)).toBe("44.82758620689655%");
+    expect(getBlackKeyLeft("B#4", white)).toBe("0%");
+  });
+
+  it("should calculate the correct left position for black keys with 4 octaves", () => {
+    const octaves = 4;
+    const startOctave = 2;
+    const { white } = generateNotes(octaves, startOctave);
+    expect(getBlackKeyLeft("C#4", white)).toBe("51.72413793103448%");
+    expect(getBlackKeyLeft("D#4", white)).toBe("55.172413793103445%");
+    expect(getBlackKeyLeft("E#4", white)).toBe("0%");
+    expect(getBlackKeyLeft("F#4", white)).toBe("62.068965517241374%");
+    expect(getBlackKeyLeft("G#4", white)).toBe("65.51724137931033%");
+    expect(getBlackKeyLeft("A#4", white)).toBe("68.9655172413793%");
+    expect(getBlackKeyLeft("B#4", white)).toBe("0%");
+  });
+
+  it("should calculate the correct left position for black keys with 4 octaves", () => {
+    const octaves = 4;
+    const startOctave = 1;
+    const { white } = generateNotes(octaves, startOctave);
+    expect(getBlackKeyLeft("C#4", white)).toBe("75.86206896551724%");
+    expect(getBlackKeyLeft("D#4", white)).toBe("79.3103448275862%");
+    expect(getBlackKeyLeft("E#4", white)).toBe("0%");
+    expect(getBlackKeyLeft("F#4", white)).toBe("86.20689655172413%");
+    expect(getBlackKeyLeft("G#4", white)).toBe("89.6551724137931%");
+    expect(getBlackKeyLeft("A#4", white)).toBe("93.10344827586206%");
+    expect(getBlackKeyLeft("B#4", white)).toBe("0%");
   });
 });
 
