@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import type { tChordWithName, tNote, tOctaveRange, tChord } from "../PianoBase/pianobase.types";
-import { generateChordsForNote, filterChords, getChordColor } from "./chordPalette.utils.tsx";
+import type { tChordWithName, tNote, tOctaveRange, tChord } from "../PianoBase/PianoBase.types";
+import { generateChordsForNote, filterChords, getChordColor } from "./ChordPalette.utils";
 import "./chordPalette.css";
 
 type ChordPaletteParams = {

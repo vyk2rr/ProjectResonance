@@ -6,7 +6,6 @@ export default {
   component: PianoZap
 };
 
-const Template = (args) => <PianoZap {...args} />;
+const Template = () => <PianoZap />;
 
 export const withoutArgs = Template.bind({});
-
