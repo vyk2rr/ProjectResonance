@@ -1,6 +1,7 @@
 import React from "react";
 import UkuleleFretboard from "../UkuleleFretboard/UkuleleFretboard";
 import './UkuleleChordsList.css'
+import { Route } from "../+types/root";
 
 export function meta({ }: Route.MetaArgs) {
   return [

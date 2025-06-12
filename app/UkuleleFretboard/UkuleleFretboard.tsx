@@ -9,31 +9,35 @@ const fretboardNotes = {
   1: ["A4", "A#4", "B4", "C5", "C#5"]
 };
 
-// Devuelve [cuerda, traste] para una nota (si existe)
-function findNotePosition(note) {
-  for (let string in fretboardNotes) {
-    const fret = fretboardNotes[string].indexOf(note);
-    if (fret !== -1) {
-      return [parseInt(string), fret];
-    }
-  }
-  return null;
-}
+// // Devuelve [cuerda, traste] para una nota (si existe)
+// function findNotePosition(note) {
+//   for (let string in fretboardNotes) {
+//     const fret = fretboardNotes[string].indexOf(note);
+//     if (fret !== -1) {
+//       return [parseInt(string), fret];
+//     }
+//   }
+//   return null;
+// }
 
-export default function UkuleleFretboard({ markers = [], active = false }) {
+interface UkuleleFretboardProps {
+  markers?: string[]; 
+  active?: boolean; 
+}
+export default function UkuleleFretboard({ markers = [], active = false }: UkuleleFretboardProps) {
   const fretCount = 5;
   const stringCount = 4;
 
   const marks = markers
   .map((note, i) => {
     const string = 4 - i;
-    const fret = fretboardNotes[string]?.indexOf(note);
+    const fret = fretboardNotes[string as 1 | 2 | 3 | 4]?.indexOf(note);
     if (fret > 0) {
       return [string, fret];
     }
     return null;
   })
-  .filter(Boolean);
+  .filter((mark): mark is [number, number] => mark !== null)
 
   return (
     <div className="ukulele">

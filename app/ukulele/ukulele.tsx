@@ -129,7 +129,7 @@ export default function Ukulele() {
           <li><Button onClick={Emin} variant="classic" color="yellow">play Emin</Button></li>
           <li><Button onClick={Fmaj} variant="classic" color="green">play Fmaj</Button></li>
           <li><Button onClick={Gmaj} variant="classic" color="blue">play Gmaj</Button></li>
-          <li><Button onClick={Amin} variant="classic" color="darkblue">play Amin</Button></li>
+          <li><Button onClick={Amin} variant="classic" color="indigo">play Amin</Button></li>
           <li><Button onClick={Bdim} variant="classic" color="violet">play Bdim</Button></li>
         </Card>
       </Box>
