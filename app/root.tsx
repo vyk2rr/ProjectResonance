@@ -8,12 +8,7 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
-import { Theme } from '@radix-ui/themes';
-
 import "./app.css";
-import '@radix-ui/themes/styles.css';
-
-
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -38,9 +33,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <Theme accentColor="purple" radius="large" scaling="110%">
-          {children}
-        </Theme>
+        {children}
         <ScrollRestoration />
         <Scripts />
       </body>

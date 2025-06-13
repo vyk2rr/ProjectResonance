@@ -1,12 +1,11 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { Theme } from '@radix-ui/themes';
 import PianoZap from "./PianoZap";
 import { triggerAttackReleaseMock } from "../../../__mocks__/tone";
 
 describe("PianoZap", () => {
   beforeEach(() => {
-    render(<Theme><PianoZap /></Theme>);
+    render(<PianoZap />);
   });
 
   it("renders both buttons", () => {
