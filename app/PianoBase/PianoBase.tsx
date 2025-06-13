@@ -1,6 +1,5 @@
 import * as Tone from "tone";
 import React, { useState, useEffect, useRef } from "react";
-import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import {
   DEFAULT_CHORD_MAP,
   generateNotes,
@@ -18,7 +17,7 @@ import type {
   tNoteWithOctave, tNoteWOCtaveQuality,
   tSequenceToPlayProps, tTime, tNoteName
 } from "./PianoBase.types";
-
+import { PianoObservable } from "../Observer/Observer";
 import './PianoBase.css';
 
 export interface PianoBaseProps {
@@ -28,6 +27,7 @@ export interface PianoBaseProps {
   octaves?: tOctaveRange;
   highlightOnThePiano?: tChord;
   sequenceToPlay?: tSequenceToPlayProps;
+  pianoObservable?: PianoObservable;
 }
 
 export default function PianoBase({
@@ -36,7 +36,8 @@ export default function PianoBase({
   octave = 4,
   octaves = 3,
   highlightOnThePiano,
-  sequenceToPlay
+  sequenceToPlay,
+  pianoObservable,
 }: PianoBaseProps) {
   const synthRef = useRef<SupportedSynthType | null>(null);
   const [activeNotes, setActiveNotes] = useState<tChord>([]);
@@ -123,6 +124,7 @@ export default function PianoBase({
   const handlePianoKeyClick = (note: tNoteWithOctave) => {
     setActiveNotes([note]);
     playNote(note, synthRef.current);
+    pianoObservable?.notify({ type: "notePlayed", note });
     setTimeout(() => setActiveNotes([]), 180);
   };
 
