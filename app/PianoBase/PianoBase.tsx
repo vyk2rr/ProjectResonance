@@ -1,6 +1,5 @@
 import * as Tone from "tone";
 import React, { useState, useEffect, useRef } from "react";
-import { Button, DropdownMenu } from "@radix-ui/themes";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import {
   DEFAULT_CHORD_MAP,
@@ -127,46 +126,8 @@ export default function PianoBase({
     setTimeout(() => setActiveNotes([]), 180);
   };
 
-  const colors = ["orange", "yellow", "green", "blue", "indigo", "purple", "red"] as const;
-
   return (
     <div className="piano-base">
-      {Object.keys(chordMap).length > 0 && (<DropdownMenu.Root >
-        <DropdownMenu.Trigger>
-          <Button className="IconButton" aria-label="Customise options" variant='classic' color='jade' size='1' radius='full'>
-            <HamburgerMenuIcon />
-          </Button>
-        </DropdownMenu.Trigger>
-        <DropdownMenu.Content>
-          <DropdownMenu.Item color='orange' onClick={() => setShowChords(!showChords)}>show D Major buttons</DropdownMenu.Item>
-          <DropdownMenu.Sub>
-            <DropdownMenu.SubTrigger>Play a D major Chord</DropdownMenu.SubTrigger>
-            <DropdownMenu.SubContent>
-              {Object.entries(chordMap).map(([chordName], i) => (
-                <DropdownMenu.Item
-                  key={chordName}
-                  onClick={() => handlePlaySequenceFromChordMap(chordName as tNoteWOCtaveQuality)}
-                  color={colors[i % colors.length]}
-                >
-                  Play {chordName}
-                </DropdownMenu.Item>
-              ))}
-            </DropdownMenu.SubContent>
-          </DropdownMenu.Sub>
-        </DropdownMenu.Content>
-      </DropdownMenu.Root>)}
-
-      {showChords && Object.entries(chordMap).map(([chordName], i) => (
-        <Button
-          key={chordName}
-          onClick={() => handlePlaySequenceFromChordMap(chordName as tNoteWOCtaveQuality)}
-          variant="classic"
-          color={colors[i % colors.length]}
-        >
-          {chordName}
-        </Button>
-      ))}
-
       <div className="piano">
         <div className="white-keys">
           {white.map(note => (

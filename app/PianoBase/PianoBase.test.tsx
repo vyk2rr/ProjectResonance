@@ -1,7 +1,6 @@
 import React from "react";
 import '@testing-library/jest-dom';
 import { render, screen, fireEvent, act, waitFor } from "@testing-library/react";
-import { Theme } from '@radix-ui/themes';
 import PianoBase from "./PianoBase";
 import { generateNotes, getBlackKeyLeft, getBlackKeyWidth } from "./PianoBase.utils";
 import type {
@@ -70,43 +69,15 @@ describe("Type structure examples", () => {
 describe("PianoBase externals", () => {
   it("renders piano keys", () => {
     const { container } = render(
-      <Theme>
-        <PianoBase />
-      </Theme>
+      <PianoBase />
     );
-    expect(screen.getByRole("button")).toBeDefined(); // hamburger menu
     expect(container.getElementsByClassName("white-key").length).toBeGreaterThan(0);
     expect(container.getElementsByClassName("black-key").length).toBeGreaterThan(0);
   });
 
-  //   it("opens chord dropdown and displays chord options", async () => {
-  //     const { container } = render(
-  //       <Theme>
-  //         <PianoBase />
-  //       </Theme>
-  //     );
-  //   // Haz click en el botón del menú (por aria-label)
-  //   fireEvent.click(container.getElementsByTagName('button')[0]); // Asumiendo que el primer botón es el del menú
-  //   // Espera a que aparezca el item en el DOM (Radix puede usar portal)
-  //   screen.debug();
-  //   debugger;
-  //   const item = await screen.findByText(/show D Major buttons/i, {}, { timeout: 2000 });
-  //   expect(item).toBeInTheDocument();
-  // debugger;
-  //     fireEvent.click(screen.getByRole("button"));
-  //     fireEvent.click(item)
-  // debugger
-  //     const showDMajorBtnsBtn = screen.getByText(/show D Major buttons/i);
-  //     fireEvent.click(showDMajorBtnsBtn);
-  //     fireEvent.mouseOver(screen.getByText(/Play a D major Chord/i));
-  //     expect(screen.getAllByText(/Play /i).length).toBeGreaterThan(0);
-  //   });
-
   it("plays note when white key is clicked", async () => {
     const { container } = render(
-      <Theme>
-        <PianoBase />
-      </Theme>
+      <PianoBase />
     );
     const whiteKeys = container.getElementsByClassName("white-key");
     await act(async () => {
@@ -118,9 +89,7 @@ describe("PianoBase externals", () => {
   it("highlights and plays chord when highlightOnThePiano changes", () => {
     const chord: tChord = ["C4", "E4", "G4"];
     const { container } = render(
-      <Theme>
-        <PianoBase highlightOnThePiano={chord} />
-      </Theme>
+      <PianoBase highlightOnThePiano={chord} />
     );
     chord.forEach(note => expect(screen.getAllByText(new RegExp(note)).length).toBeGreaterThan(0));
   });
@@ -132,13 +101,13 @@ describe("PianoBase externals", () => {
       onSequenceEnd,
       highlightedKeys: true
     };
-    render(<Theme><PianoBase sequenceToPlay={sequenceToPlay} /></Theme>);
+    render(<PianoBase sequenceToPlay={sequenceToPlay} />);
     // Would need timers or async handling for real checks
   });
 
   // testing indirectly "playNoteWithHighlight" (no sound, only highlight)
   it("highlights the note when a white key is clicked", async () => {
-    const { container } = render(<Theme><PianoBase /></Theme>);
+    const { container } = render(<PianoBase />);
     const whiteKey = container.getElementsByClassName("white-key")[0];
     fireEvent.click(whiteKey);
     expect(whiteKey.className).toContain("active-key");

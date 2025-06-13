@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
 import * as Tone from "tone";
-import { Button, Slider, Heading, Box, Card } from "@radix-ui/themes";
 import { PianoUkulele } from "../pianos/PianoUkulele";
 import UkuleleFretboard from "../UkuleleFretboard/UkuleleFretboard"
 
@@ -38,7 +37,7 @@ export default function Ukulele() {
     synthRef.current.triggerAttack("C4", `+${strumDelay * 1}`);
     synthRef.current.triggerAttack("E4", `+${strumDelay * 2}`);
     synthRef.current.triggerAttack("C5", `+${strumDelay * 3}`);
-    
+
   };
 
   const Dmin = () => {
@@ -91,7 +90,7 @@ export default function Ukulele() {
 
   const renderStrumSpeedSlider = () => (
     <div style={{ width: "200px" }}>
-      <label>
+      {/* <label>
         Strum speed:{" "}
         <Slider
           min={0.05}
@@ -99,46 +98,42 @@ export default function Ukulele() {
           step={0.01}
           value={[strumDelay]}
           size="3"
-          variant="soft"
+
           color="crimson"
           onValueChange={value => setStrumDelay(Number(value))}
         />{" "}
         {strumDelay}s
-      </label>
+      </label> */}
     </div>
   );
 
   return (
     <>
-      <Heading as="h1" size="9" color="cyan">Ukulele</Heading>
+      <h1>Ukulele</h1>
 
-      <Box width="500px">
-        <Card size="3">
-          <ul>
-            <li><Button onClick={pluckG} radius="none" variant="classic">Pluck G (G4)</Button></li>
-            <li><Button onClick={strumTheUkulele} variant="classic" color="red">Strum The Ukulele C6 (G4 → C4 → E4 → A4)</Button></li>
-          </ul>
-          {renderStrumSpeedSlider()}
-        </Card>
-      </Box>
+      <div style={{ width: "500px" }}>
+        <ul>
+          <li><button onClick={pluckG}>Pluck G (G4)</button></li>
+          <li><button onClick={strumTheUkulele}>Strum The Ukulele C6 (G4 → C4 → E4 → A4)</button></li>
+        </ul>
+        {renderStrumSpeedSlider()}
+      </div>
 
-      <Box width="500px">
-        <Card size="3">
-          <li><Button onClick={Cmaj} variant="classic" color="red">play Cmaj (G4 → C4 → E4 → C)</Button></li>
-          <li><Button onClick={Dmin} variant="classic" color="orange">play Dmin</Button></li>
-          <li><Button onClick={Emin} variant="classic" color="yellow">play Emin</Button></li>
-          <li><Button onClick={Fmaj} variant="classic" color="green">play Fmaj</Button></li>
-          <li><Button onClick={Gmaj} variant="classic" color="blue">play Gmaj</Button></li>
-          <li><Button onClick={Amin} variant="classic" color="indigo">play Amin</Button></li>
-          <li><Button onClick={Bdim} variant="classic" color="violet">play Bdim</Button></li>
-        </Card>
-      </Box>
-      <Box width="200px">
+      <div style={{ width: "500px" }}>
+        <li><button onClick={Cmaj}>play Cmaj (G4 → C4 → E4 → C)</button></li>
+        <li><button onClick={Dmin}>play Dmin</button></li>
+        <li><button onClick={Emin}>play Emin</button></li>
+        <li><button onClick={Fmaj}>play Fmaj</button></li>
+        <li><button onClick={Gmaj}>play Gmaj</button></li>
+        <li><button onClick={Amin}>play Amin</button></li>
+        <li><button onClick={Bdim}>play Bdim</button></li>
+      </div>
+      <div style={{ width: "200px" }}>
         <UkuleleFretboard />
-      </Box>
-      <Box>
+      </div>
+      <div>
         <PianoUkulele />
-      </Box>
+      </div>
     </>
   );
 }
