@@ -2,7 +2,7 @@ import React from "react";
 import '@testing-library/jest-dom';
 import { render, screen, fireEvent, act, waitFor } from "@testing-library/react";
 import PianoBase from "./PianoBase";
-import { generateNotes, getBlackKeyLeft, getBlackKeyWidth } from "./PianoBase.utils";
+import { generateNotes, getBlackKeyLeft, getBlackKeyWidth, getAlternativeNotation } from "./PianoBase.utils";
 import type {
   tOctaveRange, tChordQualities, tMode, tNoteName, tNoteWithOctave,
   tNoteWQuality, tNoteWOCtaveQuality, tPercentString, tChord, tChordSequence,
@@ -119,6 +119,13 @@ describe("PianoBase externals", () => {
 });
 
 describe("PianoBase internals:", () => {
+  describe("getAlternativeNotation", () => {
+    it("should return the correct alternative notation for a given note", () => {
+      const note = "C#4";
+      const result = getAlternativeNotation(note);
+      expect(result).toBe("Db4");
+    });
+  });
   describe("generateNotes", () => {
     it("should generate notes for 3 octaves starting from C4", () => {
       const result = generateNotes(3, 4);
