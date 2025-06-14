@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import type { tChordWithName, tNote, tOctaveRange, tChord } from "../PianoBase/PianoBase.types";
-import { generateChordsForNote, filterChords, getChordColor } from "./ChordPalette.utils";
+// Importar simplifyNoteName
+import { generateChordsForNote, filterChords, getChordColor, simplifyNoteName } from "./ChordPalette.utils";
 import "./chordPalette.css";
 
 type ChordPaletteParams = {
@@ -12,18 +13,35 @@ type ChordPaletteParams = {
 };
 
 interface tChordPaletteProps {
-  params: ChordPaletteParams;
+  params?: ChordPaletteParams; // Hacer params opcional
   showNotes?: boolean;
   showName?: boolean;
   debug?: boolean;
 }
 
-export default function ChordPalette({ params, showNotes = true, showName = true, debug = false }: tChordPaletteProps) {
+export default function ChordPalette({
+  params, // params puede ser undefined
+  showNotes = true,
+  showName = true,
+  debug = false
+}: tChordPaletteProps) {
+  // Valores por defecto para params y sus propiedades
+  const defaultOctave: tOctaveRange = 4; // Ejemplo de octava por defecto
+  const defaultSetChord = () => {
+    // console.warn("ChordPalette: setCurrentChord not provided, using no-op default.");
+  };
+  const defaultSetColor = () => {
+    // console.warn("ChordPalette: setCurrentColor not provided, using no-op default.");
+  };
+
   const {
-    currentChord, setCurrentChord,
-    currentColor, setCurrentColor,
-    octave
-  } = params;
+    currentChord = [], // Valor por defecto si currentChord no está en params
+    setCurrentChord = defaultSetChord,
+    currentColor = "#cccccc", // Valor por defecto si currentColor no está en params
+    setCurrentColor = defaultSetColor,
+    octave = defaultOctave // Valor por defecto si octave no está en params
+  } = params || {}; // Si params es undefined, usar un objeto vacío para la desestructuración
+
   const notes: tNote[] = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
   const [showInversions, setShowInversions] = useState<boolean>(false);
   const [selectedChordId, setSelectedChordId] = useState<string>("");
@@ -31,7 +49,15 @@ export default function ChordPalette({ params, showNotes = true, showName = true
 
   const handleChordClick = (chord: tChordWithName) => {
     setCurrentChord(chord.chord);
-    setCurrentColor(getChordColor(chord.rootNote, chord.quality));
+    // const isInvestment = chord.id.includes('_inv'); // Ya no es necesario para determinar si pasar chord.chord
+    const baseNoteForColor = simplifyNoteName(chord.chord[0]); // Nota más grave de la formación actual
+    setCurrentColor(
+      getChordColor(
+        baseNoteForColor,
+        chord.quality,
+        chord.chord // Siempre pasar las notas del acorde para el degradado
+      )
+    );
     setSelectedChordId(chord.id);
   };
 
@@ -78,19 +104,31 @@ export default function ChordPalette({ params, showNotes = true, showName = true
           return (
             <div key={note} className="chord-column">
               <h2>{note} Chords</h2>
-              {filteredChords.map(chord => (
-                <button
-                  key={chord.id}
-                  onClick={() => handleChordClick(chord)}
-                  style={{ backgroundColor: getChordColor(chord.rootNote, chord.quality) }}
-                  className={`chord-button ${chord.id.includes('_inv') ? 'inverted' : ''} ${selectedChordId === chord.id ? 'selected' : ''}`}
-                  draggable
-                  onDragStart={e => handleDragStart(e, chord)}
-                >
-                  {showName ? <div className="chord-name">{chord.name}</div> : ''}
-                  {showNotes ? <div className="chord-notes">{chord.displayNotes}</div> : ''}
-                </button>
-              ))}
+              {filteredChords.map(chord => {
+                const isInvestment = chord.id.includes('_inv'); // Mantener para la clase CSS 'inverted'
+                // La nota base para el color será la nota más grave de la formación actual del acorde.
+                const baseNoteForColor = simplifyNoteName(chord.chord[0]);
+                return (
+                  <button
+                    key={chord.id}
+                    onClick={() => handleChordClick(chord)}
+                    // Usar 'background' para soportar linear-gradient
+                    style={{
+                      background: getChordColor(
+                        baseNoteForColor,
+                        chord.quality,
+                        chord.chord // Siempre pasar las notas del acorde para el degradado
+                      )
+                    }}
+                    className={`chord-button ${isInvestment ? 'inverted' : ''} ${selectedChordId === chord.id ? 'selected' : ''}`}
+                    draggable
+                    onDragStart={e => handleDragStart(e, chord)}
+                  >
+                    {showName ? <div className="chord-name">{chord.name}</div> : ''}
+                    {showNotes ? <div className="chord-notes">{chord.displayNotes}</div> : ''}
+                  </button>
+                );
+              })}
             </div>
           );
         })}
