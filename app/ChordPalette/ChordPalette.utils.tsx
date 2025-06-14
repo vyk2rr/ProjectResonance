@@ -68,16 +68,43 @@ const CHORD_QUALITY_MODIFIERS: Record<tChordQualities, { saturation: number; lig
 };
 
 export function getChordColor(
-  rootNote: tNoteName,
-  quality: tChordQualities
+  baseNote: tNoteName, // Nota base para el color (la más grave de la formación actual)
+  quality: tChordQualities,
+  chordNotesForGradient?: tNoteWithOctave[] // Notas completas para generar el degradado
 ) {
-  const base = NOTE_TO_HUE[rootNote] !== undefined
-    ? { hue: NOTE_TO_HUE[rootNote] }
-    : { hue: 0 }
+  if (chordNotesForGradient && chordNotesForGradient.length > 0) {
+    const colorsHsl = chordNotesForGradient.map(noteWithOctave => {
+      const simplified = simplifyNoteName(noteWithOctave);
+      const hue = NOTE_TO_HUE[simplified] !== undefined ? NOTE_TO_HUE[simplified] : 0;
+      return `hsl(${hue}, 100%, 50%)`; // Usar S:100%, L:50% para colores vivos
+    });
+
+    if (colorsHsl.length === 1) {
+      return colorsHsl[0]; // Si solo hay una nota, color sólido
+    }
+
+    let gradientString = "";
+    const numColors = colorsHsl.length;
+
+    // El primer color ocupa del 0% al 50%
+    gradientString += `${colorsHsl[0]} 0%, ${colorsHsl[0]} 50%`;
+
+    if (numColors > 1) {
+      const remainingSpacePerColor = 50 / (numColors - 1); // Espacio para cada color restante en el 50% final
+      for (let i = 1; i < numColors; i++) {
+        const startPercentage = 50 + (i - 1) * remainingSpacePerColor;
+        const endPercentage = 50 + i * remainingSpacePerColor;
+        gradientString += `, ${colorsHsl[i]} ${startPercentage.toFixed(2)}%, ${colorsHsl[i]} ${endPercentage.toFixed(2)}%`;
+      }
+    }
+    return `linear-gradient(to right, ${gradientString})`;
+  }
+
+  // Lógica original para colores sólidos (si no se proporcionan notas para degradado)
+  const baseHue = NOTE_TO_HUE[baseNote] !== undefined ? NOTE_TO_HUE[baseNote] : 0;
   const mod = CHORD_QUALITY_MODIFIERS[quality] || { saturation: 100, lightness: 50 };
-  const { hue } = base;
   const { saturation, lightness } = mod;
-  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+  return `hsl(${baseHue}, ${saturation}%, ${lightness}%)`;
 }
 
 // Función auxiliar para convertir HSL a RGB
