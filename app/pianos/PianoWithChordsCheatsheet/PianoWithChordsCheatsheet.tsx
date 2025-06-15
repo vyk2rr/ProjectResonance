@@ -36,7 +36,7 @@ export default function PianoWithChordsHelper({ chord, octaves = 2, octave = 4 }
   return (
     <>
       <div style={{ backgroundColor: currentColor, padding: "10px" }}>
-        <PianoMetalicoLaser
+        <PianoBase
           octaves={octaves}
           octave={octave}
           highlightOnThePiano={currentChord}

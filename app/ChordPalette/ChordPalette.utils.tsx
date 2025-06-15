@@ -1,9 +1,71 @@
 import * as Tone from "tone";
-import { CHORD_INTERVALS } from "../PianoBase/PianoBase.types";
+import { CHORD_INTERVALS, CHORD_QUALITIES as ALL_CHORD_QUALITIES_ARRAY } from "../PianoBase/PianoBase.types";
 import type {
   tChord, tNote, tNoteWithOctave, tChordQualities,
   tChordWithName, tOctaveRange, tNoteName
 } from "../PianoBase/PianoBase.types";
+
+// --- Color Configuration ---
+const NOTE_NAME_TO_HUE: Partial<Record<tNoteName, number>> = {
+  'C':  0,   // Red
+  'C#': 15,  // Red-Orange
+  'Db': 15,  // Red-Orange
+  'D':  30,  // Orange
+  'D#': 45,  // Orange-Yellow
+  'Eb': 45,  // Orange-Yellow
+  'E':  60,  // Yellow
+  'Fb': 55,  // Yellow (slightly towards orange for Fb)
+  'F':  120, // Green
+  'F#': 150, // Green-Cyan (was 150)
+  'Gb': 150, // Green-Cyan (was 150)
+  'G':  210, // Sky Blue (was 240)
+  'G#': 225, // Sky Blue - Indigo transition (was 255)
+  'Ab': 225, // Sky Blue - Indigo transition (was 255)
+  'A':  260, // Indigo (was 270)
+  'A#': 270, // Indigo-Violet (was 285)
+  'Bb': 270, // Indigo-Violet (was 285)
+  'B':  280, // Violet/Purplish (was 300)
+  'Cb': 275, // Violet (slightly towards indigo for Cb)
+  'B#': 5,   // Red (like C, was 5)
+};
+const DEFAULT_HUE = 0; // Default to Red if note not found
+
+interface ColorAdjustmentConfig {
+  lightnessAdjustment: number;
+  saturationAdjustment: number;
+  inherentNoteCount: number;
+}
+
+const CHORD_QUALITY_COLOR_ADJUSTMENTS: Record<tChordQualities, ColorAdjustmentConfig> = {
+  maj:    { lightnessAdjustment: 0,   saturationAdjustment: 0,    inherentNoteCount: 3 },
+  min:    { lightnessAdjustment: -15, saturationAdjustment: -10,  inherentNoteCount: 3 },
+  dim:    { lightnessAdjustment: -25, saturationAdjustment: -20,  inherentNoteCount: 3 },
+  aug:    { lightnessAdjustment: +5,  saturationAdjustment: +15,  inherentNoteCount: 3 },
+  sus2:   { lightnessAdjustment: -10, saturationAdjustment: -5,   inherentNoteCount: 3 },
+  sus4:   { lightnessAdjustment: 0,   saturationAdjustment: +5,   inherentNoteCount: 3 },
+  maj7:   { lightnessAdjustment: 0,   saturationAdjustment: +2,   inherentNoteCount: 4 },
+  m7:     { lightnessAdjustment: -15, saturationAdjustment: -8,   inherentNoteCount: 4 },
+  dom7:   { lightnessAdjustment: -5,  saturationAdjustment: +5,   inherentNoteCount: 4 },
+  maj9:   { lightnessAdjustment: 0,   saturationAdjustment: +4,   inherentNoteCount: 5 },
+  m9:     { lightnessAdjustment: -15, saturationAdjustment: -6,   inherentNoteCount: 5 },
+  dom9:   { lightnessAdjustment: -5,  saturationAdjustment: +7,   inherentNoteCount: 5 },
+  maj11:  { lightnessAdjustment: 0,   saturationAdjustment: +6,   inherentNoteCount: 6 },
+  m11:    { lightnessAdjustment: -15, saturationAdjustment: -4,   inherentNoteCount: 6 },
+  dom11:  { lightnessAdjustment: -5,  saturationAdjustment: +9,   inherentNoteCount: 6 },
+  maj13:  { lightnessAdjustment: 0,   saturationAdjustment: +8,   inherentNoteCount: 7 },
+  m13:    { lightnessAdjustment: -15, saturationAdjustment: -2,   inherentNoteCount: 7 },
+  dom13:  { lightnessAdjustment: -5,  saturationAdjustment: +11,  inherentNoteCount: 7 },
+};
+const DEFAULT_COLOR_ADJUSTMENT_CONFIG: ColorAdjustmentConfig = { lightnessAdjustment: 0, saturationAdjustment: 0, inherentNoteCount: 3 };
+
+const BASE_LIGHTNESS = 50;
+const BASE_SATURATION = 70;
+const LIGHTNESS_BONUS_PER_EXTRA_NOTE = 7;
+const MAX_LIGHTNESS = 90;
+const MIN_LIGHTNESS = 15;
+const MAX_SATURATION = 95;
+const MIN_SATURATION = 20;
+
 
 function calculateChordNotes(note: tNoteWithOctave, type: tChordQualities): tChord {
   const rootFrequency = Tone.Frequency(note);
@@ -22,259 +84,137 @@ function invertChord(notes: tChord, inversion: number): tChord {
   return result;
 }
 
-export function simplifyNoteName(note: tNoteWithOctave): tNote {
-  return note.replace(/\d+/, '') as tNote;
+export function simplifyNoteName(note: tNoteWithOctave): tNoteName { // Return tNoteName
+  return note.replace(/\d+$/, '') as tNoteName;
 }
-
-// Mapa de notas a tonos base (colores más vivos para acordes mayores)
-const NOTE_TO_HUE: Partial<Record<tNoteName, number>> = {
-  'C': 0,       // Rojo
-  'C#': 15,     // Rojo anaranjado (intermedio hacia D)
-  'D': 30,      // Naranja
-  'D#': 45,     // Naranja amarillento (intermedio hacia E)
-  'E': 60,      // Amarillo
-  'F': 120,     // Verde
-  'F#': 150,    // Verde azulado (intermedio hacia G)
-  'G': 180,     // Cian
-  'G#': 210,    // Azul violáceo (intermedio hacia A)
-  'A': 240,     // Azul
-  'A#': 270,    // Violeta
-  'B': 300      // Magenta
-};
-
-const CHORD_QUALITY_MODIFIERS: Record<tChordQualities, { saturation: number; lightness: number }> = {
-  maj:    { saturation: 80,  lightness: 50 },
-  min:    { saturation: 40,  lightness: 50 },
-  dim:    { saturation: 25,  lightness: 50 },
-  aug:    { saturation: 80,  lightness: 65 },
-  sus2:   { saturation: 80,  lightness: 40 },
-  sus4:   { saturation: 80,  lightness: 50 },
-
-  maj7:   { saturation: 100, lightness: 50 },
-  m7:     { saturation: 60,  lightness: 50 },
-  dom7:   { saturation: 80,  lightness: 45 },
-
-  maj9:   { saturation: 100, lightness: 55 },
-  m9:     { saturation: 60,  lightness: 55 },
-  dom9:   { saturation: 80,  lightness: 50 },
-
-  maj11:  { saturation: 100, lightness: 60 },
-  m11:    { saturation: 60,  lightness: 60 },
-  dom11:  { saturation: 80,  lightness: 55 },
-
-  maj13:  { saturation: 100, lightness: 65 },
-  m13:    { saturation: 60,  lightness: 65 },
-  dom13:  { saturation: 80,  lightness: 60 },
-};
 
 export function getChordColor(
-  baseNote: tNoteName, // Nota base para el color (la más grave de la formación actual)
+  baseNote: tNoteName,
   quality: tChordQualities,
-  chordNotesForGradient?: tNoteWithOctave[] // Notas completas para generar el degradado
-) {
+  chordNotesForGradient?: tNoteWithOctave[]
+): string {
+  const rootHue = NOTE_NAME_TO_HUE[baseNote] ?? DEFAULT_HUE;
+  const qualityConfig = CHORD_QUALITY_COLOR_ADJUSTMENTS[quality] || DEFAULT_COLOR_ADJUSTMENT_CONFIG;
+
+  let overallChordLightness = BASE_LIGHTNESS + qualityConfig.lightnessAdjustment;
+  let overallChordSaturation = BASE_SATURATION + qualityConfig.saturationAdjustment;
+
+  const numNotes = chordNotesForGradient
+    ? chordNotesForGradient.length
+    : qualityConfig.inherentNoteCount;
+
+  if (numNotes > 3) { // Assuming 3 is the baseline (triads)
+    overallChordLightness += (numNotes - 3) * LIGHTNESS_BONUS_PER_EXTRA_NOTE;
+  }
+
+  overallChordLightness = Math.max(MIN_LIGHTNESS, Math.min(MAX_LIGHTNESS, overallChordLightness));
+  overallChordSaturation = Math.max(MIN_SATURATION, Math.min(MAX_SATURATION, overallChordSaturation));
+
   if (chordNotesForGradient && chordNotesForGradient.length > 0) {
-    const colorsHsl = chordNotesForGradient.map(noteWithOctave => {
-      const simplified = simplifyNoteName(noteWithOctave);
-      const hue = NOTE_TO_HUE[simplified] !== undefined ? NOTE_TO_HUE[simplified] : 0;
-      return `hsl(${hue}, 100%, 50%)`; // Usar S:100%, L:50% para colores vivos
+    const gradientColorsHsl: string[] = chordNotesForGradient.map(noteWithOctave => {
+      const noteNameForBand = simplifyNoteName(noteWithOctave);
+      const bandHue = NOTE_NAME_TO_HUE[noteNameForBand] ?? DEFAULT_HUE;
+      return `hsl(${bandHue.toFixed(0)}, ${overallChordSaturation.toFixed(0)}%, ${overallChordLightness.toFixed(0)}%)`;
     });
 
-    if (colorsHsl.length === 1) {
-      return colorsHsl[0]; // Si solo hay una nota, color sólido
+    if (gradientColorsHsl.length === 1) {
+      return gradientColorsHsl[0];
     }
 
+    // Using a simple gradient structure for multiple notes
+    // Example: "linear-gradient(to right, color1, color2, color3)"
+    // For more distinct bands like before:
     let gradientString = "";
-    const numColors = colorsHsl.length;
+    const numColors = gradientColorsHsl.length;
+    const bandWidthPercentage = 100 / numColors;
 
-    // El primer color ocupa del 0% al 50%
-    gradientString += `${colorsHsl[0]} 0%, ${colorsHsl[0]} 50%`;
-
-    if (numColors > 1) {
-      const remainingSpacePerColor = 50 / (numColors - 1); // Espacio para cada color restante en el 50% final
-      for (let i = 1; i < numColors; i++) {
-        const startPercentage = 50 + (i - 1) * remainingSpacePerColor;
-        const endPercentage = 50 + i * remainingSpacePerColor;
-        gradientString += `, ${colorsHsl[i]} ${startPercentage.toFixed(2)}%, ${colorsHsl[i]} ${endPercentage.toFixed(2)}%`;
-      }
-    }
+    gradientColorsHsl.forEach((color, index) => {
+        const startPercentage = index * bandWidthPercentage;
+        const endPercentage = (index + 1) * bandWidthPercentage;
+        if (index > 0) gradientString += ", ";
+        // Make each band distinct
+        gradientString += `${color} ${startPercentage.toFixed(2)}%, ${color} ${endPercentage.toFixed(2)}%`;
+    });
     return `linear-gradient(to right, ${gradientString})`;
+
   }
 
-  // Lógica original para colores sólidos (si no se proporcionan notas para degradado)
-  const baseHue = NOTE_TO_HUE[baseNote] !== undefined ? NOTE_TO_HUE[baseNote] : 0;
-  const mod = CHORD_QUALITY_MODIFIERS[quality] || { saturation: 100, lightness: 50 };
-  const { saturation, lightness } = mod;
-  return `hsl(${baseHue}, ${saturation}%, ${lightness}%)`;
+  // Solid color
+  return `hsl(${rootHue.toFixed(0)}, ${overallChordSaturation.toFixed(0)}%, ${overallChordLightness.toFixed(0)}%)`;
 }
 
-// Función auxiliar para convertir HSL a RGB
-function hslToRgb(h: number, s: number, l: number): [number, number, number] {
-  h /= 360;
-  s /= 100;
-  l /= 100;
 
-  let r, g, b;
-
-  if (s === 0) {
-    r = g = b = l;
-  } else {
-    const hue2rgb = (p: number, q: number, t: number) => {
-      if (t < 0) t += 1;
-      if (t > 1) t -= 1;
-      if (t < 1 / 6) return p + (q - p) * 6 * t;
-      if (t < 1 / 2) return q;
-      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-      return p;
-    };
-
-    const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-    const p = 2 * l - q;
-
-    r = hue2rgb(p, q, h + 1 / 3);
-    g = hue2rgb(p, q, h);
-    b = hue2rgb(p, q, h - 1 / 3);
-  }
-
-  return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
-}
-
-// Función auxiliar para convertir RGB a HEX
-function rgbToHex(r: number, g: number, b: number): string {
-  return '#' + [r, g, b].map(x => {
-    const hex = x.toString(16);
-    return hex.length === 1 ? '0' + hex : hex;
-  }).join('');
-}
-
-// Función auxiliar para obtener la nota natural
-function getNaturalNote(note: string): tNote {
-  const naturalNote = note.replace(/[#b]/, '');
-  if (['A', 'B', 'C', 'D', 'E', 'F', 'G'].includes(naturalNote)) {
-    return naturalNote as tNote;
-  }
-  return 'C'; // Nota por defecto
-}
-
-// Función auxiliar para generar un degradado
-function generateGradient(startHue: number, endHue: number, saturation: number, lightness: number): string {
-  const steps = 5; // Aumentamos los pasos para un degradado más suave
-  const colors: string[] = [];
-
-  for (let i = 0; i < steps; i++) {
-    const t = i / (steps - 1);
-    const hue = startHue + (endHue - startHue) * t;
-    const [r, g, b] = hslToRgb(hue, saturation, lightness);
-    colors.push(rgbToHex(r, g, b));
-  }
-
-  return `linear-gradient(to right, ${colors.join(', ')})`;
-}
-
-// convierte la búsqueda a mayúsculas
 export function extractNotesFromSearchTerm(term: string): string[] {
   return (term.match(/([A-G][#b]?)/gi) || []).map(n => n.toUpperCase());
 }
 
 export const filterChords = (chords: tChordWithName[], searchTerm: string): tChordWithName[] => {
   if (!searchTerm) return chords;
-
   const upperTerm = searchTerm.toUpperCase();
   const searchNotes:string[] = extractNotesFromSearchTerm(upperTerm);
-
-  // Si contiene notas (por ejemplo "FACE")
   if (searchNotes.length > 0) {
     return chords.filter(chord => {
-      const chordNotes = chord.chord.map(simplifyNoteName);
-      return searchNotes.every(n => chordNotes.includes(n as tNote));
+      const chordNoteNames = chord.chord.map(simplifyNoteName);
+      return searchNotes.every(n => chordNoteNames.includes(n as tNoteName));
     });
   }
-
-  // Si no contiene notas, buscar por nombre
   return chords.filter(chord =>
     chord.name.toUpperCase().includes(upperTerm) ||
     chord.displayNotes.toUpperCase().includes(upperTerm)
   );
 };
 
-// para construir un acorde base
 export function buildBaseChord(note: tNoteWithOctave, type: tChordQualities): tChordWithName {
   const rootFrequency = calculateChordNotes(note, type);
-  const baseNoteName: tNote = simplifyNoteName(note);
-  const simplifiedNotes: tNote[] = rootFrequency.map(simplifyNoteName);
+  const baseNoteNameValue: tNoteName = simplifyNoteName(note);
+  const simplifiedNotesDisplay: tNoteName[] = rootFrequency.map(simplifyNoteName);
 
   return {
-    id: `${note}_${type}`, // just an identifier, Ej: "A#5maj"
-    quality: type, // Ej: "maj", "min", etc.
-    rootNote: baseNoteName,
-    name: `${baseNoteName}${type}`, // Ej: "Cmaj"
-    displayNotes: simplifiedNotes.join(" "), // Ej: "C E G"
-    chord: rootFrequency // Mantenemos las notas completas para la lógica del piano
+    id: `${note}_${type}`,
+    quality: type,
+    rootNote: baseNoteNameValue,
+    name: `${baseNoteNameValue}${type}`,
+    displayNotes: simplifiedNotesDisplay.join(" "),
+    chord: rootFrequency
   };
 }
 
-// para construir las inversiones de un acorde base
 export function buildChordInversions(baseChord: ReturnType<typeof buildBaseChord>, inversions: number) {
   const result = [];
   const chord: tChord = baseChord.chord;
 
   for (let i = 1; i <= inversions; i++) {
     const inverted = invertChord(chord, i);
-    const simplifiedInverted = inverted.map(simplifyNoteName);
+    const simplifiedInvertedDisplay = inverted.map(simplifyNoteName);
     result.push({
       id: `${baseChord.id}_inv${i}`,
       rootNote: baseChord.rootNote,
       quality: baseChord.quality,
       name: `${baseChord.name} (${i}ª)`,
-      displayNotes: simplifiedInverted.join(" "),
+      displayNotes: simplifiedInvertedDisplay.join(" "),
       chord: inverted
     });
   }
-
   return result;
 }
 
-// genera todas las combinaciones para una nota específica, ejemplo "D"
-export const generateChordsForNote = (note: tNote, selectedOctave: tOctaveRange): tChordWithName[] => {
+export const generateChordsForNote = (note: tNoteName, selectedOctave: tOctaveRange): tChordWithName[] => {
   const noteWithOctave: tNoteWithOctave = note + selectedOctave as tNoteWithOctave;
+  const allChords: tChordWithName[] = [];
 
-  return [
-    buildBaseChord(noteWithOctave, "maj"),
-    ...buildChordInversions(buildBaseChord(noteWithOctave, "maj"), 2),
-    buildBaseChord(noteWithOctave, "min"),
-    ...buildChordInversions(buildBaseChord(noteWithOctave, "min"), 2),
-    buildBaseChord(noteWithOctave, "dim"),
-    ...buildChordInversions(buildBaseChord(noteWithOctave, "dim"), 2),
-    buildBaseChord(noteWithOctave, "aug"),
-    ...buildChordInversions(buildBaseChord(noteWithOctave, "aug"), 2),
-    buildBaseChord(noteWithOctave, "sus2"),
-    ...buildChordInversions(buildBaseChord(noteWithOctave, "sus2"), 2),
-    buildBaseChord(noteWithOctave, "sus4"),
-    ...buildChordInversions(buildBaseChord(noteWithOctave, "sus4"), 2),
-    buildBaseChord(noteWithOctave, "maj7"),
-    ...buildChordInversions(buildBaseChord(noteWithOctave, "maj7"), 3),
-    buildBaseChord(noteWithOctave, "m7"),
-    ...buildChordInversions(buildBaseChord(noteWithOctave, "m7"), 3),
-    buildBaseChord(noteWithOctave, "dom7"),
-    ...buildChordInversions(buildBaseChord(noteWithOctave, "dom7"), 2),
-    buildBaseChord(noteWithOctave, "maj9"),
-    ...buildChordInversions(buildBaseChord(noteWithOctave, "maj9"), 3),
-    buildBaseChord(noteWithOctave, "m9"),
-    ...buildChordInversions(buildBaseChord(noteWithOctave, "m9"), 3),
-    buildBaseChord(noteWithOctave, "dom9"),
-    ...buildChordInversions(buildBaseChord(noteWithOctave, "dom9"), 3),
-    buildBaseChord(noteWithOctave, "maj11"),
-    ...buildChordInversions(buildBaseChord(noteWithOctave, "maj11"), 3),
-    buildBaseChord(noteWithOctave, "m11"),
-    ...buildChordInversions(buildBaseChord(noteWithOctave, "m11"), 3),
-    buildBaseChord(noteWithOctave, "dom11"),
-    ...buildChordInversions(buildBaseChord(noteWithOctave, "dom11"), 3),
-    buildBaseChord(noteWithOctave, "maj13"),
-    ...buildChordInversions(buildBaseChord(noteWithOctave, "maj13"), 3),
-    buildBaseChord(noteWithOctave, "m13"),
-    ...buildChordInversions(buildBaseChord(noteWithOctave, "m13"), 3),
-    buildBaseChord(noteWithOctave, "dom13"),
-    ...buildChordInversions(buildBaseChord(noteWithOctave, "dom13"), 3),
-  ];
+  ALL_CHORD_QUALITIES_ARRAY.forEach(quality => {
+    const base = buildBaseChord(noteWithOctave, quality);
+    allChords.push(base);
+    
+    const qualityConfig = CHORD_QUALITY_COLOR_ADJUSTMENTS[quality] || DEFAULT_COLOR_ADJUSTMENT_CONFIG;
+    const noteCount = qualityConfig.inherentNoteCount;
+    let numInversions = 0;
+    if (noteCount >=3) numInversions = noteCount -1; // Max inversions is n-1
 
+    if (numInversions > 0) {
+        allChords.push(...buildChordInversions(base, Math.min(numInversions, 3))); // Cap practical inversions at 3
+    }
+  });
 
+  return allChords;
 };
