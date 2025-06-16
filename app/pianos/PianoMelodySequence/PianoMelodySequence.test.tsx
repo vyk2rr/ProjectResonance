@@ -1,6 +1,6 @@
 import React from 'react';
-import { render, act } from '@testing-library/react';
-import PianoMiniDashboard from './PianoMiniDashboard';
+import { render, act, fireEvent, waitFor } from '@testing-library/react';
+import PianoMelodySequence from './PianoMelodySequence';
 import { PianoObserver } from '../../PianoObserver/PianoObserver';
 
 // Mock el componente PianoBase
@@ -23,14 +23,14 @@ jest.mock('../../PianoObserver/PianoObserver', () => ({
 
 let mockCallback: (event: any) => void;
 
-describe('PianoMiniDashboard', () => {
-  it('shows empty state initially', () => {
-    const { getByText } = render(<PianoMiniDashboard />);
-    expect(getByText('No hay teclas presionadas aún.')).toBeInTheDocument();
+describe('PianoMelodySequence', () => {
+  it('shows initial state', () => {
+    const { getByText } = render(<PianoMelodySequence />);
+    expect(getByText('B3, D4, F4, A4, C5')).toBeInTheDocument();
   });
 
   it('updates recent notes when piano key is played', () => {
-    const { getByText } = render(<PianoMiniDashboard />);
+    const { getByText } = render(<PianoMelodySequence />);
     
     act(() => {
       mockCallback({ type: 'notePlayed', note: 'C4' });
@@ -40,7 +40,7 @@ describe('PianoMiniDashboard', () => {
   });
 
   it('keeps only last 5 notes', () => {
-    const { getByText } = render(<PianoMiniDashboard />);
+    const { getByText } = render(<PianoMelodySequence />);
     
     act(() => {
       ['C4', 'D4', 'E4', 'F4', 'G4', 'A4'].forEach(note => {
@@ -50,4 +50,5 @@ describe('PianoMiniDashboard', () => {
 
     expect(getByText(/A4, G4, F4, E4, D4/)).toBeInTheDocument();
   });
+
 });

@@ -45,8 +45,9 @@
   height: 100%;
   z-index: 2;
   border-radius: 0 0 4px 4px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  transform: translateX(-50%); /* Centra la tecla negra respecto a su left */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transform: translateX(-50%);
+  /* Centra la tecla negra respecto a su left */
 }
 
 .active-key {

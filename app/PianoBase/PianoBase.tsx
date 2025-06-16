@@ -17,8 +17,9 @@ import type {
   tNoteWithOctave, tNoteWOCtaveQuality,
   tSequenceToPlayProps, tTime, tNoteName
 } from "./PianoBase.types";
-import { PianoObservable } from "../Observer/Observer";
+import { PianoObserver } from "../PianoObserver/PianoObserver";
 import './PianoBase.css';
+import { ChordDispatcher } from "../ChordDispatcher/ChordDispatcher";
 
 export interface PianoBaseProps {
   createSynth?: () => SupportedSynthType;
@@ -27,7 +28,8 @@ export interface PianoBaseProps {
   octaves?: tOctaveRange;
   highlightOnThePiano?: tChord;
   sequenceToPlay?: tSequenceToPlayProps;
-  pianoObservable?: PianoObservable;
+  pianoObservable?: PianoObserver;
+  chordDispatcherList?: ChordDispatcher[];
 }
 
 export default function PianoBase({
@@ -38,6 +40,8 @@ export default function PianoBase({
   highlightOnThePiano,
   sequenceToPlay,
   pianoObservable,
+  chordDispatcherList
+
 }: PianoBaseProps) {
   const synthRef = useRef<SupportedSynthType | null>(null);
   const [activeNotes, setActiveNotes] = useState<tChord>([]);
@@ -79,6 +83,16 @@ export default function PianoBase({
 
     return () => { cancelled = true; };
   }, [sequenceToPlay]);
+
+  useEffect(() => {
+    if (!chordDispatcherList || chordDispatcherList.length === 0) return;
+
+    chordDispatcherList.forEach(dispatcher => {
+      dispatcher.events.forEach(event => {
+        dispatcher.triggerNote(event);  // Solo console.log (por ahora)
+      });
+    });
+  }, [chordDispatcherList]);
 
   async function playNoteWithHighlight(
     note: tNoteWithOctave,

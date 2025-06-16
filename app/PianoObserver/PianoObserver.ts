@@ -5,7 +5,7 @@ type PianoEvent =
 
 type Listener = (event: PianoEvent) => void;
 
-export class PianoObservable {
+export class PianoObserver {
   private listeners: Listener[] = [];
 
   subscribe(listener: Listener) {
