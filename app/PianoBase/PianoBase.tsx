@@ -138,7 +138,10 @@ export default function PianoBase({
               className={`white-key${activeNotes.includes(note) || highlightedKeys.includes(note) ? " active-key" : ""}`}
               data-note={note}
               onClick={() => handlePianoKeyClick(note)}
-            >{highlightedKeys.includes(note) && <span className="note-name">{note}</span>}</div>
+            >
+              {highlightedKeys.includes(note) && <span className="note-name">{note}</span>}
+              {note.startsWith('C') && <span className="note-name">{note}</span>}
+            </div>
           ))}
         </div>
         <div className="black-keys">
