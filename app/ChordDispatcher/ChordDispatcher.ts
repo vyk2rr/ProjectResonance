@@ -2,10 +2,10 @@ import * as Tone from "tone";
 import type { tNoteWithOctave, tTime, tChord } from "./../PianoBase/PianoBase.types";
 
 export interface iChordEvent {
-  pitches: tChord;
-  time: string;  // formato estilo Tone.js: "0:1:2"
-  duration: tTime;
-  velocity?: number;
+  pitches: tChord;        // ejemplo: ["C4", "E4", "G4"]
+  time: string;             // ejemplo: "0:0:0"
+  duration: tTime;         // ejemplo: "4n"
+  velocity?: number;        // opcional
 }
 
 export type tMelodySequence = iChordEvent[];
@@ -15,22 +15,27 @@ export interface iChordDispatcher {
   events: tMelodySequence;
 }
 
-export class ChordDispatcher {
-  constructor(private triggerNoteFn: (note: tNoteWithOctave, duration?: tTime) => void) {}
+export default class ChordDispatcher {
+  triggerNote: (event: iChordEvent) => void;
+
+  constructor(triggerNote: (event: iChordEvent) => void) {
+    this.triggerNote = triggerNote;
+  }
 
   async startSequence(events: tMelodySequence) {
-    await Tone.start();
-    const part = new Tone.Part((time, value) => {
-      if (typeof value === "object" && value !== null && "pitches" in value) {
-        for (const note of value.pitches) {
-          this.triggerNoteFn(note, value.duration);
-        }
-      }
-    }, events.map(event => [event.time, event]));
+    if (!events || events.length === 0) return;
 
-    part.start(0);
+    await Tone.start();
     const now = Tone.now();
-    part.start(now);
-    return part; // Puedes guardar esta instancia si deseas pararlo después
+    const transport = Tone.getTransport(); 
+
+    events.forEach(event => {
+      const time = Tone.Time(event.time).toSeconds();
+      transport.scheduleOnce((t) => { 
+        this.triggerNote(event);
+      }, now + time);
+    });
+
+    transport.start(); 
   }
 }

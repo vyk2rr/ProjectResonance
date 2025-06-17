@@ -1,6 +1,8 @@
+import { tChord, tNote } from "../PianoBase/PianoBase.types";
+
 type PianoEvent = 
-  | { type: "notePlayed", note: string }
-  | { type: "chordPlayed", chord: string[] }
+  | { type: "notePlayed", note: tNote }
+  | { type: "chordPlayed", chord: tChord }
   | { type: "sequenceEnded" };
 
 type Listener = (event: PianoEvent) => void;

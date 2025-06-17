@@ -1,53 +1,90 @@
 import * as Tone from "tone";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useImperativeHandle, forwardRef } from "react";
 import {
-  DEFAULT_CHORD_MAP,
+  // DEFAULT_CHORD_MAP,
   generateNotes,
   getAlternativeNotation,
   getBlackKeyLeft,
   getBlackKeyWidth,
   createDefaultSynth,
   playNote,
-  playChord,
-  playChordSimultaneous
+  // playChord,
+  // playChordSimultaneous
 } from "./PianoBase.utils";
 import type {
   tChord, tOctaveRange, tChordSequence,
-  tChordMap, SupportedSynthType,
-  tNoteWithOctave, tNoteWOCtaveQuality,
-  tSequenceToPlayProps, tTime, tNoteName
+  // tChordMap,
+  SupportedSynthType,
+  tNoteWithOctave,
+  // tNoteWOCtaveQuality,
+  tSequenceToPlayProps, tTime,
+  // tNoteName
 } from "./PianoBase.types";
 import { PianoObserver } from "../PianoObserver/PianoObserver";
 import './PianoBase.css';
-import { ChordDispatcher } from "../ChordDispatcher/ChordDispatcher";
+import { iChordDispatcher } from "../ChordDispatcher/ChordDispatcher";
+import type { iChordEvent } from "../ChordDispatcher/ChordDispatcher";
 
 export interface PianoBaseProps {
   createSynth?: () => SupportedSynthType;
-  chordMap?: tChordMap;
+  // chordMap?: tChordMap;
   octave?: tOctaveRange;
   octaves?: tOctaveRange;
   highlightOnThePiano?: tChord;
   sequenceToPlay?: tSequenceToPlayProps;
   pianoObservable?: PianoObserver;
-  chordDispatcherList?: ChordDispatcher[];
+  chordDispatcherList?: iChordDispatcher[];
 }
 
-export default function PianoBase({
+export type PianoBaseHandle = {
+  triggerChordEvent: (event: iChordEvent) => void;
+}
+
+const PianoBase = forwardRef<PianoBaseHandle, PianoBaseProps>(({
   createSynth,
-  chordMap = DEFAULT_CHORD_MAP,
+  // chordMap = DEFAULT_CHORD_MAP,
   octave = 4,
   octaves = 3,
   highlightOnThePiano,
   sequenceToPlay,
   pianoObservable,
-  chordDispatcherList
-
-}: PianoBaseProps) {
+  chordDispatcherList,
+}, ref) => {
   const synthRef = useRef<SupportedSynthType | null>(null);
   const [activeNotes, setActiveNotes] = useState<tChord>([]);
   const [highlightedKeys, setHighlightedKeys] = useState<tChord>([]);
-  const [showChords, setShowChords] = useState(false);
   const { white, black } = generateNotes(octaves, octave);
+
+  const playNote = function (
+    note: tNoteWithOctave,
+    synth: SupportedSynthType | null,
+    duration: tTime = "4n"
+  ): Promise<void> {
+    if (!synth) return Promise.resolve();
+    synth.triggerAttackRelease(note, duration);
+    const ms = Tone.Time(duration).toMilliseconds();
+    return new Promise(res => setTimeout(res, ms));
+  }
+
+  const playChord = async function (
+    notes: tChord,
+    synth: SupportedSynthType | null,
+    duration: tTime = "4n"
+  ): Promise<void> {
+    if (!synth) return;
+    await Promise.all(notes.map(note => playNote(note, synth, duration)));
+    for (const note of notes) {
+      await playNote(note, synth, duration);
+    }
+  }
+
+  const playChordSimultaneous = async function (
+    notes: tChord,
+    synth: SupportedSynthType,
+    duration: tTime = "2n"
+  ) {
+    await Promise.all(notes.map(note => playNote(note, synth, duration)));
+  }
 
   useEffect(() => {
     const synth = createSynth
@@ -64,7 +101,6 @@ export default function PianoBase({
 
   useEffect(() => {
     if (highlightOnThePiano && highlightOnThePiano.length > 0 && synthRef.current) {
-      playChordSimultaneous(highlightOnThePiano, synthRef.current);
       setHighlightedKeys(highlightOnThePiano);
     }
   }, [highlightOnThePiano]);
@@ -124,23 +160,38 @@ export default function PianoBase({
     sequenceToPlay?.onSequenceEnd();
   };
 
-  const handlePlaySequenceFromChordMap = async (chordName: tNoteWOCtaveQuality) => {
-    const chord = chordMap[chordName] || [];
-    if (chord.length === 0) return;
-
-    for (const note of chord) {
-      await playNoteWithHighlight(note, true, undefined, "13n");
-    }
-
-    setActiveNotes([]);
-  };
-
   const handlePianoKeyClick = (note: tNoteWithOctave) => {
     setActiveNotes([note]);
     playNote(note, synthRef.current);
     pianoObservable?.notify({ type: "notePlayed", note });
     setTimeout(() => setActiveNotes([]), 180);
   };
+
+  const triggerChordEvent = (event: iChordEvent) => {
+    if (!synthRef.current) {
+      console.error("Synth not initialized in PianoBase");
+      return;
+    }
+
+    const { pitches, duration, velocity } = event;
+    const time = Tone.now() + 0.01;
+
+    // Dispara todas las notas del acorde simultáneamente
+    pitches.forEach(note => {
+      synthRef.current?.triggerAttackRelease(note, duration, undefined, velocity);
+    });
+    pianoObservable?.notify({ type: "chordPlayed", chord: pitches });
+
+    // Actualizar visualización de teclas activas/resaltadas
+    setHighlightedKeys(pitches);
+    setTimeout(() => {
+      setHighlightedKeys([]);
+    }, Tone.Time(duration).toMilliseconds() + 2000);
+  };
+
+  useImperativeHandle(ref, () => ({
+    triggerChordEvent,
+  }));
 
   return (
     <div className="piano-base">
@@ -180,4 +231,6 @@ export default function PianoBase({
       </div>
     </div>
   );
-}
+})
+
+export default PianoBase;
