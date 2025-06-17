@@ -4,6 +4,21 @@ import PianoBase, { PianoBaseHandle } from '../../PianoBase/PianoBase';
 import ChordDispatcher from "../../ChordDispatcher/ChordDispatcher";
 import type { tMelodySequence, iChordEvent } from "../../ChordDispatcher/ChordDispatcher";
 
+export interface AIResponse {
+  melodyEvents: iChordEvent[];
+}
+
+const removeThinkTags = (aiResponse: string): string => {
+  // Eliminar todo el contenido entre <think> y </think>, incluyendo las etiquetas
+  const cleanResponse = aiResponse.replace(/<think>[\s\S]*?<\/think>/g, '');
+
+  // Eliminar líneas vacías extras y espacios al inicio/final
+  return cleanResponse
+    .replace(/^\s+|\s+$/g, '')     // Eliminar espacios al inicio y final
+    .replace(/\n\s*\n\s*\n/g, '\n\n')  // Reducir múltiples líneas vacías a máximo dos
+    .trim();
+};
+
 export const PianoJammingWithTheAI: React.FC = () => {
   const [aiResponse, setAiResponse] = useState<string>('');
   const pianoRef = useRef<PianoBaseHandle>(null);
@@ -100,33 +115,74 @@ export const PianoJammingWithTheAI: React.FC = () => {
     setCurrentMelody(combinedEvents);
   }, []);
 
-  const sendJamProposal = async () => {
+  const launchCallAndWait = async () => {
     setLoading(true);
     try {
       const response = await fetch("http://localhost:11434/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "llama3.2",
-          prompt: `Ping-pong musical.
-Músico 1 propone: ${JSON.stringify(currentMelody)}
-Genera respuesta musical que complemente.
-Formato requerido:
+          parameters: {
+            temperature: 0.2,
+            response_format: { type: "json_object" },
+            top_p: 0.1,
+          },
+          model: "deepseek-r1:1.5b",
+          prompt: `[INSTRUCCIONES]
+Eres un compositor musical que SOLO responde con JSON.
+NO incluyas ningún otro texto o explicación.
+
+[REGLAS]
+- Genera una respuesta musical que complemente esta melodía
+- Mantén coherencia armónica con la melodía original
+- Los tiempos deben estar sincronizados
+- Cada nota debe incluir todos los campos requeridos
+- SOLO responde el objeto JSON, nada más
+
+[ENTRADA]
+${JSON.stringify(currentMelody)}
+
+[FORMATO DE RESPUESTA]
 {
   "melodyEvents": [{
-    pitches: string[],    // notas ["C4","E4"]
-    time: string,         // "compás:pulso:subdivisión"
-    duration: string,     // "4n"|"8n"|"16n"|"2n"
-    velocity: number,     // 0-1
-    highlightGroup: 1|2   // 1=izq, 2=der
+    "pitches": ["C4","E4"],     // notas
+    "time": "0:0:0",            // compás:pulso:subdivisión
+    "duration": "4n",           // 4n, 8n, 16n, 2n
+    "velocity": 0.8,            // 0-1
+    "highlightGroup": 1         // 1=izq, 2=der
   }]
 }
-Responde solo el JSON.`,
+
+[IMPORTANTE]
+- SOLO devuelve el JSON válido sin ningún texto adicional. responde estrictamente con un objeto como este: { "melody": [...] }
+- No incluyas etiquetas
+- NO incluyas explicaciones
+- NO incluyas comentarios
+- NO incluyas código extra
+`,
           stream: false,
+          thinking: false,
+          // stop: ["<think>", "</think>"],
+          // max_tokens: 1000,
+          // top_k: 40,
+          // frequency_penalty: 0.0,
+          // presence_penalty: 0.0,
+          // seed: 0,
+          // stop_sequences: ["<think>", "</think>"],
+          response_format: { type: "json_object" },
         }),
       });
       const data = await response.json();
-      setAiResponse(data.response);
+
+      const cleanResponse = removeThinkTags(data.response);
+
+      if (cleanResponse) {
+        setAiResponse(JSON.stringify(cleanResponse));
+      } else {
+        console.error('No se pudo obtener una respuesta JSON válida');
+        console.error('Raw ai response:', data.response);
+        console.error('cleaned ai response:', cleanResponse);
+      }
     } catch (error) {
       console.error("Error en la llamada a la API de IA", error);
     } finally {
@@ -134,39 +190,18 @@ Responde solo el JSON.`,
     }
   };
 
-  const parseAndValidateAIResponse = (response: string): tMelodySequence | null => {
-    try {
-      const parsed = JSON.parse(response);
-      if (!parsed.melodyEvents || !Array.isArray(parsed.melodyEvents)) {
-        return null;
-      }
-
-      // Limpia el formato de tiempo (elimina información de BPM si existe)
-      const cleanedEvents = parsed.melodyEvents.map((event: iChordEvent) => ({
-        ...event,
-        time: event.time.split(',')[0], // Mantiene solo la parte del tiempo musical
-        velocity: Math.min(Math.max(event.velocity, 0), 1) // Asegura que velocity esté entre 0 y 1
-      }));
-
-      return cleanedEvents;
-    } catch (e) {
-      console.error('Error parsing AI response:', e);
-      return null;
-    }
-  };
-
   const playAIResponse = async () => {
     if (!pianoRef.current || !aiResponse) return;
 
-    const aiMelody = parseAndValidateAIResponse(aiResponse);
-    if (!aiMelody) {
-      console.error('Respuesta de IA inválida');
+    const melodyEvents = extractMelodyFromAIResponse(aiResponse);
+    if (!melodyEvents) {
+      console.error('Respuesta de IA inválida', melodyEvents, aiResponse);
       return;
     }
 
     await Tone.start();
     const scheduler = new ChordDispatcher(pianoRef.current.triggerChordEvent, 80);
-    await scheduler.startSequence(aiMelody);
+    await scheduler.startSequence(melodyEvents);
   };
 
   const playMelody = async () => {
@@ -184,14 +219,15 @@ Responde solo el JSON.`,
 
   return (
     <div>
-      <h2>Piano Jamming con la IA</h2>
-      <button onClick={sendJamProposal} disabled={loading}>Enviar propuesta de jamming</button>
-      <button onClick={playMelody}>Reproducir Mi Melodía</button>
+      <h2>JamSession v0.1</h2>
+      <h3>Human ↔ AI Musical Exchange</h3>
+      <button onClick={playMelody}>Play user improvisation</button>
+      <button onClick={launchCallAndWait} disabled={loading}>Send melody to AI agent</button>
       <button
         onClick={playAIResponse}
         disabled={!aiResponse || loading}
       >
-        Reproducir Respuesta IA
+        Play AI improvisation
       </button>
       {loading && <div>Loading...</div>}
       {/* <pre>{aiResponse}</pre> */}
@@ -202,5 +238,75 @@ Responde solo el JSON.`,
     </div>
   );
 };
+
+export function extractMelodyEventsJSON(raw: string): any | null {
+  // Elimina etiquetas <think> y comillas externas si existen
+  let clean = raw.replace(/<think>[\s\S]*?<\/think>/g, '').trim();
+
+  // Si está envuelto en comillas, quítalas
+  if ((clean.startsWith('"') && clean.endsWith('"')) || (clean.startsWith("'") && clean.endsWith("'"))) {
+    clean = clean.slice(1, -1);
+  }
+
+  // Busca el primer { y el último }
+  const start = clean.indexOf('{');
+  const end = clean.lastIndexOf('}');
+  if (start === -1 || end === -1) {
+    console.error('No se encontró estructura JSON válida');
+    return null;
+  }
+
+  const jsonStr = clean.substring(start, end + 1);
+
+  try {
+    // Intenta parsear el JSON
+    const parsed = JSON.parse(jsonStr);
+    if (parsed.melodyEvents && Array.isArray(parsed.melodyEvents)) {
+      return parsed.melodyEvents;
+    }
+    // Si melodyEvents no está en el root, intenta buscarlo con regex
+    const match = jsonStr.match(/"melodyEvents"\s*:\s*(\[[\s\S]*\])/);
+    if (match) {
+      return JSON.parse(match[1]);
+    }
+    return null;
+  } catch (e) {
+    console.error('Error al parsear JSON:', e, jsonStr);
+    return null;
+  }
+}
+
+export function extractMelodyFromAIResponse(aiResponse: string): any[] | null {
+  // 1. Quitar comillas externas si existen
+  let clean = aiResponse.trim();
+  if ((clean.startsWith('"') && clean.endsWith('"')) || (clean.startsWith("'") && clean.endsWith("'"))) {
+    clean = clean.slice(1, -1);
+  }
+
+  // 2. Quitar bloque markdown ```json ... ```
+  clean = clean.replace(/^```json\\n|\\n```$/g, "");
+  clean = clean.replace(/^```json\n|```$/g, ""); // Por si acaso
+
+  // 3. Reemplazar secuencias escapadas
+  clean = clean.replace(/\\n/g, "\n").replace(/\\"/g, '"');
+
+  // 4. Buscar el primer { y el último }
+  const start = clean.indexOf("{");
+  const end = clean.lastIndexOf("}");
+  if (start === -1 || end === -1) return null;
+
+  const jsonStr = clean.substring(start, end + 1);
+
+  try {
+    const parsed = JSON.parse(jsonStr);
+    if (parsed.melody && Array.isArray(parsed.melody)) {
+      return parsed.melody;
+    }
+    return null;
+  } catch (e) {
+    console.error("Error al parsear JSON:", e, jsonStr);
+    return null;
+  }
+}
 
 export default PianoJammingWithTheAI;

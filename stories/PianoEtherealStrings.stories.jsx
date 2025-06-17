@@ -9,6 +9,3 @@ export default {
 const Template = (args) => <PianoEtherealStrings {...args} />;
 
 export const withoutChords = Template.bind({});
-withoutChords.args = {
-  chordMap: {}, // sin acordes
-};
