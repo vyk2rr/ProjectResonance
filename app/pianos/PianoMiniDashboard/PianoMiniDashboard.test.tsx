@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, act } from '@testing-library/react';
 import PianoMiniDashboard from './PianoMiniDashboard';
-import { PianoObservable } from '../../Observer/Observer';
+import { PianoObserver } from '../../PianoObserver/PianoObserver';
 
 // Mock el componente PianoBase
 jest.mock('../../PianoBase/PianoBase', () => {
@@ -11,8 +11,8 @@ jest.mock('../../PianoBase/PianoBase', () => {
 });
 
 // Mock la instancia del observable
-jest.mock('../../Observer/Observer', () => ({
-  PianoObservable: jest.fn().mockImplementation(() => ({
+jest.mock('../../PianoObserver/PianoObserver', () => ({
+  PianoObserver: jest.fn().mockImplementation(() => ({
     subscribe: jest.fn((callback) => {
       mockCallback = callback;
       return () => {};

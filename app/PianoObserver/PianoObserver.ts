@@ -1,11 +1,13 @@
+import { tChord, tNoteWithOctave } from "../PianoBase/PianoBase.types";
+
 type PianoEvent = 
-  | { type: "notePlayed", note: string }
-  | { type: "chordPlayed", chord: string[] }
+  | { type: "notePlayed", note: tNoteWithOctave }
+  | { type: "chordPlayed", chord: tChord }
   | { type: "sequenceEnded" };
 
 type Listener = (event: PianoEvent) => void;
 
-export class PianoObservable {
+export class PianoObserver {
   private listeners: Listener[] = [];
 
   subscribe(listener: Listener) {

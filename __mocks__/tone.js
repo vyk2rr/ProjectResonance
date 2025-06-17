@@ -37,6 +37,8 @@ function Reverb(...args) {
 }
 function Time(...args) {
   this.toMilliseconds = jest.fn(() => 500);
+  this.toSeconds = jest.fn(() => 500);
+  this.toNotation = jest.fn(() => '4n');
 }
 
 function NoiseSynth(...args) {
@@ -53,6 +55,7 @@ function Gain(...args) {
 }
 module.exports = {
   __esModule: true,
+  
   Synth: allowNewless(Synth),
   PolySynth: allowNewless(PolySynth),
   Filter: allowNewless(Filter),
@@ -61,6 +64,8 @@ module.exports = {
   Time: allowNewless(Time),
   NoiseSynth: allowNewless(NoiseSynth),
   Gain: allowNewless(Gain),
+
+  now: jest.fn(() => 500),
 
   triggerAttackReleaseMock,
   ReverbToDestinationMock,

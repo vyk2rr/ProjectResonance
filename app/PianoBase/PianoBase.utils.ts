@@ -128,33 +128,3 @@ export function createDefaultSynth(): SupportedSynthType {
   } as unknown as Tone.PolySynth;
 }
 
-export function playNote(
-  note: tNoteWithOctave,
-  synth: SupportedSynthType | null,
-  duration: tTime = "4n"
-): Promise<void> {
-  if (!synth) return Promise.resolve();
-  synth.triggerAttackRelease(note, duration);
-  const ms = Tone.Time(duration).toMilliseconds();
-  return new Promise(res => setTimeout(res, ms));
-}
-
-export async function playChord(
-  notes: tChord,
-  synth: SupportedSynthType | null,
-  duration: tTime = "4n"
-): Promise<void> {
-  if (!synth) return;
-  await Promise.all(notes.map(note => playNote(note, synth, duration)));
-  for (const note of notes) {
-    await playNote(note, synth, duration);
-  }
-}
-
-export async function playChordSimultaneous(
-  notes: tChord,
-  synth: SupportedSynthType,
-  duration: tTime = "2n"
-) {
-  await Promise.all(notes.map(note => playNote(note, synth, duration)));
-}

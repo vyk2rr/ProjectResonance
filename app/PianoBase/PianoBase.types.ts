@@ -1,5 +1,4 @@
 import * as Tone from "tone";
-
 export const OCTAVES_RANGE = [1, 2, 3, 4, 5, 6, 7] as const;
 export const BASE_NOTES = [
   'C', 'D', 'E', 'F', 'G', 'A', 'B'

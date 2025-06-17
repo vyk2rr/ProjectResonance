@@ -19,12 +19,6 @@ type Story = StoryObj<typeof meta>;
 
 export const defaultOption: Story = {};
 
-export const withEmptyChordMap: Story = {
-  args: {
-    chordMap: {},
-  }
-};
-
 export const withDmajHighlightedOnThePiano: Story = {
   args: {
     octaves: 1,
@@ -32,60 +26,17 @@ export const withDmajHighlightedOnThePiano: Story = {
   }
 };
 
-export const inOctaveC1: Story = {
-  args: {
-    octaves: 1,
-    octave: 1,
-    chordMap: {}
-  }
+export const startingOctave1: Story = {
+  args: { octaves: 2, octave: 1 }
 };
 
-export const inOctaveC2: Story = {
-  args: {
-    octaves: 1,
-    octave: 1,
-    chordMap: {}
-  }
-}
+export const startingOctave2: Story = {
+  args: { octaves: 2, octave: 2 }
+};
 
-export const inOctaveC3: Story = {
-  args: {
-    octave: 3,
-    chordMap: {}
-  }
-}
-
-export const inOctaveC4: Story = {
-  args: {
-    octave: 4,
-    chordMap: {}
-  }
-}
-
-export const inOctaveC5: Story = {
-  args: {
-    octave: 5,
-    chordMap: {}
-  }
-}
-
-export const with1Chord: Story = {
-  args: {
-    chordMap: {
-      Cmaj: ["C4", "E4", "G4"],
-    },
-  }
-}
-
-export const with3Chords: Story = {
-  args: {
-    chordMap: {
-      Cmaj: ["C4", "E4", "G4"],
-      Dmin: ["D4", "F4", "A4"],
-      G7: ["G3", "B3", "D4", "F4"],
-    },
-  }
-}
+export const startingOctave3: Story = {
+  args: { octaves: 2, octave: 3 }
+};
 
 export const with1Octave: Story = {
   args: {

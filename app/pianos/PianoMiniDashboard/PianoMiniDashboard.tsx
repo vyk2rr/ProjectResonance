@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 import PianoBase from "../../PianoBase/PianoBase";
-import { PianoObservable } from "../../Observer/Observer";
+import { PianoObserver } from "../../PianoObserver/PianoObserver";
 
 // Instancia única, puedes mover esto a un contexto si lo necesitas global
-const pianoObservable = new PianoObservable();
+const pianoObserver = new PianoObserver();
 
 export default function PianoMiniDashboard() {
   // Estado para guardar las últimas notas presionadas
   const [recentNotes, setRecentNotes] = useState<string[]>([]);
 
   useEffect(() => {
-    // Suscribirse a eventos de PianoObservable
-    const unsubscribe = pianoObservable.subscribe(event => {
+    // Suscribirse a eventos de PianoObserver
+    const unsubscribe = pianoObserver.subscribe(event => {
       if (event.type === "notePlayed") {
         setRecentNotes(prev => {
           // Mantén solo las últimas 5 notas (ajusta el número como quieras)
@@ -33,7 +33,7 @@ export default function PianoMiniDashboard() {
         {recentNotes.join(", ") || "No hay teclas presionadas aún."}
       </div>
 
-      <PianoBase pianoObservable={pianoObservable} />
+      <PianoBase pianoObservable={pianoObserver} />
     </div>
   );
 }
