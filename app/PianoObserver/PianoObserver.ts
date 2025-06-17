@@ -1,7 +1,7 @@
-import { tChord, tNote } from "../PianoBase/PianoBase.types";
+import { tChord, tNoteWithOctave } from "../PianoBase/PianoBase.types";
 
 type PianoEvent = 
-  | { type: "notePlayed", note: tNote }
+  | { type: "notePlayed", note: tNoteWithOctave }
   | { type: "chordPlayed", chord: tChord }
   | { type: "sequenceEnded" };
 

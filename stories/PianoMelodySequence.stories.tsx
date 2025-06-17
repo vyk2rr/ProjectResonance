@@ -1,5 +1,5 @@
 import React from 'react'
-import PianoMelodySequence from "../app/pianos/PianoMelodySequence/PianoMelodySequence";
+import PianoMelodySequence from "../app/pianos/PianoMelody/PianoMelody";
 
 export default {
   title: "Experiments/PianoMelodySequence",

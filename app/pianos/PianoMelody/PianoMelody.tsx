@@ -1,8 +1,8 @@
 import * as Tone from "tone";
 import React, { useState, useRef } from "react";
 import PianoBase from "../../PianoBase/PianoBase";
-import type { iChordDispatcher, tMelodySequence } from "./../../ChordDispatcher/ChordDispatcher";
-import ChordDispatcher from "./../../ChordDispatcher/ChordDispatcher";
+import type { iChordDispatcher, tMelodySequence } from "../../ChordDispatcher/ChordDispatcher";
+import ChordDispatcher from "../../ChordDispatcher/ChordDispatcher";
 import type { PianoBaseHandle } from "../../PianoBase/PianoBase";
 
 export default function PianoMelody() {

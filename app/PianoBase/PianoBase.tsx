@@ -7,7 +7,7 @@ import {
   getBlackKeyLeft,
   getBlackKeyWidth,
   createDefaultSynth,
-  playNote,
+  // playNote,
   // playChord,
   // playChordSimultaneous
 } from "./PianoBase.utils";
