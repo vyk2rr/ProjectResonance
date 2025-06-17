@@ -1,75 +1,81 @@
 import * as Tone from "tone";
-import type { tNoteWithOctave, tTime, tChord } from "./../PianoBase/PianoBase.types";
+import type { tTime, tChord } from "./../PianoBase/PianoBase.types";
 
 export interface iChordEvent {
   pitches: tChord;
-  time: string;
+  time: string;           // Tiempo musical (ej: "0:0:1", "1m", "4n")
   duration: tTime;
   velocity?: number;
+  highlightGroup?: 1 | 2;
+  scheduledPlayTime?: number; // Tiempo exacto del AudioContext para la reproducción (añadido por el scheduler)
 }
 
 export type tMelodySequence = iChordEvent[];
 
-export interface iChordDispatcher {
-  triggerNote: (event: iChordEvent) => void;
-  events: tMelodySequence;
-}
-
 export default class ChordDispatcher {
-  triggerNote: (event: iChordEvent) => void;
+  triggerNoteCallback: (event: iChordEvent) => void;
   private tempo: number;
+  private noteDelay: number = 0.05; // Delay para arpegios en segundos (ajustado a 50ms)
 
-  constructor(triggerNote: (event: iChordEvent) => void, tempo: number = 85) {
-    this.triggerNote = triggerNote;
+  constructor(triggerNoteCallback: (event: iChordEvent) => void, tempo: number = 120) {
+    this.triggerNoteCallback = triggerNoteCallback;
     this.tempo = tempo;
   }
 
   async startSequence(events: tMelodySequence) {
     if (!events || events.length === 0) return;
 
-    await Tone.start();
-    const now = Tone.now();
+    await Tone.start(); // Asegura que el AudioContext está iniciado
     const transport = Tone.getTransport();
     
-    // Establecer un tempo más lento
     transport.bpm.value = this.tempo;
+    transport.stop();    // Detiene y
+    transport.cancel();  // limpia eventos previos del transport
 
-    // Asegurarnos de que el transport esté detenido y reiniciado
-    transport.stop();
-    transport.cancel();
-
-    events.forEach(event => {
-      // Multiplicamos el tiempo por 2 para hacerlo más espaciado
-      const time = Tone.Time(event.time).toSeconds() * 2;
+    events.forEach(originalEvent => {
+      // Usamos el tiempo musical directamente, Tone.js lo convertirá.
+      const musicalTime = originalEvent.time; 
       
-      transport.scheduleOnce((t) => {
-        // Añadimos un pequeño delay entre notas
-        const noteDelay = 0.1;
-        if (Array.isArray(event.pitches)) {
-          event.pitches.forEach((pitch, index) => {
-            const adjustedEvent = {
-              ...event,
-              pitches: [pitch],
-              time: (t + (index * noteDelay)).toString()
+      transport.scheduleOnce((scheduledAudioContextTime) => {
+        // scheduledAudioContextTime es el tiempo exacto del AudioContext para este evento del transport
+        if (Array.isArray(originalEvent.pitches)) {
+          originalEvent.pitches.forEach((pitch, index) => {
+            const actualPlayTime = scheduledAudioContextTime + (index * this.noteDelay);
+            const adjustedEvent: iChordEvent = {
+              ...originalEvent,
+              pitches: [pitch], // Nota individual para reproducción y resaltado
+              scheduledPlayTime: actualPlayTime, // Tiempo exacto para triggerAttackRelease
+              // El 'time' original se mantiene para referencia, pero no se usa para el scheduling de la nota individual aquí
             };
-            this.triggerNote(adjustedEvent);
+            this.triggerNoteCallback(adjustedEvent);
           });
         } else {
-          this.triggerNote(event);
+           // Caso poco probable si pitches siempre es array, pero por si acaso
+          this.triggerNoteCallback({
+            ...originalEvent,
+            scheduledPlayTime: scheduledAudioContextTime
+          });
         }
-      }, now + time);
+      }, musicalTime); // Programar usando el tiempo musical del evento
     });
 
     transport.start();
 
     // Detener el transport después de que termine la secuencia
     const lastEvent = events[events.length - 1];
-    const lastTime = Tone.Time(lastEvent.time).toSeconds() * 2 + 
-                    Tone.Time(lastEvent.duration).toSeconds();
-    
-    setTimeout(() => {
-      transport.stop();
-      transport.cancel();
-    }, (lastTime + 1) * 1000);
+    if (lastEvent) {
+        const lastEventStartTimeSeconds = Tone.Time(lastEvent.time).toSeconds();
+        const lastEventDurationSeconds = Tone.Time(lastEvent.duration).toSeconds();
+        const lastEventPitchCount = Array.isArray(lastEvent.pitches) ? lastEvent.pitches.length : 1;
+        const arpeggioDurationOfLastEvent = lastEventPitchCount > 1 ? (lastEventPitchCount - 1) * this.noteDelay : 0;
+        
+        const totalSequenceDurationSeconds = lastEventStartTimeSeconds + lastEventDurationSeconds + arpeggioDurationOfLastEvent;
+        
+        setTimeout(() => {
+          transport.stop();
+          transport.cancel();
+          console.log("Transport stopped after sequence.");
+        }, (totalSequenceDurationSeconds + 0.5) * 1000); // +0.5s de margen
+    }
   }
 }

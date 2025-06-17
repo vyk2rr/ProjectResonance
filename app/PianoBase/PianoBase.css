@@ -35,7 +35,7 @@
   left: 0;
   width: 100%;
   height: 60%;
-  pointer-events: none;
+  pointer-events: "none";
 }
 
 .black-key {
@@ -55,14 +55,12 @@
   box-shadow: 0 0 10px #ffd54f;
 }
 
-/* Responsive: shrink piano on small screens */
 @media (max-width: 600px) {
   .piano {
     height: 120px;
   }
 }
 
-/* Estilo para el nombre de la nota */
 .note-name {
   position: absolute;
   bottom: 10px;
@@ -72,26 +70,86 @@
   color: #333;
   font-family: Arial, sans-serif;
   font-weight: 600;
-  /* Aseguramos que esté siempre visible */
   z-index: 3;
-  /* Evitamos que el texto se rompa en múltiples líneas */
   white-space: nowrap;
-  /* Opcional: añadimos un pequeño fondo para mejor legibilidad */
   background-color: rgba(255, 255, 255, 0.8);
   padding: 2px 4px;
   border-radius: 3px;
 }
 
-/* Ajuste específico para teclas negras */
 .black-key .note-name {
   color: white;
   background-color: rgba(0, 0, 0, 0.8);
 }
 
-/* Ajuste para pantallas pequeñas */
 @media (max-width: 600px) {
   .note-name {
     font-size: 10px;
     bottom: 5px;
   }
 }
+
+.white-key.active-key,
+.black-key.active-key {
+  background-color: #ffc107;
+  border-color: #e0a800;
+}
+
+/* Melodía - Grupo 1 (Verde Menta Pastel) */
+.white-key.highlight-group-1,
+.black-key.highlight-group-1 {
+  background-color: #A2D9CE !important;
+  border-color: #7FBBAF !important;
+  color: #333333 !important;
+}
+
+.white-key.highlight-group-1 .note-name,
+.black-key.highlight-group-1 .note-name {
+  color: white !important;
+  background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Bajos/Armonía - Grupo 2 (Lavanda Pastel) */
+.white-key.highlight-group-2,
+.black-key.highlight-group-2 {
+  background-color: #D8BFD8 !important;
+  border-color: #B49CC1 !important;
+  color: #333333 !important;
+}
+
+.white-key.highlight-group-2 .note-name,
+.black-key.highlight-group-2 .note-name {
+  color: white !important;
+  background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.key .note-name {
+  font-family: 'Arial', sans-serif;
+  font-size: 0.8em;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-weight: bold;
+}
+
+.note-name {
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  pointer-events: none;
+}
+
+.white-key .note-name {
+  color: black;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.black-key .note-name {
+  color: white;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.flat-notation {}

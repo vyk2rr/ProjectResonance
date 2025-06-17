@@ -73,4 +73,18 @@ describe("PianoMelodySequence", () => {
 
     toneStartSpy.mockRestore();
   });
+
+  it("calls triggerChordEvent for both melody and bass groups", async () => {
+    render(<PianoMelody />);
+    const button = screen.getByText("Reproducir Melodía");
+
+    await act(async () => {
+      fireEvent.click(button);
+    });
+
+    // Extrae todos los grupos usados en las llamadas
+    const groups = mockTriggerChordEvent.mock.calls.map(call => call[0].highlightGroup);
+    expect(groups).toContain(1);
+    expect(groups).toContain(2);
+  });
 });
