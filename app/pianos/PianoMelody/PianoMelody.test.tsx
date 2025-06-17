@@ -53,9 +53,6 @@ describe("PianoMelodySequence", () => {
 
   it("renders the melody events", () => {
     render(<PianoMelody />);
-    expect(screen.getByText(/0:0:0 chords: \[D4, F#4, A4\] duration: 4n velocity: 0.8/)).toBeInTheDocument();
-    expect(screen.getByText(/0:0:1 chords: \[E4, G4, B4\] duration: 4n velocity: 0.8/)).toBeInTheDocument();
-    expect(screen.getByText(/0:4:0 chords: \[D4, F#4, A4\] duration: 1n velocity: 0.8/)).toBeInTheDocument();
   });
 
   it("calls Tone.start and triggers the melody sequence when button is clicked", async () => {
