@@ -3,6 +3,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import PianoBase, { PianoBaseHandle } from '../../PianoBase/PianoBase';
 import ChordDispatcher from "../../ChordDispatcher/ChordDispatcher";
 import type { tMelodySequence, iChordEvent } from "../../ChordDispatcher/ChordDispatcher";
+import { AIService } from './PianoJammingWithTheAI.ai.service';
+import { ENV_CONFIG } from '../../../env.local';
 
 export interface AIResponse {
   melodyEvents: iChordEvent[];
@@ -118,69 +120,14 @@ export const PianoJammingWithTheAI: React.FC = () => {
   const launchCallAndWait = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:11434/api/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          parameters: {
-            temperature: 0.2,
-            response_format: { type: "json_object" },
-            top_p: 0.1,
-          },
-          model: "deepseek-r1:1.5b",
-          prompt: `[INSTRUCCIONES]
-Eres un compositor musical que SOLO responde con JSON.
-NO incluyas ningún otro texto o explicación.
-
-[REGLAS]
-- Genera una respuesta musical que complemente esta melodía
-- Mantén coherencia armónica con la melodía original
-- Los tiempos deben estar sincronizados
-- Cada nota debe incluir todos los campos requeridos
-- SOLO responde el objeto JSON, nada más
-
-[ENTRADA]
-${JSON.stringify(currentMelody)}
-
-[FORMATO DE RESPUESTA]
-{
-  "melodyEvents": [{
-    "pitches": ["C4","E4"],     // notas
-    "time": "0:0:0",            // compás:pulso:subdivisión
-    "duration": "4n",           // 4n, 8n, 16n, 2n
-    "velocity": 0.8,            // 0-1
-    "highlightGroup": 1         // 1=izq, 2=der
-  }]
-}
-
-[IMPORTANTE]
-- SOLO devuelve el JSON válido sin ningún texto adicional. responde estrictamente con un objeto como este: { "melody": [...] }
-- No incluyas etiquetas
-- NO incluyas explicaciones
-- NO incluyas comentarios
-- NO incluyas código extra
-`,
-          stream: false,
-          thinking: false,
-          // stop: ["<think>", "</think>"],
-          // max_tokens: 1000,
-          // top_k: 40,
-          // frequency_penalty: 0.0,
-          // presence_penalty: 0.0,
-          // seed: 0,
-          // stop_sequences: ["<think>", "</think>"],
-          response_format: { type: "json_object" },
-        }),
-      });
-      const data = await response.json();
-
-      const cleanResponse = removeThinkTags(data.response);
+      const response = await AIService.generateMelody(currentMelody);
+      const cleanResponse = removeThinkTags(response);
 
       if (cleanResponse) {
         setAiResponse(JSON.stringify(cleanResponse));
       } else {
         console.error('No se pudo obtener una respuesta JSON válida');
-        console.error('Raw ai response:', data.response);
+        console.error('Raw ai response:', response);
         console.error('cleaned ai response:', cleanResponse);
       }
     } catch (error) {
