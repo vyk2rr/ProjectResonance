@@ -10,7 +10,8 @@ export default {
         <Story></Story>
       </div>
     ),
-  ]
+  ],
+  tags: ["autodocs"]
 };
 
 const Template = (args) => <UkuleleFretboard {...args} />;

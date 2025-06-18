@@ -5,15 +5,15 @@ import {
   getAlternativeNotation,
   getBlackKeyLeft,
   getBlackKeyWidth,
-  createDefaultSynth,
-  DEFAULT_CHORD_MAP
+  createDefaultSynth
 } from "./PianoBase.utils";
 import type {
   tChord, tOctaveRange,
   SupportedSynthType,
   tNoteWithOctave,
-  tTime,
-  tChordSequence
+  tTime, 
+  tChordSequence,
+  tSequenceToPlayProps
 } from "./PianoBase.types";
 import { PianoObserver } from "../PianoObserver/PianoObserver"; // Asumiendo que existe y se usa
 import './PianoBase.css';
@@ -27,7 +27,6 @@ interface iActiveNoteInfo {
 
 export interface PianoBaseProps {
   createSynth?: () => SupportedSynthType;
-  chordMap?: tChordMap;
   octave?: tOctaveRange;
   octaves?: tOctaveRange;
   highlightOnThePiano?: tChord;
@@ -41,7 +40,6 @@ export type PianoBaseHandle = {
 
 const PianoBase = forwardRef<PianoBaseHandle, PianoBaseProps>(({
   createSynth,
-  chordMap = DEFAULT_CHORD_MAP,
   octave = 4,
   octaves = 3,
   highlightOnThePiano,
@@ -228,6 +226,7 @@ const PianoBase = forwardRef<PianoBaseHandle, PianoBaseProps>(({
                   ${legacy ? "highlight-legacy" : ""}
                 `}
                 style={{
+                  pointerEvents: "all",
                   left: getBlackKeyLeft(noteString, white),
                   width: getBlackKeyWidth(octaves)
                 }}

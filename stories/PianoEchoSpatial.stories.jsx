@@ -9,7 +9,3 @@ export default {
 const Template = (args) => <PianoEchoSpatial {...args} />;
 
 export const withoutChords = Template.bind({});
-withoutChords.args = {
-  chordMap: {}, // sin acordes
-  octaves: 2
-};

@@ -4,6 +4,7 @@ import PianoBase from "../app/PianoBase/PianoBase";
 
 const meta = {
   component: PianoBase,
+  tags: ["autodocs"],
   argTypes: {
     octaves: {
       control: { type: "range", min: 1, max: 5, step: 1 },

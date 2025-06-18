@@ -15,6 +15,7 @@ const mockChord: tChord = ["C4", "E4", "G4"];
 const meta: Meta<typeof ChordPalette> = {
   title: "ChordPalette",
   component: ChordPalette,
+  tags: ["autodocs"]
 };
 export default meta;
 
