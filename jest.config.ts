@@ -10,7 +10,8 @@ const config: Config = {
     "/node_modules/(?!tone/)"
   ],
   moduleNameMapper: {
-    "\\.css$": "identity-obj-proxy"
+    "\\.css$": "identity-obj-proxy",
+    "^../../../env.local$": "<rootDir>/__mocks__/env.local.ts"
   },
   extensionsToTreatAsEsm: [".ts", ".tsx"],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
